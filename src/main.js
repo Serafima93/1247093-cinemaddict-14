@@ -7,7 +7,7 @@ import {createFooterStatistic} from './view/footer.js';
 
 
 const CARDS_MAX_COUNT = 5;
-const CARDS_MIN_COUNT = 2;
+// const CARDS_MIN_COUNT = 2;
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -35,5 +35,5 @@ render(siteMainElement, createShowMoreButton(), 'beforeend');
 //поп-ап
 render(siteMainElement, createPopUp(), 'beforeend');
 
-
+// статистика из футера
 render(siteFooterElement, createFooterStatistic(), 'beforeend');
