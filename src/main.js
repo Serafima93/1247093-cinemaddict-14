@@ -7,7 +7,7 @@ import { createFooterStatistic } from './view/footer.js';
 
 
 const CARDS_MAX_COUNT = 5;
-// const CARDS_MIN_COUNT = 2;
+const CARDS_MIN_COUNT = 2;
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -25,12 +25,17 @@ render(siteMainElement, createSiteMenuTemplate(), 'beforeend');
 
 // добавляю карточку
 render(siteMainElement, filmListWrap(), 'beforeend');
+const filmCardContainers = document.querySelectorAll('.films-list__container');
 
 for (let i = 0; i < CARDS_MAX_COUNT; i++) {
-  const filmCardContainer = document.querySelector('.films-list__container');
-
-  render(filmCardContainer, createFilmCard(), 'beforeend');
+  render(filmCardContainers[0], createFilmCard(), 'beforeend');
 }
+
+for (let i = 0; i < CARDS_MIN_COUNT; i++) {
+  render(filmCardContainers[1], createFilmCard(), 'beforeend');
+  render(filmCardContainers[2], createFilmCard(), 'beforeend');
+}
+
 
 // добавляю кнопку
 render(siteMainElement, createShowMoreButton(), 'beforeend');
