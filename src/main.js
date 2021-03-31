@@ -17,13 +17,10 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer__statistics');
 
 
-// добавляю юзера
 render(siteUserElement, createUser(), 'beforeend');
 
-// добавляю меню
 render(siteMainElement, createSiteMenuTemplate(), 'beforeend');
 
-// добавляю карточку
 render(siteMainElement, filmListWrap(), 'beforeend');
 const filmCardContainers = document.querySelectorAll('.films-list__container');
 
@@ -37,11 +34,8 @@ for (let i = 0; i < CARDS_MIN_COUNT; i++) {
 }
 
 
-// добавляю кнопку
 render(siteMainElement, createShowMoreButton(), 'beforeend');
 
-//поп-ап
 render(siteMainElement, createPopUp(), 'beforeend');
 
-// статистика из футера
 render(siteFooterElement, createFooterStatistic(), 'beforeend');
