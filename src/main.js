@@ -1,9 +1,9 @@
-import {createSiteMenuTemplate} from './view/menu.js';
-import {createUser} from './view/user.js';
-import {filmListWrap, createFilmCard} from './view/film-card.js';
-import {createShowMoreButton} from './view/button-show-more.js';
-import {createPopUp} from './view/pop-up-information.js';
-import {createFooterStatistic} from './view/footer.js';
+import { createSiteMenuTemplate } from './view/menu.js';
+import { createUser } from './view/user.js';
+import { filmListWrap, createFilmCard } from './view/film-card.js';
+import { createShowMoreButton } from './view/button-show-more.js';
+import { createPopUp } from './view/pop-up-information.js';
+import { createFooterStatistic } from './view/footer.js';
 
 
 const CARDS_MAX_COUNT = 5;
@@ -24,9 +24,12 @@ render(siteUserElement, createUser(), 'beforeend');
 render(siteMainElement, createSiteMenuTemplate(), 'beforeend');
 
 // добавляю карточку
-render(siteUserElement, filmListWrap(), 'beforeend');
+render(siteMainElement, filmListWrap(), 'beforeend');
+
 for (let i = 0; i < CARDS_MAX_COUNT; i++) {
-  render(siteMainElement, createFilmCard(), 'beforeend');
+  const filmCardContainer = document.querySelector('.films-list__container');
+
+  render(filmCardContainer, createFilmCard(), 'beforeend');
 }
 
 // добавляю кнопку
