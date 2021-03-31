@@ -1,28 +1,31 @@
 import {createSiteMenuTemplate} from './view/menu.js';
 import {createUser} from './view/user.js';
-import {createFilmCard} from './view/film-card.js';
+import {filmListWrap, createFilmCard} from './view/film-card.js';
 import {createShowMoreButton} from './view/button-show-more.js';
 import {createPopUp} from './view/pop-up-information.js';
+import {createFooterStatistic} from './view/footer.js';
 
 
-const CARDS_COUNT = 5;
+const CARDS_MAX_COUNT = 5;
+const CARDS_MIN_COUNT = 2;
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
+const siteUserElement = document.querySelector('.header');
+const siteMainElement = document.querySelector('.main');
+const siteFooterElement = document.querySelector('.footer__statistics');
+
 
 // добавляю юзера
-const siteUserElement = document.querySelector('.header');
 render(siteUserElement, createUser(), 'beforeend');
 
 // добавляю меню
-const siteMainElement = document.querySelector('.main');
 render(siteMainElement, createSiteMenuTemplate(), 'beforeend');
 
 // добавляю карточку
-
-for (let i = 0; i < CARDS_COUNT; i++) {
-  const siteMainElement = document.querySelector('.main');
+render(siteUserElement, filmListWrap(), 'beforeend');
+for (let i = 0; i < CARDS_MAX_COUNT; i++) {
   render(siteMainElement, createFilmCard(), 'beforeend');
 }
 
@@ -33,3 +36,4 @@ render(siteMainElement, createShowMoreButton(), 'beforeend');
 render(siteMainElement, createPopUp(), 'beforeend');
 
 
+render(siteFooterElement, createFooterStatistic(), 'beforeend');

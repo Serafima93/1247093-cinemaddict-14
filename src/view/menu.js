@@ -10,9 +10,10 @@ export const createSiteMenuTemplate = () => {
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>
 
-  <section class="films">
-    <section class="films-list">
-      <h2 class="films-list__title">There are no movies in our database</h2>
-    </section>
+  <ul class="sort">
+  <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
+  <li><a href="#" class="sort__button">Sort by date</a></li>
+  <li><a href="#" class="sort__button">Sort by rating</a></li>
+  </ul>
   </section>`;
 };
