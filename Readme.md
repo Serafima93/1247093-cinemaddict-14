@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Serafima Mokrousova](https://up.htmlacademy.ru/ecmascript/14/user/1247093).
-* Наставник: `Неизвестно`.
+* Наставник: [Artyom Prikhodko](https://htmlacademy.ru/profile/id1012525).
 
 ---
 
