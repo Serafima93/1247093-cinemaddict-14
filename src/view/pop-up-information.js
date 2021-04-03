@@ -1,4 +1,11 @@
-export const createPopUp = () => {
+import dayjs from 'dayjs';
+
+export const createPopUp = (popups) => {
+  const { title, description,director,screenwriters,actors, ageRate, poster, rating, productionYear, timeContinue, country } = popups;
+
+  const hours = timeContinue !== null
+    ? dayjs(timeContinue).format('h mm')
+    : '';
   return `
   <div class="film-details__top-container">
   <div class="film-details__close">
@@ -6,47 +13,47 @@ export const createPopUp = () => {
   </div>
   <div class="film-details__info-wrap">
     <div class="film-details__poster">
-      <img class="film-details__poster-img" src="./images/posters/the-great-flamarion.jpg" alt="">
+      <img class="film-details__poster-img" src='${poster}' alt="">
 
-      <p class="film-details__age">18+</p>
+      <p class="film-details__age">${ageRate}</p>
     </div>
 
     <div class="film-details__info">
       <div class="film-details__info-head">
         <div class="film-details__title-wrap">
-          <h3 class="film-details__title">The Great Flamarion</h3>
-          <p class="film-details__title-original">Original: The Great Flamarion</p>
+          <h3 class="film-details__title">${title}</h3>
+          <p class="film-details__title-original">Original: ${title}</p>
         </div>
 
         <div class="film-details__rating">
-          <p class="film-details__total-rating">8.9</p>
+          <p class="film-details__total-rating">${rating}</p>
         </div>
       </div>
 
       <table class="film-details__table">
         <tbody><tr class="film-details__row">
           <td class="film-details__term">Director</td>
-          <td class="film-details__cell">Anthony Mann</td>
+          <td class="film-details__cell">${director}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Writers</td>
-          <td class="film-details__cell">Anne Wigton, Heinz Herald, Richard Weil</td>
+          <td class="film-details__cell">${screenwriters}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Actors</td>
-          <td class="film-details__cell">Erich von Stroheim, Mary Beth Hughes, Dan Duryea</td>
+          <td class="film-details__cell">${actors}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Release Date</td>
-          <td class="film-details__cell">30 March 1945</td>
+          <td class="film-details__cell">${productionYear}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Runtime</td>
-          <td class="film-details__cell">1h 18m</td>
+          <td class="film-details__cell">${hours}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Country</td>
-          <td class="film-details__cell">USA</td>
+          <td class="film-details__cell">${country}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Genres</td>
@@ -58,8 +65,8 @@ export const createPopUp = () => {
       </tbody></table>
 
       <p class="film-details__film-description">
-        The film opens following a murder at a cabaret in Mexico City in 1936, and then presents the events leading up to it in flashback. The Great Flamarion (Erich von Stroheim) is an arrogant, friendless, and misogynous marksman who displays his trick gunshot act in the vaudeville circuit. His show features a beautiful assistant, Connie (Mary Beth Hughes) and her drunken husband Al (Dan Duryea), Flamarion's other assistant. Flamarion falls in love with Connie, the movie's femme fatale, and is soon manipulated by her into killing her no good husband during one of their acts.
-      </p>
+      ${description}
+         </p>
     </div>
   </div>
 

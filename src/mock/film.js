@@ -10,8 +10,8 @@ const getRandomInteger = (a = 0, b = 1) => {
 };
 
 const generateFilmPoster = () => {
-  const filmPoster = ['./images/posters/made-for-each-other.png', './images/posters/popeye-meets-sinbad.png', './images/posters/the-dance-of-life.jpg'];
-
+  const filmPoster = ['./images/posters/made-for-each-other.png', './images/posters/popeye-meets-sinbad.png', './images/posters/the-dance-of-life.jpg', './images/posters/the-man-with-the-golden-arm.jpg'];
+  // тут хотят чтобы мы обращались к файлам в папке. Но они все с разным урлом. Тут либо php, либо вручную...
   const randomIndex = getRandomInteger(0, filmPoster.length - 1);
   return filmPoster[randomIndex];
 };
@@ -51,21 +51,67 @@ const generateFilmTime = () => {
 
 const generateGenre = () => {
   const genre = ['action', 'drama', 'SF', 'romance'];
-  const randomIndex = getRandomInteger(0, genre.length - 1);
-  return genre[randomIndex];
+
+  const randomIndex = genre.slice(getRandomInteger(0, genre.length - 1));
+  return randomIndex;
 };
 
-
-export const generateFilm = () => {
+const generateFilm = () => {
   return {
     poster: generateFilmPoster(),
     title: generateFilmTitle(),
     rating: generateFilmRating(),
     productionYear: generateFilmYear(),
     timeContinue: generateFilmTime(),
-    genres: generateGenre(),
+    // тут появляются пустоты. Как их избежать?
+    genres: generateGenre().splice(1,1),
     description: generateFilmDescription(),
     commentsCount: 10,
   };
 };
+//начало работы с поп-апом
 
+const generateFilmCountry = () => {
+  const country = ['USA', 'UK', 'Israel', 'Spain'];
+  const randomIndex = getRandomInteger(0, country.length-1);
+  return country[randomIndex];
+};
+
+const generateFilmDirector = () => {
+  const country = ['Alef', 'Bet', 'Gimel', 'Dalet'];
+  const randomIndex = getRandomInteger(0, country.length-1);
+  return country[randomIndex];
+};
+
+
+const generateFilmHuman = () => {
+  const human = ['Doe', 'Joly', 'Smith', 'Sims', 'Green'];
+  const randomIndex = human.slice(getRandomInteger(0, human.length - 1));
+  return randomIndex;
+};
+const ageFilmRate = () => {
+  const age = ['6+', '14+', '16+', '18+', '21+'];
+  const randomIndex = getRandomInteger(0, age.length-1);
+  return age[randomIndex];
+};
+
+
+const generatePopUpFilm = () => {
+  return {
+    poster: generateFilmPoster(),
+    title: generateFilmTitle(),
+    originalname: generateFilmTitle(),
+    rating: generateFilmRating(),
+    director:generateFilmDirector(),
+    actors: generateFilmHuman(),
+    screenwriters: generateFilmHuman(),
+    country: generateFilmCountry(),
+    productionYear: generateFilmYear(),
+    timeContinue: generateFilmTime(),
+    genres: generateGenre(),
+    description: generateFilmDescription(),
+    ageRate: ageFilmRate(),
+  };
+};
+
+export { generateFilm, generatePopUpFilm };
