@@ -5,9 +5,12 @@ import { createShowMoreButton } from './view/button-show-more.js';
 import { createPopUp } from './view/pop-up-information.js';
 import { createFooterStatistic } from './view/footer.js';
 
+import {generateFilm} from './mock/film';
 
 const CARDS_MAX_COUNT = 5;
 const CARDS_MIN_COUNT = 2;
+
+const films = new Array(CARDS_MAX_COUNT).fill().map(generateFilm);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -25,7 +28,7 @@ render(siteMainElement, filmListWrap(), 'beforeend');
 const filmCardContainers = document.querySelectorAll('.films-list__container');
 
 for (let i = 0; i < CARDS_MAX_COUNT; i++) {
-  render(filmCardContainers[0], createFilmCard(), 'beforeend');
+  render(filmCardContainers[0], createFilmCard(films[i]), 'beforeend');
 }
 
 for (let i = 0; i < CARDS_MIN_COUNT; i++) {
