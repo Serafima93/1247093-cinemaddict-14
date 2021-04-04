@@ -50,6 +50,7 @@ const generateGenre = () => {
   return randomIndex;
 };
 
+
 const generateFilm = () => {
   return {
     poster: generateFilmPoster(),
@@ -58,22 +59,26 @@ const generateFilm = () => {
     productionYear: generateFilmYear(),
     timeContinue: generateFilmTime(),
     // тут появляются пустоты. Как их избежать?
-    genres: generateGenre().splice(1,1),
+    genres: generateGenre().splice(1, 1),
     description: generateFilmDescription(),
     commentsCount: 10,
+    isFavorit: Boolean(getRandomInteger(0, 1)),
+    isWatched: Boolean(getRandomInteger(0, 1)),
+    futureFilm: Boolean(getRandomInteger(0, 1)),
   };
 };
+
 //начало работы с поп-апом
 
 const generateFilmCountry = () => {
   const country = ['USA', 'UK', 'Israel', 'Spain'];
-  const randomIndex = getRandomInteger(0, country.length-1);
+  const randomIndex = getRandomInteger(0, country.length - 1);
   return country[randomIndex];
 };
 
 const generateFilmDirector = () => {
   const country = ['Alef', 'Bet', 'Gimel', 'Dalet'];
-  const randomIndex = getRandomInteger(0, country.length-1);
+  const randomIndex = getRandomInteger(0, country.length - 1);
   return country[randomIndex];
 };
 
@@ -85,7 +90,7 @@ const generateFilmHuman = () => {
 };
 const ageFilmRate = () => {
   const age = ['6+', '14+', '16+', '18+', '21+'];
-  const randomIndex = getRandomInteger(0, age.length-1);
+  const randomIndex = getRandomInteger(0, age.length - 1);
   return age[randomIndex];
 };
 
@@ -96,7 +101,7 @@ const generatePopUpFilm = () => {
     title: generateFilmTitle(),
     originalname: generateFilmTitle(),
     rating: generateFilmRating(),
-    director:generateFilmDirector(),
+    director: generateFilmDirector(),
     actors: generateFilmHuman(),
     screenwriters: generateFilmHuman(),
     country: generateFilmCountry(),

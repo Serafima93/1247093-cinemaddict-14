@@ -16,6 +16,7 @@ const FILMS_MIN_COUNT = 2;
 const FILM_COUNT_PER_STEP = 5;
 
 const COMMENTS_MAX_COUNT = 5;
+const films = new Array(FILMS_MAX_COUNT).fill().map(generateFilm);
 
 
 // создание функции рендеринга
@@ -33,11 +34,46 @@ render(siteUserElement, createUser(), 'beforeend');
 
 // создание меню
 
-render(siteMainElement, createSiteMenuTemplate(), 'beforeend');
+const generateFavoritFilm = () => {
+  const favoritFilmArray = [];
+  for (let i = 0; i < films.length; i++) {
+    if (films[i].isFavorit === true) {
+      favoritFilmArray.push(films[i].isFavorit);
+    }
+  }
+  const favorutNumber = favoritFilmArray.length;
+  return favorutNumber;
+};
+const favoritFilm = generateFavoritFilm();
+
+const generateWatchedFilm = () => {
+  const filmArray = [];
+  for (let i = 0; i < films.length; i++) {
+    if (films[i].isWatched === true) {
+      filmArray.push(films[i].isWatched);
+    }
+  }
+  const number = filmArray.length;
+  return number;
+};
+const watchedFilm = generateWatchedFilm();
+
+const generateFutereFilm = () => {
+  const filmArray = [];
+  for (let i = 0; i < films.length; i++) {
+    if (films[i].futureFilm === true) {
+      filmArray.push(films[i].futureFilm);
+    }
+  }
+  const number = filmArray.length;
+  return number;
+};
+const futureFilm = generateFutereFilm();
+
+render(siteMainElement, createSiteMenuTemplate(favoritFilm,watchedFilm, futureFilm), 'beforeend');
+
 
 // создание списка фильмов
-
-const films = new Array(FILMS_MAX_COUNT).fill().map(generateFilm);
 
 render(siteMainElement, filmListWrap(), 'beforeend');
 
