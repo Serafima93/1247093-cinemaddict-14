@@ -15,15 +15,22 @@ const generateCommentTime = () => {
   return dayjs().add(randomIndex, 'hour').add(randomIndex, 'minute').toDate();
 };
 
+const generateCommentEmoji = () => {
+  const photoArray = ['smile', 'sleeping', 'puke', 'angry'];
+  const randomIndex = getRandomInteger(0, photoArray.length - 1);
+  const imgUrl = `./images/emoji/${photoArray[randomIndex]}.png`;
+  return imgUrl;
+};
+
 
 const generateFilmComment = () => {
   return {
     text: generateFilmDescription(),
+    emoji: generateCommentEmoji(),
     author: generateCommentAuthor(),
     commentDate: generateCommentTime(),
   };
 };
 
-
-export { generateFilmComment};
+export { generateFilmComment };
 
