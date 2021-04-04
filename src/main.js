@@ -115,7 +115,17 @@ for (let i = 0; i < randomCommentsCount.length; i++) {
   render(siteMainElement, createCommentsList(randomCommentsCount[i]), 'beforeend');
 }
 
+// счетчик коментов
+
+const createCommentsNumber = () => {
+  const commentsNumber = randomCommentsCount.length.toString();
+  const number = document.querySelector('.film-details__comments-count');
+  number.textContent = commentsNumber;
+};
+
+createCommentsNumber();
+
 // создание счетчика на футере
 
-render(siteFooterElement, createFooterStatistic(), 'beforeend');
+render(siteFooterElement, createFooterStatistic(FILMS_MAX_COUNT), 'beforeend');
 
