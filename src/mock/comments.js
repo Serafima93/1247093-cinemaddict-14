@@ -11,8 +11,10 @@ const generateCommentAuthor = () => {
 
 
 const generateCommentTime = () => {
-  const randomIndex = getRandomInteger(0, 6);
-  return dayjs().add(randomIndex, 'hour').add(randomIndex, 'minute').toDate();
+  const maxDaysGap = 7;
+  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+  const date = dayjs().add(daysGap, 'day').toDate();
+  return date;
 };
 
 const generateCommentEmoji = () => {

@@ -3,8 +3,13 @@ import dayjs from 'dayjs';
 const createPopUp = (popups) => {
   const { title, description, director, screenwriters, actors, ageRate, poster, rating, productionYear, timeContinue, country } = popups;
 
-  const hours = timeContinue !== null
-    ? dayjs(timeContinue).format('h mm')
+  // const hours = timeContinue !== null
+  //   ? dayjs(timeContinue).format('h mm')
+  //   : '';
+  const {hours, minutes} = timeContinue.$d;
+
+  const date = productionYear !== null
+    ? dayjs(productionYear).format('DD MMMM YYYY')
     : '';
 
   return `
@@ -46,11 +51,11 @@ const createPopUp = (popups) => {
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Release Date</td>
-          <td class="film-details__cell">${productionYear}</td>
+          <td class="film-details__cell">${date}</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Runtime</td>
-          <td class="film-details__cell">${hours}</td>
+          <td class="film-details__cell">${hours} h ${minutes} min</td>
         </tr>
         <tr class="film-details__row">
           <td class="film-details__term">Country</td>
@@ -121,6 +126,10 @@ const createPopUp = (popups) => {
 const createCommentsList = (comment) => {
   const { text, author, commentDate, emoji } = comment;
 
+  const date = commentDate !== null
+    ? dayjs(commentDate).format('YYYY/MM/DD h:mm A')
+    : '';
+
   return `
 <div class="film-details__bottom-container">
   <section class="film-details__comments-wrap">
@@ -133,7 +142,7 @@ const createCommentsList = (comment) => {
           <p class="film-details__comment-text">${text}</p>
           <p class="film-details__comment-info">
             <span class="film-details__comment-author">${author}</span>
-            <span class="film-details__comment-day">${commentDate}</span>
+            <span class="film-details__comment-day">${date}</span>
             <button class="film-details__comment-delete">Delete</button>
           </p>
         </div>

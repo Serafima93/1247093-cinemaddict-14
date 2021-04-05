@@ -1,6 +1,11 @@
 // getRandomInteger - Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
 
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
+
+// dayjs.duration(100);
+
 import { getRandomInteger } from './utils';
 
 const generateFilmPoster = () => {
@@ -39,8 +44,18 @@ const generateFilmYear = () => {
 
 
 const generateFilmTime = () => {
-  const randomIndex = getRandomInteger(0, 6);
-  return dayjs().add(randomIndex, 'hour').add(randomIndex, 'minute').toDate();
+  return dayjs.duration({
+    hours: getRandomInteger(0, 6),
+    minutes: getRandomInteger(1, 59),
+    seconds: getRandomInteger(1, 59),
+  });
+};
+
+const generateFilmYearProduction = () => {
+  const maxDaysGap = 100;
+  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+  const date = dayjs().add(daysGap, 'day').toDate();
+  return date;
 };
 
 const generateGenre = () => {
@@ -105,12 +120,13 @@ const generatePopUpFilm = () => {
     actors: generateFilmHuman(),
     screenwriters: generateFilmHuman(),
     country: generateFilmCountry(),
-    productionYear: generateFilmYear(),
+    productionYear: generateFilmYearProduction(),
     timeContinue: generateFilmTime(),
     genres: generateGenre(),
     description: generateFilmDescription(),
     ageRate: ageFilmRate(),
   };
 };
+
 
 export { getRandomInteger, generateFilm, generatePopUpFilm, generateGenre, generateFilmDescription };
