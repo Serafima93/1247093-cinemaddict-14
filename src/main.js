@@ -70,7 +70,7 @@ const generateFutereFilm = () => {
 };
 const futureFilm = generateFutereFilm();
 
-render(siteMainElement, createSiteMenuTemplate(favoritFilm,watchedFilm, futureFilm), 'beforeend');
+render(siteMainElement, createSiteMenuTemplate(favoritFilm, watchedFilm, futureFilm), 'beforeend');
 
 
 // создание списка фильмов
@@ -98,15 +98,16 @@ if (films.length > FILM_COUNT_PER_STEP) {
       .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
       .forEach((film) => {
         render(filmCardContainers[0], createFilmCard(film), 'beforeend');
-
       });
 
     renderedFilmCount += FILM_COUNT_PER_STEP;
 
-    // не понимаю как сдлеать чтобы удалялась кнопка и перерисовывалась!
-    // showMoreButton.remove();
-    // render(filmCardContainers[0], createShowMoreButton(), 'beforeend');
+    // ПОЧЕМУ ТОЛЬКО 10 отрисовывается а потом тормозит?
 
+    if (renderedFilmCount < films.length ) {
+      showMoreButton.remove();
+      render(filmCardContainers[0], createShowMoreButton(), 'beforeend');
+    }
     if (renderedFilmCount >= films.length) {
       showMoreButton.remove();
     }

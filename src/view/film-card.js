@@ -1,5 +1,3 @@
-// import dayjs from 'dayjs';
-
 export const filmListWrap = () => {
   return `<section class="films">
   <section class="films-list">

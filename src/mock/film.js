@@ -4,8 +4,6 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-// dayjs.duration(100);
-
 import { getRandomInteger } from './utils';
 
 const generateFilmPoster = () => {
@@ -47,7 +45,6 @@ const generateFilmTime = () => {
   return dayjs.duration({
     hours: getRandomInteger(0, 6),
     minutes: getRandomInteger(1, 59),
-    seconds: getRandomInteger(1, 59),
   });
 };
 
@@ -73,7 +70,6 @@ const generateFilm = () => {
     rating: generateFilmRating(),
     productionYear: generateFilmYear(),
     timeContinue: generateFilmTime(),
-    // тут появляются пустоты. Как их избежать?
     genres: generateGenre().splice(1, 1),
     description: generateFilmDescription(),
     commentsCount: 10,
