@@ -8,7 +8,6 @@ import { getRandomInteger } from './utils';
 
 const generateFilmPoster = () => {
   const filmPoster = ['./images/posters/made-for-each-other.png', './images/posters/popeye-meets-sinbad.png', './images/posters/the-dance-of-life.jpg', './images/posters/the-man-with-the-golden-arm.jpg'];
-  // тут хотят чтобы мы обращались к файлам в папке. Но они все с разным урлом. Тут либо php, либо вручную...
   const randomIndex = getRandomInteger(0, filmPoster.length - 1);
   return filmPoster[randomIndex];
 };
@@ -30,16 +29,9 @@ const generateFilmDescription = () => {
   return makeString;
 };
 
-const generateFilmRating = () => {
-  const randomIndex = getRandomInteger(0, 10);
-  return randomIndex;
-};
+const generateFilmRating = () => getRandomInteger(0, 10);
 
-const generateFilmYear = () => {
-  const randomIndex = getRandomInteger(1950, 2020);
-  return randomIndex;
-};
-
+// const generateFilmYear = () => getRandomInteger(1950, 2020);
 
 const generateFilmTime = () => {
   return dayjs.duration({
@@ -49,8 +41,8 @@ const generateFilmTime = () => {
 };
 
 const generateFilmYearProduction = () => {
-  const maxDaysGap = 100;
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+  const maxDaysGap = 10000;
+  const daysGap = getRandomInteger(-maxDaysGap, 2021);
   const date = dayjs().add(daysGap, 'day').toDate();
   return date;
 };
@@ -62,22 +54,6 @@ const generateGenre = () => {
   return randomIndex;
 };
 
-
-const generateFilm = () => {
-  return {
-    poster: generateFilmPoster(),
-    title: generateFilmTitle(),
-    rating: generateFilmRating(),
-    productionYear: generateFilmYear(),
-    timeContinue: generateFilmTime(),
-    genres: generateGenre().splice(1, 1),
-    description: generateFilmDescription(),
-    commentsCount: 10,
-    isFavorit: Boolean(getRandomInteger(0, 1)),
-    isWatched: Boolean(getRandomInteger(0, 1)),
-    futureFilm: Boolean(getRandomInteger(0, 1)),
-  };
-};
 
 //начало работы с поп-апом
 
@@ -105,8 +81,7 @@ const ageFilmRate = () => {
   return age[randomIndex];
 };
 
-
-const generatePopUpFilm = () => {
+const generateFilm = () => {
   return {
     poster: generateFilmPoster(),
     title: generateFilmTitle(),
@@ -121,8 +96,12 @@ const generatePopUpFilm = () => {
     genres: generateGenre(),
     description: generateFilmDescription(),
     ageRate: ageFilmRate(),
+    isFavorit: Boolean(getRandomInteger(0, 1)),
+    isWatched: Boolean(getRandomInteger(0, 1)),
+    futureFilm: Boolean(getRandomInteger(0, 1)),
+    commentsCount: getRandomInteger(1, 20),
   };
 };
 
 
-export { getRandomInteger, generateFilm, generatePopUpFilm, generateGenre, generateFilmDescription };
+export { generateGenre, generateFilmDescription, generateFilm };

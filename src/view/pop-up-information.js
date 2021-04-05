@@ -3,10 +3,7 @@ import dayjs from 'dayjs';
 const createPopUp = (popups) => {
   const { title, description, director, screenwriters, actors, ageRate, poster, rating, productionYear, timeContinue, country } = popups;
 
-  // const hours = timeContinue !== null
-  //   ? dayjs(timeContinue).format('h mm')
-  //   : '';
-  const {hours, minutes} = timeContinue.$d;
+  const { hours, minutes } = timeContinue.$d;
 
   const date = productionYear !== null
     ? dayjs(productionYear).format('DD MMMM YYYY')
@@ -62,7 +59,7 @@ const createPopUp = (popups) => {
           <td class="film-details__cell">${country}</td>
         </tr>
         <tr class="film-details__row">
-          <td class="film-details__term">Genres</td>
+          <td class="film-details__term film-details__term--genres">Genres</td>
           <td class="film-details__cell film-details__cell--genres">
             <span class="film-details__genre">Drama</span>
             <span class="film-details__genre">Film-Noir</span>

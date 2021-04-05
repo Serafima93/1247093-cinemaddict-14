@@ -7,7 +7,7 @@ import { createFooterStatistic } from './view/footer.js';
 
 // моки
 import { getRandomInteger } from './mock/utils.js';
-import { generateFilm, generatePopUpFilm, generateGenre } from './mock/film.js';
+import { generateGenre, generateFilm } from './mock/film.js';
 import { generateFilmComment } from './mock/comments.js';
 
 
@@ -34,41 +34,9 @@ render(siteUserElement, createUser(), 'beforeend');
 
 // создание меню
 
-const generateFavoritFilm = () => {
-  const favoritFilmArray = [];
-  for (let i = 0; i < films.length; i++) {
-    if (films[i].isFavorit === true) {
-      favoritFilmArray.push(films[i].isFavorit);
-    }
-  }
-  const favorutNumber = favoritFilmArray.length;
-  return favorutNumber;
-};
-const favoritFilm = generateFavoritFilm();
-
-const generateWatchedFilm = () => {
-  const filmArray = [];
-  for (let i = 0; i < films.length; i++) {
-    if (films[i].isWatched === true) {
-      filmArray.push(films[i].isWatched);
-    }
-  }
-  const number = filmArray.length;
-  return number;
-};
-const watchedFilm = generateWatchedFilm();
-
-const generateFutereFilm = () => {
-  const filmArray = [];
-  for (let i = 0; i < films.length; i++) {
-    if (films[i].futureFilm === true) {
-      filmArray.push(films[i].futureFilm);
-    }
-  }
-  const number = filmArray.length;
-  return number;
-};
-const futureFilm = generateFutereFilm();
+const favoritFilm = films.filter((film) => film.isFavorit).length;
+const watchedFilm = films.filter((film) => film.isWatched).length;
+const futureFilm = films.filter((film) => film.futureFilm).length;
 
 render(siteMainElement, createSiteMenuTemplate(favoritFilm, watchedFilm, futureFilm), 'beforeend');
 
@@ -104,7 +72,7 @@ if (films.length > FILM_COUNT_PER_STEP) {
 
     // ПОЧЕМУ ТОЛЬКО 10 отрисовывается а потом тормозит?
 
-    if (renderedFilmCount < films.length ) {
+    if (renderedFilmCount < films.length) {
       showMoreButton.remove();
       render(filmCardContainers[0], createShowMoreButton(), 'beforeend');
     }
@@ -122,15 +90,16 @@ for (let i = 0; i < FILMS_MIN_COUNT; i++) {
 }
 
 
-// создаю попап. Почему нужен цикл? и почему так createPopUp(popups) - не работает?
-const popups = new Array(1).fill().map(generatePopUpFilm);
+// создаю попап
+
 for (let i = 0; i < 1; i++) {
-  render(siteMainElement, createPopUp(popups[i]), 'beforeend');
+  render(siteMainElement, createPopUp(films[0]), 'beforeend');
 }
 
 // создаю функцию жанра фильмов. можно ли оставить так? Или как ее вынести?
 const createFilmGenres = () => {
   const genreArray = generateGenre();
+  const genreTitle = document.querySelector('.film-details__term--genres');
   const genres = document.querySelector('.film-details__cell--genres');
   genres.innerHTML = '';
   genreArray.forEach((item) => {
@@ -138,6 +107,8 @@ const createFilmGenres = () => {
     newElement.classList.add('film-details__genre');
     newElement.textContent = item;
     genres.appendChild(newElement);
+
+    if (genreArray.length <2){genreTitle.textContent = 'Genre';}
   });
 };
 createFilmGenres();

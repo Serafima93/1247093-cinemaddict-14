@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const filmListWrap = () => {
   return `<section class="films">
   <section class="films-list">
@@ -17,21 +19,27 @@ export const filmListWrap = () => {
 };
 
 export const createFilmCard = (film) => {
-  const { title, description, genres, poster, rating, productionYear, timeContinue } = film;
+  const { title, description, genres, poster, rating, productionYear, timeContinue, commentsCount } = film;
 
-  const {hours, minutes} = timeContinue.$d;
+  const mainGenre = genres.splice(0, 1);
+
+  const { hours, minutes } = timeContinue.$d;
+
+  const date = productionYear !== null
+    ? dayjs(productionYear).format('YYYY')
+    : '';
 
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>
   <p class="film-card__rating">${rating}</p>
   <p class="film-card__info">
-    <span class="film-card__year">${productionYear}</span>
+    <span class="film-card__year">${date}</span>
     <span class="film-card__duration">${hours} h ${minutes} min</span>
-    <span class="film-card__genre">${genres}</span>
+    <span class="film-card__genre">${mainGenre}</span>
   </p>
   <img src=${poster} alt="" class="film-card__poster">
   <p class="film-card__description">${description}</p>
-  <a class="film-card__comments">5 comments</a>
+  <a class="film-card__comments">${commentsCount} comments</a>
   <div class="film-card__controls">
     <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
     <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
