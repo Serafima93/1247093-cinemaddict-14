@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
 const createPopUp = (popups) => {
-  const { title, description, director, screenwriters, actors, ageRate, poster, rating, productionYear, timeContinue, country } = popups;
+  const { title, description, director, commentsCount, screenwriters, actors, ageRate, poster, rating, productionYear, timeContinue, country } = popups;
 
   const { hours, minutes } = timeContinue.$d;
 
@@ -83,7 +83,7 @@ const createPopUp = (popups) => {
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">0</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
 
         <ul class="film-details__comments-list"></ul>
 

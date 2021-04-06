@@ -6,7 +6,6 @@ import { createPopUp, createCommentsList } from './view/pop-up-information.js';
 import { createFooterStatistic } from './view/footer.js';
 
 // моки
-import { getRandomInteger } from './mock/utils.js';
 import { generateGenre, generateFilm } from './mock/film.js';
 import { generateFilmComment } from './mock/comments.js';
 
@@ -15,7 +14,6 @@ const FILMS_MAX_COUNT = 20;
 const FILMS_MIN_COUNT = 2;
 const FILM_COUNT_PER_STEP = 5;
 
-const COMMENTS_MAX_COUNT = 5;
 const films = new Array(FILMS_MAX_COUNT).fill().map(generateFilm);
 
 
@@ -38,31 +36,19 @@ const favoritFilm = films.filter((film) => film.isFavorit).length;
 const watchedFilm = films.filter((film) => film.isWatched).length;
 const futureFilm = films.filter((film) => film.futureFilm).length;
 
-// самые рейтинговые фильмы
 
-// const generateRatedFilms = () => {
-//   const filmArray = [];
-//   for (let i = 0; i < films.length; i++) {
-//     filmArray.push(films[i].rating);
-//   }
-//   const sortArray = filmArray.sort((a, b) => b - a);
-//   return {
-//     first: sortArray[0],
-//     second: sortArray[1],
-//   };
-// };
+/* функция для самых рейтинговых фильмов  */
 
 const generateRatedFilms = () => {
   return films.slice().sort((a, b) => b.rating - a.rating).slice(0, 2);
 };
-
 const rateFilm = generateRatedFilms();
 
+/* самые коментированные фильмы */
 
 const generateCommentFilms = () => {
   return films.slice().sort((a, b) => b.commentsCount - a.commentsCount).slice(0, 2);
 };
-
 const commentsFilm = generateCommentFilms();
 
 
@@ -101,8 +87,8 @@ if (films.length > FILM_COUNT_PER_STEP) {
   });
 }
 
-
 // дополнительные фильмы
+
 for (let i = 0; i < FILMS_MIN_COUNT; i++) {
   render(filmCardContainers[1], createFilmCard(rateFilm[i]));
   render(filmCardContainers[2], createFilmCard(commentsFilm[i]));
@@ -133,22 +119,11 @@ createFilmGenres();
 
 // создаю комменты
 
-const comments = new Array(COMMENTS_MAX_COUNT).fill().map(generateFilmComment);
-const randomCommentsCount = comments.slice(getRandomInteger(0, COMMENTS_MAX_COUNT));
+const comments = new Array(films[0].commentsCount).fill().map(generateFilmComment);
 
-for (let i = 0; i < randomCommentsCount.length; i++) {
-  render(siteMainElement, createCommentsList(randomCommentsCount[i]));
+for (let i = 0; i < comments.length; i++) {
+  render(siteMainElement, createCommentsList(comments[i]));
 }
-
-// счетчик коментов
-
-const createCommentsNumber = () => {
-  const commentsNumber = randomCommentsCount.length.toString();
-  const number = document.querySelector('.film-details__comments-count');
-  number.textContent = commentsNumber;
-};
-
-createCommentsNumber();
 
 // создание счетчика на футере
 
