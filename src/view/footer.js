@@ -1,4 +1,1 @@
-export const createFooterStatistic = (number) => {
-  return `
-  <p>${number} movies inside</p>`;
-};
+export const createFooterStatistic = (number) => `<p>${number} movies inside</p>`;

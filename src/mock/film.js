@@ -31,7 +31,6 @@ const generateFilmDescription = () => {
 
 const generateFilmRating = () => getRandomInteger(0, 10);
 
-// const generateFilmYear = () => getRandomInteger(1950, 2020);
 
 const generateFilmTime = () => {
   return dayjs.duration({
@@ -81,27 +80,25 @@ const ageFilmRate = () => {
   return age[randomIndex];
 };
 
-const generateFilm = () => {
-  return {
-    poster: generateFilmPoster(),
-    title: generateFilmTitle(),
-    originalname: generateFilmTitle(),
-    rating: generateFilmRating(),
-    director: generateFilmDirector(),
-    actors: generateFilmHuman(),
-    screenwriters: generateFilmHuman(),
-    country: generateFilmCountry(),
-    productionYear: generateFilmYearProduction(),
-    timeContinue: generateFilmTime(),
-    genres: generateGenre(),
-    description: generateFilmDescription(),
-    ageRate: ageFilmRate(),
-    isFavorit: Boolean(getRandomInteger(0, 1)),
-    isWatched: Boolean(getRandomInteger(0, 1)),
-    futureFilm: Boolean(getRandomInteger(0, 1)),
-    commentsCount: getRandomInteger(1, 20),
-  };
-};
+const generateFilm = () => ({
+  poster: generateFilmPoster(),
+  title: generateFilmTitle(),
+  originalname: generateFilmTitle(),
+  rating: generateFilmRating(),
+  director: generateFilmDirector(),
+  actors: generateFilmHuman(),
+  screenwriters: generateFilmHuman(),
+  country: generateFilmCountry(),
+  productionYear: generateFilmYearProduction(),
+  timeContinue: generateFilmTime(),
+  genres: generateGenre(),
+  description: generateFilmDescription(),
+  ageRate: ageFilmRate(),
+  isFavorit: Boolean(getRandomInteger(0, 1)),
+  isWatched: Boolean(getRandomInteger(0, 1)),
+  futureFilm: Boolean(getRandomInteger(0, 1)),
+  commentsCount: getRandomInteger(1, 20),
+});
 
 
 export { generateGenre, generateFilmDescription, generateFilm };
