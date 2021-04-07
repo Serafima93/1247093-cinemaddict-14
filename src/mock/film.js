@@ -5,6 +5,8 @@ import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
 import { getRandomInteger } from './utils';
+import { generateFilmComment } from './comments';
+
 
 const generateFilmPoster = () => {
   const filmPoster = ['./images/posters/made-for-each-other.png', './images/posters/popeye-meets-sinbad.png', './images/posters/the-dance-of-life.jpg', './images/posters/the-man-with-the-golden-arm.jpg'];
@@ -47,12 +49,11 @@ const generateFilmYearProduction = () => {
 };
 
 const generateGenre = () => {
-  const genre = ['action', 'drama', 'SF', 'romance'];
+  const genre = ['action', 'drama', 'SF', 'romance', 'art', 'sport', 'musical'];
 
   const randomIndex = genre.slice(getRandomInteger(0, genre.length - 1));
   return randomIndex;
 };
-
 
 //начало работы с поп-апом
 
@@ -80,6 +81,10 @@ const ageFilmRate = () => {
   return age[randomIndex];
 };
 
+// const commentsArray = new Array(getRandomInteger(1, 20)).fill().map(generateFilmComment);
+
+// console.log(commentsArray);
+
 const generateFilm = () => ({
   poster: generateFilmPoster(),
   title: generateFilmTitle(),
@@ -97,8 +102,8 @@ const generateFilm = () => ({
   isFavorit: Boolean(getRandomInteger(0, 1)),
   isWatched: Boolean(getRandomInteger(0, 1)),
   futureFilm: Boolean(getRandomInteger(0, 1)),
-  commentsCount: getRandomInteger(1, 20),
+  // commentsCount: commentsArray,
+  commentsCount: new Array(getRandomInteger(1, 20)).fill().map(generateFilmComment),
 });
 
-
-export { generateGenre, generateFilmDescription, generateFilm };
+export { generateFilmDescription, generateFilm };

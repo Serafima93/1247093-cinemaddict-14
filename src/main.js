@@ -6,8 +6,9 @@ import { createPopUp, createCommentsList } from './view/pop-up-information.js';
 import { createFooterStatistic } from './view/footer.js';
 
 // моки
-import { generateGenre, generateFilm } from './mock/film.js';
-import { generateFilmComment } from './mock/comments.js';
+import { generateFilm } from './mock/film.js';
+// import { generateFilmComment } from './mock/comments.js';
+// import { getRandomInteger } from './mock/utils.js';
 
 
 const FILMS_MAX_COUNT = 20;
@@ -15,7 +16,6 @@ const FILMS_MIN_COUNT = 2;
 const FILM_COUNT_PER_STEP = 5;
 
 const films = new Array(FILMS_MAX_COUNT).fill().map(generateFilm);
-
 
 // создание функции рендеринга
 const render = (container, template, place = 'beforeend') => {
@@ -65,7 +65,6 @@ for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
 }
 
 // кнопка
-
 if (films.length > FILM_COUNT_PER_STEP) {
 
   let renderedFilmCount = FILM_COUNT_PER_STEP;
@@ -88,7 +87,6 @@ if (films.length > FILM_COUNT_PER_STEP) {
 }
 
 // дополнительные фильмы
-
 for (let i = 0; i < FILMS_MIN_COUNT; i++) {
   render(filmCardContainers[1], createFilmCard(rateFilm[i]));
   render(filmCardContainers[2], createFilmCard(commentsFilm[i]));
@@ -99,9 +97,8 @@ for (let i = 0; i < 1; i++) {
 }
 
 // создаю функцию жанра фильмов
-
 const createFilmGenres = () => {
-  const genreArray = generateGenre();
+  const genreArray = films[0].genres;
   const genreTitle = document.querySelector('.film-details__term--genres');
   const genres = document.querySelector('.film-details__cell--genres');
   genres.innerHTML = '';
@@ -119,10 +116,11 @@ createFilmGenres();
 
 // создаю комменты
 
-const comments = new Array(films[0].commentsCount).fill().map(generateFilmComment);
+const comments = films[0];
+const commentsArray = comments.commentsCount;
 
-for (let i = 0; i < comments.length; i++) {
-  render(siteMainElement, createCommentsList(comments[i]));
+for (let i = 0; i < commentsArray.length; i++) {
+  render(siteMainElement, createCommentsList(commentsArray[i]));
 }
 
 // создание счетчика на футере

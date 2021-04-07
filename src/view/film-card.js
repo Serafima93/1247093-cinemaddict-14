@@ -21,13 +21,15 @@ export const filmListWrap = () => {
 export const createFilmCard = (film) => {
   const { title, description, genres, poster, rating, productionYear, timeContinue, commentsCount } = film;
 
-  const mainGenre = genres.splice(0, 1);
+  const mainGenre = genres.slice(0, 1);
 
   const { hours, minutes } = timeContinue.$d;
 
   const date = productionYear !== null
     ? dayjs(productionYear).format('YYYY')
     : '';
+
+  const commentLength = commentsCount.length;
 
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>
@@ -39,7 +41,7 @@ export const createFilmCard = (film) => {
   </p>
   <img src=${poster} alt="" class="film-card__poster">
   <p class="film-card__description">${description}</p>
-  <a class="film-card__comments">${commentsCount} comments</a>
+  <a class="film-card__comments">${commentLength} comments</a>
   <div class="film-card__controls">
     <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
     <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
