@@ -84,7 +84,7 @@ const ageFilmRate = () => {
 const generateFilm = () => ({
   poster: generateFilmPoster(),
   title: generateFilmTitle(),
-  originalname: generateFilmTitle(),
+  originalName: generateFilmTitle(),
   rating: generateFilmRating(),
   director: generateFilmDirector(),
   actors: generateFilmHuman(),
