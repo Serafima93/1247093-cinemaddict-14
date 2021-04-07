@@ -40,14 +40,14 @@ const futureFilm = films.filter((film) => film.futureFilm).length;
 /* функция для самых рейтинговых фильмов  */
 
 const generateRatedFilms = () => {
-  return films.slice().sort((a, b) => b.rating - a.rating).slice(0, 2);
+  return films.slice().sort((a, b) => b.rating - a.rating);
 };
 const rateFilm = generateRatedFilms();
 
 /* самые коментированные фильмы */
 
 const generateCommentFilms = () => {
-  return films.slice().sort((a, b) => b.commentsCount - a.commentsCount).slice(0, 2);
+  return rateFilm.slice().sort((a, b) => b.commentsCount.length - a.commentsCount.length);
 };
 const commentsFilm = generateCommentFilms();
 

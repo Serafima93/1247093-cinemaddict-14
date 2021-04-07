@@ -83,8 +83,6 @@ const ageFilmRate = () => {
 
 // const commentsArray = new Array(getRandomInteger(1, 20)).fill().map(generateFilmComment);
 
-// console.log(commentsArray);
-
 const generateFilm = () => ({
   poster: generateFilmPoster(),
   title: generateFilmTitle(),
