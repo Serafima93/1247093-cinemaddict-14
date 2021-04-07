@@ -19,7 +19,7 @@ export const filmListWrap = () => {
 };
 
 export const createFilmCard = (film) => {
-  const { title, description, genres, poster, rating, productionYear, timeContinue, commentsCount } = film;
+  const { title, description, genres, poster, rating, productionYear, timeContinue, comments } = film;
 
   const mainGenre = genres.slice(0, 1);
 
@@ -29,7 +29,7 @@ export const createFilmCard = (film) => {
     ? dayjs(productionYear).format('YYYY')
     : '';
 
-  const commentLength = commentsCount.length;
+  const commentLength = comments.length;
 
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>

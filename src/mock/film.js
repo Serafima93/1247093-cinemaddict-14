@@ -81,8 +81,6 @@ const ageFilmRate = () => {
   return age[randomIndex];
 };
 
-// const commentsArray = new Array(getRandomInteger(1, 20)).fill().map(generateFilmComment);
-
 const generateFilm = () => ({
   poster: generateFilmPoster(),
   title: generateFilmTitle(),
@@ -100,8 +98,7 @@ const generateFilm = () => ({
   isFavorit: Boolean(getRandomInteger(0, 1)),
   isWatched: Boolean(getRandomInteger(0, 1)),
   futureFilm: Boolean(getRandomInteger(0, 1)),
-  // commentsCount: commentsArray,
-  commentsCount: new Array(getRandomInteger(1, 20)).fill().map(generateFilmComment),
+  comments: new Array(getRandomInteger(1, 20)).fill().map(generateFilmComment),
 });
 
 export { generateFilmDescription, generateFilm };
