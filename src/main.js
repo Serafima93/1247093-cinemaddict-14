@@ -25,7 +25,7 @@ const siteFooterElement = document.querySelector('.footer__statistics');
 
 // создание юзера
 
-// renderElement(siteUserElement, new UserProfileView().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteUserElement, new UserProfileView().getElement(), RenderPosition.BEFOREEND);
 
 
 // создание меню
