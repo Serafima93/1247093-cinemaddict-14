@@ -1,6 +1,6 @@
 import { createSiteMenuTemplate } from './view/menu.js';
 import { UserProfileView } from './view/user.js';
-import { createFilmListWrap} from './view/film-list-section';
+import { createFilmListWrap } from './view/film-list-section';
 
 import { createFilmCard } from './view/film-card.js';
 import { createShowMoreButton } from './view/button-show-more.js';
@@ -87,6 +87,47 @@ for (let i = 0; i < FILMS_MIN_COUNT; i++) {
 }
 
 renderTemplate(siteMainElement, createPopUp(films[0]));
+
+
+// const renderPopUpChange = (taskListElement, task) => {
+//   const cardsComponent = new TaskView(task);
+//   const popupComponent = new TaskEditView(task);
+//   const bodyHtml = document.querySelector('body');
+//   bodyHtml.classList.add('hide-overflow');
+
+
+//   const replaceCardToForm = () => {
+//     siteMainElement.replaceChild(popupComponent.getElement(), cardsComponent.getElement());
+//   };
+
+
+//   const replaceFormToCard = () => {
+//     siteMainElement.replaceChild(cardsComponent.getElement(), popupComponent.getElement());
+//   };
+
+//   const onEscKeyDown = (evt) => {
+//     if (evt.key === 'Escape' || evt.key === 'Esc') {
+//       evt.preventDefault();
+//       replaceFormToCard();
+//       document.removeEventListener('keydown', onEscKeyDown);
+//     }
+//   };
+
+//   cardsComponent.getElement().querySelector('.film-card').addEventListener('click', () => {
+//     replaceCardToForm();
+//     document.removeEventListener('keydown', onEscKeyDown);
+//   });
+
+//   popupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('submit', (evt) => {
+//     evt.preventDefault();
+//     replaceFormToCard();
+//     document.removeEventListener('keydown', onEscKeyDown);
+//     bodyHtml.classList.remove('hide-overflow');
+
+//   });
+
+//   renderElement(taskListElement, cardsComponent.getElement(), RenderPosition.BEFOREEND);
+// };
 
 
 // создание счетчика на футере
