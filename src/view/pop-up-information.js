@@ -155,7 +155,6 @@ ${genres}
         <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
-
 ${commentsResult}
 </form>
   ` ;
@@ -163,3 +162,26 @@ ${commentsResult}
 
 
 export { createPopUp };
+
+// export default class PopUp {
+//   constructor(films) {
+//     this._filters = films;
+//     this._element = null;
+//   }
+
+//   getTemplate() {
+//     return createPopUp(this._filters);
+//   }
+
+//   getElement() {
+//     if (!this._element) {
+//       this._element = createSiteElement(this.getTemplate());
+//     }
+
+//     return this._element;
+//   }
+
+//   removeElement() {
+//     this._element = null;
+//   }
+// }

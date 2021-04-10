@@ -17,4 +17,30 @@ const createSiteMenuTemplate = (count, watched, futureFilm) => {
   </ul>
   </section>`;
 };
+
 export { createSiteMenuTemplate };
+
+// export default class SiteMenu {
+//   constructor(favoritFilm, watchedFilm, futureFilm) {
+//     this._count = favoritFilm;
+//     this._watched = watchedFilm;
+//     this._future = futureFilm;
+//     this._element = null;
+//   }
+
+//   getTemplate() {
+//     return createSiteMenuTemplate(this._count, this._watched, this._future);
+//   }
+
+//   getElement() {
+//     if (!this._element) {
+//       this._element = createSiteElement(this.getTemplate());
+//     }
+
+//     return this._element;
+//   }
+
+//   removeElement() {
+//     this._element = null;
+//   }
+// }

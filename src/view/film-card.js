@@ -1,23 +1,5 @@
 import dayjs from 'dayjs';
 
-export const filmListWrap = () => {
-  return `<section class="films">
-  <section class="films-list">
-    <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
-    <div class="films-list__container">
-    </div>
-  </section>
-  <section class="films-list films-list--extra">
-    <h2 class="films-list__title">Top rated</h2>
-    <div class="films-list__container"></div>
-  </section>
-  <section class="films-list films-list--extra">
-    <h2 class="films-list__title">Most commented</h2>
-    <div class="films-list__container"></div>
-  </section>
-  </section>`;
-};
-
 export const createFilmCard = (film) => {
   const { title, description, genres, poster, rating, productionYear, timeContinue, comments } = film;
 
@@ -49,3 +31,26 @@ export const createFilmCard = (film) => {
   </div>
 </article>`;
 };
+
+// export default class FilmCard {
+//   constructor(films) {
+//     this._filters = films;
+//     this._element = null;
+//   }
+
+//   getTemplate() {
+//     return createFilmCard(this._filters);
+//   }
+
+//   getElement() {
+//     if (!this._element) {
+//       this._element = createSiteElement(this.getTemplate());
+//     }
+
+//     return this._element;
+//   }
+
+//   removeElement() {
+//     this._element = null;
+//   }
+// }
