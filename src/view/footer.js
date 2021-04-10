@@ -1,25 +1,28 @@
-export const createFooterStatistic = (number) => `<p>${number} movies inside</p>`;
+import { createSiteElement } from '../utils.js';
 
-// export default class FooterStatistic {
-//   constructor(FILMS_MAX_COUNT) {
-//     this._filters = FILMS_MAX_COUNT;
-//     this._element = null;
-//   }
+const createFooterStatistic = (number) => `<p>${number} movies inside</p>`;
 
-//   getTemplate() {
-//     return createFooterStatistic(this._filters);
-//   }
+export default class FooterStatistic {
+  constructor(FILMS_MAX_COUNT) {
+    this._filters = FILMS_MAX_COUNT;
+    this._element = null;
+  }
 
-//   getElement() {
-//     if (!this._element) {
-//       this._element = createSiteElement(this.getTemplate());
-//     }
+  getTemplate() {
+    return createFooterStatistic(this._filters);
+  }
 
-//     return this._element;
-//   }
+  getElement() {
+    if (!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
 
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
+    return this._element;
+  }
 
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export { FooterStatistic };

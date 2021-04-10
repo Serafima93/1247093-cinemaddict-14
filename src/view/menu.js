@@ -1,5 +1,8 @@
+import { createSiteElement } from '../utils.js';
+
 const createSiteMenuTemplate = (count, watched, futureFilm) => {
   return `
+  <div>
   <nav class="main-navigation">
     <div class="main-navigation__items">
       <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
@@ -15,32 +18,33 @@ const createSiteMenuTemplate = (count, watched, futureFilm) => {
   <li><a href="#" class="sort__button">Sort by date</a></li>
   <li><a href="#" class="sort__button">Sort by rating</a></li>
   </ul>
-  </section>`;
+  </section> </div>`;
 };
 
-export { createSiteMenuTemplate };
 
-// export default class SiteMenu {
-//   constructor(favoritFilm, watchedFilm, futureFilm) {
-//     this._count = favoritFilm;
-//     this._watched = watchedFilm;
-//     this._future = futureFilm;
-//     this._element = null;
-//   }
+class SiteMenu {
+  constructor(favoritFilm, watchedFilm, futureFilm) {
+    this._count = favoritFilm;
+    this._watched = watchedFilm;
+    this._future = futureFilm;
+    this._element = null;
+  }
 
-//   getTemplate() {
-//     return createSiteMenuTemplate(this._count, this._watched, this._future);
-//   }
+  getTemplate() {
+    return createSiteMenuTemplate(this._count, this._watched, this._future);
+  }
 
-//   getElement() {
-//     if (!this._element) {
-//       this._element = createSiteElement(this.getTemplate());
-//     }
+  getElement() {
+    if (!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
 
-//     return this._element;
-//   }
+    return this._element;
+  }
 
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export { SiteMenu };

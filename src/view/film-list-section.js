@@ -1,4 +1,6 @@
-export const createFilmListWrap = () => {
+import { createSiteElement } from '../utils.js';
+
+const createFilmListWrap = () => {
   return `<section class="films">
   <section class="films-list">
     <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
@@ -16,24 +18,26 @@ export const createFilmListWrap = () => {
   </section>`;
 };
 
-// export default class FilmList {
-//   constructor() {
-//     this._element = null;
-//   }
+class FilmList {
+  constructor() {
+    this._element = null;
+  }
 
-//   getTemplate() {
-//     return createFilmListWrap();
-//   }
+  getTemplate() {
+    return createFilmListWrap();
+  }
 
-//   getElement() {
-//     if (!this._element) {
-//       this._element = createSiteElement(this.getTemplate());
-//     }
+  getElement() {
+    if (!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
 
-//     return this._element;
-//   }
+    return this._element;
+  }
 
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export { FilmList };

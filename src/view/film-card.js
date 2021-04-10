@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
+import { createSiteElement } from '../utils.js';
 
-export const createFilmCard = (film) => {
+
+const createFilmCard = (film) => {
   const { title, description, genres, poster, rating, productionYear, timeContinue, comments } = film;
 
   const mainGenre = genres.slice(0, 1);
@@ -32,25 +34,27 @@ export const createFilmCard = (film) => {
 </article>`;
 };
 
-// export default class FilmCard {
-//   constructor(films) {
-//     this._filters = films;
-//     this._element = null;
-//   }
+class FilmCard {
+  constructor(films) {
+    this._filters = films;
+    this._element = null;
+  }
 
-//   getTemplate() {
-//     return createFilmCard(this._filters);
-//   }
+  getTemplate() {
+    return createFilmCard(this._filters);
+  }
 
-//   getElement() {
-//     if (!this._element) {
-//       this._element = createSiteElement(this.getTemplate());
-//     }
+  getElement() {
+    if (!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
 
-//     return this._element;
-//   }
+    return this._element;
+  }
 
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export { FilmCard };

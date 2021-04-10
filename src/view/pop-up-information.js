@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import { createSiteElement } from '../utils.js';
+
 
 const createCommentsList = (comments) => {
   const htmlPart = comments.map(createComment).join('');
@@ -161,27 +163,27 @@ ${commentsResult}
 };
 
 
-export { createPopUp };
+export default class PopUp {
+  constructor(films) {
+    this._filters = films;
+    this._element = null;
+  }
 
-// export default class PopUp {
-//   constructor(films) {
-//     this._filters = films;
-//     this._element = null;
-//   }
+  getTemplate() {
+    return createPopUp(this._filters);
+  }
 
-//   getTemplate() {
-//     return createPopUp(this._filters);
-//   }
+  getElement() {
+    if (!this._element) {
+      this._element = createSiteElement(this.getTemplate());
+    }
 
-//   getElement() {
-//     if (!this._element) {
-//       this._element = createSiteElement(this.getTemplate());
-//     }
+    return this._element;
+  }
 
-//     return this._element;
-//   }
+  removeElement() {
+    this._element = null;
+  }
+}
 
-//   removeElement() {
-//     this._element = null;
-//   }
-// }
+export { PopUp };

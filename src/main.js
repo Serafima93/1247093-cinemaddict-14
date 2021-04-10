@@ -1,16 +1,14 @@
-import { createSiteMenuTemplate } from './view/menu.js';
-import { UserProfileView } from './view/user.js';
-import { createFilmListWrap } from './view/film-list-section';
+import { SiteMenu } from './view/menu.js';
+import { UserProfile } from './view/user.js';
+import { FilmList } from './view/film-list-section';
+import { FilmCard } from './view/film-card.js';
+import { ShowMoreButton } from './view/button-show-more.js';
+import { PopUp } from './view/pop-up-information.js';
+import { FooterStatistic } from './view/footer.js';
+import { renderElement, RenderPosition } from './utils.js';
 
-import { createFilmCard } from './view/film-card.js';
-import { createShowMoreButton } from './view/button-show-more.js';
-import { createPopUp } from './view/pop-up-information.js';
-import { createFooterStatistic } from './view/footer.js';
-
-// моки
+/* моки */
 import { generateFilm } from './mock/film.js';
-
-import { renderTemplate, renderElement, RenderPosition } from './utils.js';
 
 const FILMS_MAX_COUNT = 20;
 const FILMS_MIN_COUNT = 2;
@@ -18,17 +16,15 @@ const FILM_COUNT_PER_STEP = 5;
 
 const films = new Array(FILMS_MAX_COUNT).fill().map(generateFilm);
 
-
 const siteUserElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer__statistics');
 
-// создание юзера
+/* создание юзера */
 
-renderElement(siteUserElement, new UserProfileView().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteUserElement, new UserProfile().getElement(), RenderPosition.BEFOREEND);
 
-
-// создание меню
+/* создание меню */
 
 const favoritFilm = films.filter((film) => film.isFavorit).length;
 const watchedFilm = films.filter((film) => film.isWatched).length;
@@ -43,27 +39,30 @@ const rateFilm = films.slice().sort((a, b) => b.rating - a.rating);
 
 const commentsFilm = films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
+/* меню фильмы */
 
-renderTemplate(siteMainElement, createSiteMenuTemplate(favoritFilm, watchedFilm, futureFilm));
+renderElement(siteMainElement, new SiteMenu(favoritFilm, watchedFilm, futureFilm).getElement(), RenderPosition.BEFOREEND);
 
-// создание списка фильмов
+/* создание списка фильмов */
 
-renderTemplate(siteMainElement, createFilmListWrap());
+renderElement(siteMainElement, new FilmList().getElement(), RenderPosition.BEFOREEND);
 
 const filmCardContainers = document.querySelectorAll('.films-list__container');
 
 for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
-  renderTemplate(filmCardContainers[0], createFilmCard(films[i]));
+  renderElement(filmCardContainers[0], new FilmCard(films[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
-// кнопка
+/* кнопка */
+
 if (films.length > FILM_COUNT_PER_STEP) {
 
   let renderedFilmCount = FILM_COUNT_PER_STEP;
 
   const buttonPlace = siteMainElement.querySelector('.films-list');
 
-  renderTemplate(buttonPlace, createShowMoreButton());
+  renderElement(buttonPlace, new ShowMoreButton().getElement(), RenderPosition.BEFOREEND);
+
 
   const showMoreButton = siteMainElement.querySelector('.films-list__show-more');
 
@@ -71,8 +70,7 @@ if (films.length > FILM_COUNT_PER_STEP) {
     evt.preventDefault();
     films
       .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => renderTemplate(filmCardContainers[0], createFilmCard(film)));
-
+      .forEach((film) => renderElement(filmCardContainers[0], new FilmCard(film).getElement(), RenderPosition.BEFOREEND));
     renderedFilmCount += FILM_COUNT_PER_STEP;
     if (renderedFilmCount >= films.length) {
       showMoreButton.remove();
@@ -80,14 +78,15 @@ if (films.length > FILM_COUNT_PER_STEP) {
   });
 }
 
-// дополнительные фильмы
+/* дополнительные фильмы */
+
 for (let i = 0; i < FILMS_MIN_COUNT; i++) {
-  renderTemplate(filmCardContainers[1], createFilmCard(rateFilm[i]));
-  renderTemplate(filmCardContainers[2], createFilmCard(commentsFilm[i]));
+  renderElement(filmCardContainers[1], new FilmCard(rateFilm[i]).getElement(), RenderPosition.BEFOREEND);
+  renderElement(filmCardContainers[2], new FilmCard(commentsFilm[i]).getElement(), RenderPosition.BEFOREEND);
+
 }
 
-renderTemplate(siteMainElement, createPopUp(films[0]));
-
+renderElement(siteMainElement, new PopUp(films[0]).getElement(), RenderPosition.BEFOREEND);
 
 // const renderPopUpChange = (taskListElement, task) => {
 //   const cardsComponent = new TaskView(task);
@@ -129,8 +128,6 @@ renderTemplate(siteMainElement, createPopUp(films[0]));
 //   renderElement(taskListElement, cardsComponent.getElement(), RenderPosition.BEFOREEND);
 // };
 
+/* создание счетчика на футере */
 
-// создание счетчика на футере
-
-renderTemplate(siteFooterElement, createFooterStatistic(FILMS_MAX_COUNT));
-
+renderElement(siteFooterElement, new FooterStatistic(FILMS_MAX_COUNT).getElement(), RenderPosition.BEFOREEND);
