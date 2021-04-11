@@ -17,6 +17,7 @@ const FILM_COUNT_PER_STEP = 5;
 
 const films = new Array(FILMS_MAX_COUNT).fill().map(generateFilm);
 
+const siteBodyElement = document.querySelector('body');
 const siteUserElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer__statistics');
@@ -63,9 +64,9 @@ const removePopup = (element1,element2) => {
 
 const makePopUp = (film) => {
   const popupElement = new PopUp(film);
-  renderElement(siteMainElement, popupElement.getElement(), RenderPosition.BEFOREEND);
+  renderElement(siteBodyElement, popupElement.getElement(), RenderPosition.BEFOREEND);
 
-  const popupPlace = siteMainElement.querySelector('.film-details__top-container');
+  const popupPlace = siteBodyElement.querySelector('.film-details__top-container');
   popupPlace.classList.add('visually-hidden');
 
   const closeButton = popupElement.getElement().querySelector('.film-details__close-btn');
