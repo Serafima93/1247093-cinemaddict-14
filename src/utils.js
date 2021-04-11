@@ -20,7 +20,6 @@ const createSiteElement = (template) => {
 
   return newElement.lastChild;
 };
-// ПОЧЕМУ СРАБОТАЛ LASTCHILD но не сработал FIRST?
 
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
 const getRandomInteger = (a = 0, b = 1) => {
