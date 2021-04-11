@@ -59,7 +59,7 @@ const filmCardContainers = document.querySelectorAll('.films-list__container');
 const removePopup = (element1,element2) => {
   element1.getElement().remove();
   element1.removeElement();
-  element2.classList.remove('visually-hidden');
+  element2.classList.remove('hide-overflow');
 };
 
 const makePopUp = (film) => {
@@ -67,7 +67,7 @@ const makePopUp = (film) => {
   renderElement(siteBodyElement, popupElement.getElement(), RenderPosition.BEFOREEND);
 
   const popupPlace = siteBodyElement.querySelector('.film-details__top-container');
-  popupPlace.classList.add('visually-hidden');
+  popupPlace.classList.add('hide-overflow');
 
   const closeButton = popupElement.getElement().querySelector('.film-details__close-btn');
 
