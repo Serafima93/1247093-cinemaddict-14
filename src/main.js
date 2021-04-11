@@ -22,6 +22,7 @@ const siteUserElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer__statistics');
 
+
 /* создание юзера */
 renderElement(siteUserElement, new UserProfile().getElement(), RenderPosition.BEFOREEND);
 
@@ -56,7 +57,7 @@ if (FILMS_MAX_COUNT === 0) {
 const filmCardContainers = document.querySelectorAll('.films-list__container');
 
 /* поп-ап */
-const removePopup = (element1,element2) => {
+const removePopup = (element1, element2) => {
   element1.getElement().remove();
   element1.removeElement();
   element2.classList.remove('hide-overflow');
@@ -64,8 +65,9 @@ const removePopup = (element1,element2) => {
 
 const makePopUp = (film) => {
   const popupElement = new PopUp(film);
-  renderElement(siteBodyElement, popupElement.getElement(), RenderPosition.BEFOREEND);
+  // renderElement(siteBodyElement, popupElement.getElement(), RenderPosition.BEFOREEND);
 
+  siteBodyElement.appendChild(popupElement.getElement());
   const popupPlace = siteBodyElement.querySelector('.film-details__top-container');
   popupPlace.classList.add('hide-overflow');
 
