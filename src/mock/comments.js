@@ -1,5 +1,5 @@
 import { generateFilmDescription } from './film.js';
-import { getRandomInteger } from './utils.js';
+import { getRandomInteger } from '../utils.js';
 
 import dayjs from 'dayjs';
 

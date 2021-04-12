@@ -1,10 +1,8 @@
-// getRandomInteger - Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
-
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-import { getRandomInteger } from './utils';
+import { getRandomInteger } from '../utils.js';
 import { generateFilmComment } from './comments';
 
 
