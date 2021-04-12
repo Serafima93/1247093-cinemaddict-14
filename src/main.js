@@ -57,26 +57,23 @@ if (FILMS_MAX_COUNT === 0) {
 const filmCardContainers = document.querySelectorAll('.films-list__container');
 
 /* поп-ап */
-const removePopup = (element1, element2) => {
-  element1.getElement().remove();
-  element1.removeElement();
-  element2.classList.remove('hide-overflow');
-};
 
 const makePopUp = (film) => {
   const popupElement = new PopUp(film);
-  // renderElement(siteBodyElement, popupElement.getElement(), RenderPosition.BEFOREEND);
-
   siteBodyElement.appendChild(popupElement.getElement());
   const popupPlace = siteBodyElement.querySelector('.film-details__top-container');
   popupPlace.classList.add('hide-overflow');
 
   const closeButton = popupElement.getElement().querySelector('.film-details__close-btn');
 
+  const removePopup = () => {
+    siteBodyElement.removeChild(popupElement.getElement());
+    popupPlace.classList.remove('hide-overflow');
+  };
 
   const onClickCloseButton = (evt) => {
     evt.preventDefault();
-    removePopup(popupElement, popupPlace);
+    removePopup();
 
     closeButton.removeEventListener('click', onClickCloseButton);
   };
@@ -84,7 +81,7 @@ const makePopUp = (film) => {
   const onEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      removePopup(popupElement, popupPlace);
+      removePopup();
 
       document.removeEventListener('keydown', onEscKeyDown);
     }

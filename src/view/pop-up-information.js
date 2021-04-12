@@ -168,6 +168,7 @@ const createPopUp = (films) => {
     </div>
     ${commentsResult}
   </form>
+
   ` ;
 };
 
