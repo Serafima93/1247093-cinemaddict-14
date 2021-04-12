@@ -57,9 +57,16 @@ if (FILMS_MAX_COUNT === 0) {
 const filmCardContainers = document.querySelectorAll('.films-list__container');
 
 /* поп-ап */
+// const removePopup = (element1, element2) => {
+//   element1.getElement().remove();
+//   element1.removeElement();
+//   element2.classList.remove('hide-overflow');
+// };
+
 
 const makePopUp = (film) => {
   const popupElement = new PopUp(film);
+
   siteBodyElement.appendChild(popupElement.getElement());
   const popupPlace = siteBodyElement.querySelector('.film-details__top-container');
   popupPlace.classList.add('hide-overflow');
