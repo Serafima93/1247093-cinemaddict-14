@@ -3,13 +3,16 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-const renderElement = (container, element, place) => {
+const render = (container, element, place = RenderPosition.BEFOREEND) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
       break;
     case RenderPosition.BEFOREEND:
       container.append(element);
+      break;
+    default:
+      alert ('Wrong value in render function') ;
       break;
   }
 };
@@ -31,6 +34,6 @@ const getRandomInteger = (a = 0, b = 1) => {
 export {
   getRandomInteger,
   RenderPosition,
-  renderElement,
+  render,
   createSiteElement
 };
