@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import { createSiteElement } from '../utils.js';
-
+import { Abstract } from './abstract.js';
 
 const createCommentsList = (comments) => {
   const htmlPart = comments.map(createComment).join('');
@@ -156,26 +155,15 @@ const createPopUp = (films) => {
 };
 
 
-export default class PopUp {
+class PopUp extends Abstract {
   constructor(films) {
+    super();
     this._filters = films;
     this._element = null;
   }
 
   getTemplate() {
     return createPopUp(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

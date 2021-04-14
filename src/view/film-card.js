@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import { createSiteElement } from '../utils.js';
-
+import { Abstract } from './abstract.js';
 
 const createFilmCard = (film) => {
   const { title, description, genres, poster, rating, productionYear, timeContinue, comments } = film;
@@ -34,27 +33,16 @@ const createFilmCard = (film) => {
 </article>`;
 };
 
-class FilmCard {
+class FilmCard extends Abstract {
   constructor(films) {
+    super();
     this._filters = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmCard(this._filters);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
 
 export { FilmCard };

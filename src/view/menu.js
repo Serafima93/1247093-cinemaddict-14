@@ -1,4 +1,4 @@
-import { createSiteElement } from '../utils.js';
+import { Abstract } from './abstract.js';
 
 const createSiteMenuTemplate = (count, watched, futureFilm) => {
   return ` <div> <nav class="main-navigation">
@@ -18,29 +18,16 @@ const createSiteMenuTemplate = (count, watched, futureFilm) => {
   </section> </div>`;
 };
 
-
-class SiteMenu {
+class SiteMenu extends Abstract {
   constructor(favoritFilm, watchedFilm, futureFilm) {
+    super();
     this._count = favoritFilm;
     this._watched = watchedFilm;
     this._future = futureFilm;
-    this._element = null;
   }
 
   getTemplate() {
     return createSiteMenuTemplate(this._count, this._watched, this._future);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
