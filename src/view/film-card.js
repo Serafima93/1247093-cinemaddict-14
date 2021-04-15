@@ -51,9 +51,8 @@ class FilmCard extends Abstract {
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.film-card__poster').addEventListener('click', this._editClickHandler);
-    //   this.getElement().querySelector('.film-card__title').addEventListener('click', this._editClickHandler);
-    //   this.getElement().querySelector('.film-card__comments').addEventListener('click', this._editClickHandler);
-    //
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._editClickHandler);
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._editClickHandler);
   }
 }
 
