@@ -5,8 +5,9 @@ import { FilmCard } from './view/film-card.js';
 import { ShowMoreButton } from './view/button-show-more.js';
 import { PopUp } from './view/pop-up-information.js';
 import { FooterStatistic } from './view/footer.js';
-import { render } from './utils.js';
 import { EmptyWrap } from './view/empty';
+
+import { render, replaceChild, remove } from './utils/utils-render.js';
 
 /* моки */
 import { generateFilm } from './mock/film.js';
@@ -24,7 +25,7 @@ const siteFooterElement = document.querySelector('.footer__statistics');
 
 
 /* создание юзера */
-render(siteUserElement, new UserProfile().getElement());
+render(siteUserElement, new UserProfile());
 
 /* создание меню */
 const favoritFilm = films.filter((film) => film.isFavorit).length;
@@ -39,18 +40,18 @@ const rateFilm = films.slice().sort((a, b) => b.rating - a.rating);
 const commentsFilm = films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
 /* меню фильмы */
-render(siteMainElement, new SiteMenu(favoritFilm, watchedFilm, futureFilm).getElement());
+render(siteMainElement, new SiteMenu(favoritFilm, watchedFilm, futureFilm));
 /* создание счетчика на футере */
-render(siteFooterElement, new FooterStatistic(FILMS_MAX_COUNT).getElement());
+render(siteFooterElement, new FooterStatistic(FILMS_MAX_COUNT));
 
 /* создание списка фильмов */
 if (FILMS_MAX_COUNT === 0) {
-  render(siteMainElement, new EmptyWrap().getElement());
+  render(siteMainElement, new EmptyWrap());
   const filmRemove = document.querySelector('.sort');
   filmRemove.classList.add('visually-hidden');
 
 } else {
-  render(siteMainElement, new FilmList().getElement());
+  render(siteMainElement, new FilmList());
 }
 
 const filmCardContainers = document.querySelectorAll('.films-list__container');
@@ -60,12 +61,14 @@ const filmCardContainers = document.querySelectorAll('.films-list__container');
 const makePopUp = (film) => {
   const popupElement = new PopUp(film);
 
-  siteBodyElement.appendChild(popupElement.getElement());
+  // siteBodyElement.appendChild(popupElement.getElement());
+  replaceChild(siteBodyElement, popupElement, true);
+
   const popupPlace = siteBodyElement.querySelector('.film-details__top-container');
   popupPlace.classList.add('hide-overflow');
 
   const removePopup = () => {
-    siteBodyElement.removeChild(popupElement.getElement());
+    replaceChild(siteBodyElement, popupElement, false);
     popupPlace.classList.remove('hide-overflow');
   };
 
@@ -85,7 +88,7 @@ const makePopUp = (film) => {
 
 const addListenersOnFilm = (film, filmPopUp) => {
 
-  film.setEditClickHandler(()  => {
+  film.setEditClickHandler(() => {
     makePopUp(filmPopUp);
   });
 };
@@ -93,7 +96,7 @@ const addListenersOnFilm = (film, filmPopUp) => {
 
 for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
   const film = new FilmCard(films[i]);
-  render(filmCardContainers[0], film.getElement());
+  render(filmCardContainers[0], film);
   addListenersOnFilm(film, films[i]);
 }
 
@@ -104,20 +107,19 @@ const buttonPlace = siteMainElement.querySelector('.films-list');
 if (films.length > FILM_COUNT_PER_STEP) {
   let renderedFilmCount = FILM_COUNT_PER_STEP;
   const loadMoreButtonComponent = new ShowMoreButton();
-  render(buttonPlace, loadMoreButtonComponent.getElement());
+  render(buttonPlace, loadMoreButtonComponent);
 
   loadMoreButtonComponent.setClickHandler(() => {
     films
       .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
       .forEach((film) => {
         const newFilm = new FilmCard(film);
-        render(filmCardContainers[0], newFilm.getElement());
+        render(filmCardContainers[0], newFilm);
         addListenersOnFilm(newFilm, film);
       });
     renderedFilmCount += FILM_COUNT_PER_STEP;
     if (renderedFilmCount >= films.length) {
-      loadMoreButtonComponent.getElement().remove();
-      loadMoreButtonComponent.removeElement();
+      remove(loadMoreButtonComponent);
     }
   });
 }
@@ -128,8 +130,8 @@ for (let i = 0; i < FILMS_MIN_COUNT; i++) {
   const filmRate = new FilmCard(rateFilm[i]);
   const filmComments = new FilmCard(commentsFilm[i]);
 
-  render(filmCardContainers[1], filmRate.getElement());
-  render(filmCardContainers[2], filmComments.getElement());
+  render(filmCardContainers[1], filmRate);
+  render(filmCardContainers[2], filmComments);
 
   addListenersOnFilm(filmRate, rateFilm[i]);
   addListenersOnFilm(filmComments, commentsFilm[i]);
