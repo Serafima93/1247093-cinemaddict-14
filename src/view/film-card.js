@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import { createSiteElement } from '../utils.js';
-
+import { Abstract } from './abstract.js';
 
 const createFilmCard = (film) => {
   const { title, description, genres, poster, rating, productionYear, timeContinue, comments } = film;
@@ -34,26 +33,26 @@ const createFilmCard = (film) => {
 </article>`;
 };
 
-class FilmCard {
+class FilmCard extends Abstract {
   constructor(films) {
+    super();
     this._filters = films;
-    this._element = null;
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCard(this._filters);
   }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._editClickHandler);
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._editClickHandler);
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._editClickHandler);
   }
 }
 

@@ -1,4 +1,4 @@
-import { createSiteElement } from '../utils.js';
+import { Abstract } from './abstract.js';
 
 const createFilmListWrap = () => {
   return `<section class="films">
@@ -18,25 +18,10 @@ const createFilmListWrap = () => {
   </section>`;
 };
 
-class FilmList {
-  constructor() {
-    this._element = null;
-  }
+class FilmList extends Abstract {
 
   getTemplate() {
     return createFilmListWrap();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createSiteElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

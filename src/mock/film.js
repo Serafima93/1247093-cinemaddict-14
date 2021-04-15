@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-import { getRandomInteger } from '../utils.js';
+import { getRandomInteger } from '../utils/utils-common';
 import { generateFilmComment } from './comments';
 
 
