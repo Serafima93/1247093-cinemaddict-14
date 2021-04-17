@@ -6,6 +6,8 @@ import { ShowMoreButton } from './view/button-show-more.js';
 import { PopUp } from './view/pop-up-information.js';
 import { FooterStatistic } from './view/footer.js';
 import { EmptyWrap } from './view/empty';
+// import { FilmBoard } from './presenter/board.js';
+
 
 import { render, replaceChild, remove } from './utils/utils-render.js';
 
@@ -23,11 +25,12 @@ const siteUserElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer__statistics');
 
+// const boardPresenter = new FilmBoard(siteMainElement);
 
 /* создание юзера */
 render(siteUserElement, new UserProfile());
 
-/* создание меню */
+/* создание данных для меню */
 const favoritFilm = films.filter((film) => film.isFavorit).length;
 const watchedFilm = films.filter((film) => film.isWatched).length;
 const futureFilm = films.filter((film) => film.futureFilm).length;
@@ -39,8 +42,10 @@ const rateFilm = films.slice().sort((a, b) => b.rating - a.rating);
 /* самые коментированные фильмы */
 const commentsFilm = films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
-/* меню фильмы */
+/* отрисовка меню фильмов */
+
 render(siteMainElement, new SiteMenu(favoritFilm, watchedFilm, futureFilm));
+
 /* создание счетчика на футере */
 render(siteFooterElement, new FooterStatistic(FILMS_MAX_COUNT));
 
@@ -61,7 +66,6 @@ const filmCardContainers = document.querySelectorAll('.films-list__container');
 const makePopUp = (film) => {
   const popupElement = new PopUp(film);
 
-  // siteBodyElement.appendChild(popupElement.getElement());
   replaceChild(siteBodyElement, popupElement, true);
 
   const popupPlace = siteBodyElement.querySelector('.film-details__top-container');
@@ -93,7 +97,7 @@ const addListenersOnFilm = (film, filmPopUp) => {
   });
 };
 
-
+/* отрисовываю все карточки */
 for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
   const film = new FilmCard(films[i]);
   render(filmCardContainers[0], film);

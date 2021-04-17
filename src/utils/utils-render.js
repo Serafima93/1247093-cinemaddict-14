@@ -22,8 +22,7 @@ const render = (container, child, place = RenderPosition.BEFOREEND) => {
       container.append(child);
       break;
     default:
-      alert('Wrong value in render function');
-      break;
+      throw new Error('Wrong value in render function');
   }
 };
 
@@ -37,8 +36,7 @@ const replaceChild = (parent, newChild, status) => {
   }
   if (status === true) {
     return parent.appendChild(newChild);
-  } else { parent.removeChild(newChild);}
-
+  } else { parent.removeChild(newChild); }
 };
 
 
