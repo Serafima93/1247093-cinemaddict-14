@@ -1,16 +1,14 @@
-// import { SiteMenu } from '../view/menu.js';
-// import { UserProfile } from '../view/user.js';
+import { SiteMenu } from '../view/menu.js';
 import { FilmList } from '../view/film-list-section';
 import { EmptyWrap } from '../view/empty';
 
 import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
-import { FooterStatistic } from '../view/footer.js';
 import { render, replaceChild, remove } from '../utils/utils-render.js';
 
 const FILMS_MAX_COUNT = 20;
-// const FILMS_MIN_COUNT = 2;
+const FILMS_MIN_COUNT = 2;
 const FILM_COUNT_PER_STEP = 5;
 
 
@@ -19,21 +17,16 @@ class FilmBoard {
     this._boardContainer = boardContainer;
 
     // то что не меняется?
-    this._boardComponent = new FilmList();  // но как действовать если тут параметры?
+    this._boardComponent = new FilmList(); // главный контейнер
     // this._sortComponent = new Sort(); - надо создать
-    // this._filmUserComponent = new UserProfile(); - это из хедера
     this._noFilmsComponent = new EmptyWrap();
   }
 
   init(films) {
     this._films = films.slice();
 
-    // в классе рисуем контейнер
-    render(this._boardContainer, this._boardComponent);
-    // в контейнере рисуем меню и юзера.
-    // Но как это сделать если юзер находится в хедере, а меню передаются параметры?
-    render(this._boardComponent, this._filmUserComponent);
-
+    // в классе рисуем контейнер или как?
+    // render(this._boardContainer, this._boardComponent);
 
     this._renderFilmBoard();
   }
@@ -42,24 +35,24 @@ class FilmBoard {
     // Метод для рендеринга сортировки
   }
 
-  // _renderMenu() {
-  //   const favoritFilm = this._films.filter((film) => film.isFavorit).length;
-  //   const watchedFilm = this._films.filter((film) => film.isWatched).length;
-  //   const futureFilm = this._films.filter((film) => film.futureFilm).length;
+  _renderMenu() {
+    const favoritFilm = this._films.filter((film) => film.isFavorit).length;
+    const watchedFilm = this._films.filter((film) => film.isWatched).length;
+    const futureFilm = this._films.filter((film) => film.futureFilm).length;
 
-  //   render(this._boardComponent, new SiteMenu(favoritFilm, watchedFilm, futureFilm));
-  // }
+    render(this._boardContainer, new SiteMenu(favoritFilm, watchedFilm, futureFilm));
+  }
 
   _renderPopUp(film) {
     const popupElement = new PopUp(film);
 
-    replaceChild(this._boardComponent, popupElement, true);
+    replaceChild(this._boardContainer, popupElement, true);
 
-    const popupPlace = this._boardComponent.querySelector('.film-details__top-container');
+    const popupPlace = this._boardContainer.querySelector('.film-details__top-container');
     popupPlace.classList.add('hide-overflow');
 
     const removePopup = () => {
-      replaceChild(this._boardComponent, popupElement, false);
+      replaceChild(this._boardContainer, popupElement, false);
       popupPlace.classList.remove('hide-overflow');
     };
 
@@ -78,11 +71,9 @@ class FilmBoard {
   }
 
   _renderFilmListner(film, filmPopUp) {
-    // const addListenersOnFilm = (film, filmPopUp) => {
     film.setEditClickHandler(() => {
       this._renderPopUp(filmPopUp);
     });
-    // };
   }
 
   _renderFilms() {
@@ -92,7 +83,6 @@ class FilmBoard {
     for (let i = 0; i < Math.min(this._films.length, FILM_COUNT_PER_STEP); i++) {
       const film = new FilmCard(this._films[i]);
       render(filmCardContainers[0], film); // что делать вот с такими кусками кода?
-      // addListenersOnFilm(film, this._films[i]);
       this._renderFilmListner(film, this._films[i]);
     }
   }
@@ -102,23 +92,24 @@ class FilmBoard {
   }
 
   _renderLoadMoreButton() {
-    const buttonPlace = this._boardComponent.querySelector('.films-list');
+    const filmCardContainers = document.querySelectorAll('.films-list__container');
+
+    const buttonPlace = this._boardContainer.querySelector('.films-list');
 
     let renderedFilmCount = FILM_COUNT_PER_STEP;
     const loadMoreButtonComponent = new ShowMoreButton();
     render(buttonPlace, loadMoreButtonComponent);
 
     loadMoreButtonComponent.setClickHandler(() => {
-      this._boardFilms
+      this._films
         .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
         .forEach((film) => {
           const newFilm = new FilmCard(film);
-          // render(filmCardContainers[0], newFilm);
+          render(filmCardContainers[0], newFilm);
           this._renderFilmListner(newFilm, film);
-          // addListenersOnFilm(newFilm, film);
         });
       renderedFilmCount += FILM_COUNT_PER_STEP;
-      if (renderedFilmCount >= this._boardFilms.length) {
+      if (renderedFilmCount >= this._films.length) {
         remove(loadMoreButtonComponent);
       }
     });
@@ -127,16 +118,34 @@ class FilmBoard {
   _renderFilmList() {
     this._renderFilms();
 
-    if (this._boardFilms.length > FILM_COUNT_PER_STEP) {
+    if (this._films.length > FILM_COUNT_PER_STEP) {
       this._renderLoadMoreButton();
     }
   }
 
-  _renderFilmFooter() {
-    render(this._boardComponent, new FooterStatistic(FILMS_MAX_COUNT));
+  _renderFilmAdditionalList() {
+    const filmCardContainers = document.querySelectorAll('.films-list__container');
+    /* функция для самых рейтинговых фильмов  */
+
+    const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
+
+    /* самые коментированные фильмы */
+    const commentsFilm = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
+
+    for (let i = 0; i < FILMS_MIN_COUNT; i++) {
+      const filmRate = new FilmCard(rateFilm[i]);
+      const filmComments = new FilmCard(commentsFilm[i]);
+
+      render(filmCardContainers[1], filmRate);
+      render(filmCardContainers[2], filmComments);
+      this._renderFilmListner(filmRate, rateFilm[i]);
+      this._renderFilmListner(filmComments, commentsFilm[i]);
+    }
   }
 
   _renderFilmBoard() {
+    this._renderMenu(); // запуск меню. Тут передается постоянно с полными данными
+
     if (FILMS_MAX_COUNT === 0) {
       this._renderNoFilms();
       const filmRemove = document.querySelector('.sort');
@@ -146,10 +155,9 @@ class FilmBoard {
       this._renderSort(); // запускаем несделанную пока сортировку
       render(this._boardContainer, this._boardComponent); // отрисовываем сам контейнер new FilmList()
     }
-    // this. _renderMenu();
-    // this._renderFilmList();
-    this._renderFilmFooter();
+    this._renderFilmList();
+    this._renderFilmAdditionalList();
+
   }
 }
-
 export { FilmBoard };
