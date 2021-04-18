@@ -26,6 +26,7 @@ class FilmBoard {
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this); // не поняла что делает
   }
 
+
   init(films) {
     this._films = films.slice();
 
