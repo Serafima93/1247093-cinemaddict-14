@@ -18,14 +18,17 @@ class FilmBoard {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
 
-    // то что не меняется?
+    this._filmPresenter = {};
+    // this._filmPresenter[this._films[0].id]; - фильмы по айди - но у меня сразу все фильмы. Вставляем в цикл?
+
+
+    // добавляем то что не меняется?
     this._boardComponent = new FilmList(); // главный контейнер
-    // this._sortComponent = new Sort(); - надо создать
     this._noFilmsComponent = new EmptyWrap();
     this._sortComponents = new Sort();
+    this._loadMoreButtonComponent = new ShowMoreButton();
 
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    this._loadMoreButtonComponent = new ShowMoreButton();
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this); // не поняла что делает
   }
 
@@ -90,13 +93,23 @@ class FilmBoard {
     });
   }
 
+  _clearTaskList() { // мне нужно вызвать его в начале цикла следующего метода при клике?
+    Object
+      .values(this._boardComponent) //
+      .forEach((presenter) => presenter.remove(this._boardComponent)); //   подходит ли мне? у меня же уже список
+    this._filmPresenter = {};
+    this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    remove(this._loadMoreButtonComponent);
+  }
+
   _renderFilms() {
     const filmCardContainers = document.querySelectorAll('.films-list__container');
 
     // Метод для рендеринга N-фильмов за раз
     for (let i = 0; i < Math.min(this._films.length, FILM_COUNT_PER_STEP); i++) {
       const film = new FilmCard(this._films[i]);
-      render(filmCardContainers[0], film); // что делать вот с такими кусками кода? у меня происходит повторение поиска
+      render(filmCardContainers[0], film);
+      // что делать вот с такими кусками кода - filmCardContainers[0]? у меня происходит повторение поиска
       this._renderFilmListner(film, this._films[i]);
     }
   }
