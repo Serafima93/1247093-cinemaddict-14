@@ -20,6 +20,10 @@ class FilmBoard {
     this._boardComponent = new FilmList(); // главный контейнер
     // this._sortComponent = new Sort(); - надо создать
     this._noFilmsComponent = new EmptyWrap();
+
+    this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    this._loadMoreButtonComponent = new ShowMoreButton();
+    this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this); // не поняла что делает
   }
 
   init(films) {
@@ -82,7 +86,7 @@ class FilmBoard {
     // Метод для рендеринга N-фильмов за раз
     for (let i = 0; i < Math.min(this._films.length, FILM_COUNT_PER_STEP); i++) {
       const film = new FilmCard(this._films[i]);
-      render(filmCardContainers[0], film); // что делать вот с такими кусками кода?
+      render(filmCardContainers[0], film); // что делать вот с такими кусками кода? у меня происходит повторение поиска
       this._renderFilmListner(film, this._films[i]);
     }
   }
@@ -91,28 +95,25 @@ class FilmBoard {
     render(this._boardContainer, this._noFilmsComponent);
   }
 
-  _renderLoadMoreButton() {
+  _handleLoadMoreButtonClick() {
     const filmCardContainers = document.querySelectorAll('.films-list__container');
+    this._films
+      .slice(this._renderedFilmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP)
+      .forEach((film) => {
+        const newFilm = new FilmCard(film);
+        render(filmCardContainers[0], newFilm);
+        this._renderFilmListner(newFilm, film);
+      });
+    this._renderedFilmCount += FILM_COUNT_PER_STEP;
+    if (this._renderedFilmCount >= this._films.length) {
+      remove(this._loadMoreButtonComponent);
+    }
+  }
 
+  _renderLoadMoreButton() {
     const buttonPlace = this._boardContainer.querySelector('.films-list');
-
-    let renderedFilmCount = FILM_COUNT_PER_STEP;
-    const loadMoreButtonComponent = new ShowMoreButton();
-    render(buttonPlace, loadMoreButtonComponent);
-
-    loadMoreButtonComponent.setClickHandler(() => {
-      this._films
-        .slice(renderedFilmCount, renderedFilmCount + FILM_COUNT_PER_STEP)
-        .forEach((film) => {
-          const newFilm = new FilmCard(film);
-          render(filmCardContainers[0], newFilm);
-          this._renderFilmListner(newFilm, film);
-        });
-      renderedFilmCount += FILM_COUNT_PER_STEP;
-      if (renderedFilmCount >= this._films.length) {
-        remove(loadMoreButtonComponent);
-      }
-    });
+    render(buttonPlace, this._loadMoreButtonComponent);
+    this._loadMoreButtonComponent.setClickHandler(this._handleLoadMoreButtonClick);
   }
 
   _renderFilmList() {
