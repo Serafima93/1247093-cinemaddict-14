@@ -1,6 +1,8 @@
 import { SiteMenu } from '../view/menu.js';
 import { FilmList } from '../view/film-list-section';
 import { EmptyWrap } from '../view/empty';
+import { Sort } from '../view/sort';
+
 
 import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
@@ -20,6 +22,7 @@ class FilmBoard {
     this._boardComponent = new FilmList(); // главный контейнер
     // this._sortComponent = new Sort(); - надо создать
     this._noFilmsComponent = new EmptyWrap();
+    this._sortComponents = new Sort();
 
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._loadMoreButtonComponent = new ShowMoreButton();
@@ -38,6 +41,12 @@ class FilmBoard {
 
   _renderSort() {
     // Метод для рендеринга сортировки
+    render(this._boardContainer, this._sortComponents);
+  }
+  _renderListnerforUserDesisions() {
+    // const futureButton = this.getElement().querySelector('.film-card__controls-item--add-to-watchlist');
+    // const watchedButton = this.getElement().querySelector('.film-card__controls-item--mark-as-watched');
+    // const favoriteButton = this.getElement().querySelector('.film-card__controls-item--favorite');
   }
 
   _renderMenu() {
@@ -154,7 +163,7 @@ class FilmBoard {
       filmRemove.classList.add('visually-hidden');
 
     } else {
-      this._renderSort(); // запускаем несделанную пока сортировку
+      this._renderSort();
       render(this._boardContainer, this._boardComponent); // отрисовываем сам контейнер new FilmList()
     }
     this._renderFilmList();

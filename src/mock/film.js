@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import { nanoid } from 'nanoid';
 dayjs.extend(duration);
 
 import { getRandomInteger } from '../utils/utils-common';
@@ -80,6 +81,7 @@ const ageFilmRate = () => {
 };
 
 const generateFilm = () => ({
+  id: nanoid(),
   poster: generateFilmPoster(),
   title: generateFilmTitle(),
   originalName: generateFilmTitle(),
