@@ -13,7 +13,6 @@ const FILMS_MAX_COUNT = 20;
 const FILMS_MIN_COUNT = 2;
 const FILM_COUNT_PER_STEP = 5;
 
-
 class FilmBoard {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
@@ -21,15 +20,14 @@ class FilmBoard {
     this._filmPresenter = {};
     // this._filmPresenter[this._films[0].id]; - фильмы по айди - но у меня сразу все фильмы. Вставляем в цикл?
 
+    this._boardComponent = new FilmList();
 
-    // добавляем то что не меняется?
-    this._boardComponent = new FilmList(); // главный контейнер
     this._noFilmsComponent = new EmptyWrap();
     this._sortComponents = new Sort();
     this._loadMoreButtonComponent = new ShowMoreButton();
 
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this); // не поняла что делает
+    this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
   }
 
 
@@ -46,18 +44,44 @@ class FilmBoard {
     // Метод для рендеринга сортировки
     render(this._boardContainer, this._sortComponents);
   }
-  _renderListnerforUserDesisions() {
-    // const futureButton = this.getElement().querySelector('.film-card__controls-item--add-to-watchlist');
-    // const watchedButton = this.getElement().querySelector('.film-card__controls-item--mark-as-watched');
-    // const favoriteButton = this.getElement().querySelector('.film-card__controls-item--favorite');
-  }
 
-  _renderMenu() {
-    const favoritFilm = this._films.filter((film) => film.isFavorit).length;
-    const watchedFilm = this._films.filter((film) => film.isWatched).length;
-    const futureFilm = this._films.filter((film) => film.futureFilm).length;
+  _renderMenu(films) {
+    const favoritFilm = films.filter((film) => film.isFavorit).length;
+    const watchedFilm = films.filter((film) => film.isWatched).length;
+    const futureFilm = films.filter((film) => film.futureFilm).length;
 
     render(this._boardContainer, new SiteMenu(favoritFilm, watchedFilm, futureFilm));
+  }
+
+
+  _clearTaskList() { // мне нужно вызвать его в начале цикла следующего метода при клике?
+    Object
+      .values(this._boardComponent) //
+      .forEach((presenter) => presenter.remove(this._boardComponent)); //   подходит ли мне? у меня же уже список
+    this._filmPresenter = {};
+    this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    remove(this._loadMoreButtonComponent);
+  }
+
+  _buttonsClickHandler(filmView) {
+    filmView.favoriteClickHandler(() => {
+      // const filmIdHistoryNumber = filmView._film.id;
+      filmView._film.isFavorit = true; // создаю на фильме флаг - верно
+    });
+  }
+
+  _renderFilms(container, films, count) {
+    for (let i = 0; i < this._films.slice(0, count).length; i++) {
+      const filmView = new FilmCard(films[i]);
+      render(container, filmView);
+      this._renderFilmListner(filmView, films[i]);
+      this._buttonsClickHandler(filmView);
+    }
+  }
+
+  _renderFilmsMain() {
+    const filmCardContainers = this._boardContainer.querySelector('#main-container');
+    this._renderFilms(filmCardContainers, this._films, FILM_COUNT_PER_STEP);
   }
 
   _renderPopUp(film) {
@@ -93,39 +117,16 @@ class FilmBoard {
     });
   }
 
-  _clearTaskList() { // мне нужно вызвать его в начале цикла следующего метода при клике?
-    Object
-      .values(this._boardComponent) //
-      .forEach((presenter) => presenter.remove(this._boardComponent)); //   подходит ли мне? у меня же уже список
-    this._filmPresenter = {};
-    this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    remove(this._loadMoreButtonComponent);
-  }
-
-  _renderFilms() {
-    const filmCardContainers = document.querySelectorAll('.films-list__container');
-
-    // Метод для рендеринга N-фильмов за раз
-    for (let i = 0; i < Math.min(this._films.length, FILM_COUNT_PER_STEP); i++) {
-      const film = new FilmCard(this._films[i]);
-      render(filmCardContainers[0], film);
-      // что делать вот с такими кусками кода - filmCardContainers[0]? у меня происходит повторение поиска
-      this._renderFilmListner(film, this._films[i]);
-    }
-  }
-
-  _renderNoFilms() {
-    render(this._boardContainer, this._noFilmsComponent);
-  }
-
   _handleLoadMoreButtonClick() {
-    const filmCardContainers = document.querySelectorAll('.films-list__container');
+    const filmCardContainers = this._boardContainer.querySelector('#main-container');
     this._films
       .slice(this._renderedFilmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP)
       .forEach((film) => {
         const newFilm = new FilmCard(film);
-        render(filmCardContainers[0], newFilm);
+        render(filmCardContainers, newFilm);
         this._renderFilmListner(newFilm, film);
+
+        this._buttonsClickHandler(newFilm);
       });
     this._renderedFilmCount += FILM_COUNT_PER_STEP;
     if (this._renderedFilmCount >= this._films.length) {
@@ -140,7 +141,7 @@ class FilmBoard {
   }
 
   _renderFilmList() {
-    this._renderFilms();
+    this._renderFilmsMain();
 
     if (this._films.length > FILM_COUNT_PER_STEP) {
       this._renderLoadMoreButton();
@@ -148,31 +149,46 @@ class FilmBoard {
   }
 
   _renderFilmAdditionalList() {
-    const filmCardContainers = document.querySelectorAll('.films-list__container');
+
+    const filmCardContainerMostRate = this._boardContainer.querySelector('#rating');
+    const filmCardContainerMostComments = this._boardContainer.querySelector('#comments');
+
     /* функция для самых рейтинговых фильмов  */
-
     const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
-
     /* самые коментированные фильмы */
     const commentsFilm = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
-    for (let i = 0; i < FILMS_MIN_COUNT; i++) {
-      const filmRate = new FilmCard(rateFilm[i]);
-      const filmComments = new FilmCard(commentsFilm[i]);
+    this._renderFilms(filmCardContainerMostRate, rateFilm, FILMS_MIN_COUNT);
+    this._renderFilms(filmCardContainerMostComments, commentsFilm, FILMS_MIN_COUNT);
 
-      render(filmCardContainers[1], filmRate);
-      render(filmCardContainers[2], filmComments);
-      this._renderFilmListner(filmRate, rateFilm[i]);
-      this._renderFilmListner(filmComments, commentsFilm[i]);
-    }
+    // for (let i = 0; i < FILMS_MIN_COUNT; i++) {
+    //   const filmRate = new FilmCard(rateFilm[i]);
+    //   const filmComments = new FilmCard(commentsFilm[i]);
+
+    //   render(filmCardContainerMostRate, filmRate);
+    //   render(filmCardContainerMostComments, filmComments);
+    //   this._renderFilmListner(filmRate, rateFilm[i]);
+    //   this._renderFilmListner(filmComments, commentsFilm[i]);
+
+    //   this._buttonsClickHandler(filmRate);
+    //   this._buttonsClickHandler(filmComments); // добавить удаление полных дублей - отмена нажатия дважды
+    // }
+  }
+
+  _renderNoFilms() {
+    render(this._boardContainer, this._noFilmsComponent);
   }
 
   _renderFilmBoard() {
-    this._renderMenu(); // запуск меню. Тут передается постоянно с полными данными
+    // render(this._boardContainer,this._boardComponent);
+    // рендер сортировки. Рендер меню. Рендер самих фильмов. Рендер мини контейнеров.
+
+
+    this._renderMenu(this._films); // запуск меню. Тут передается постоянно с полными данными
 
     if (FILMS_MAX_COUNT === 0) {
       this._renderNoFilms();
-      const filmRemove = document.querySelector('.sort');
+      const filmRemove = this._boardContainer.querySelector('.sort');
       filmRemove.classList.add('visually-hidden');
 
     } else {

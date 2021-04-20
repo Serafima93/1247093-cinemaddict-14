@@ -15,14 +15,12 @@ const render = (container, child, place = RenderPosition.BEFOREEND) => {
   }
 
   switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(child);
-      break;
     case RenderPosition.BEFOREEND:
       container.append(child);
       break;
     default:
-      throw new Error('Wrong value in render function');
+      container.prepend(child);
+      break;
   }
 };
 
