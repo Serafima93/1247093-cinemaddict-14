@@ -1,4 +1,4 @@
-import { SiteMenu } from '../view/menu.js';
+// import { SiteMenu } from '../view/menu.js';
 import { FilmList } from '../view/film-list-section';
 import { EmptyWrap } from '../view/empty';
 import { Sort } from '../view/sort';
@@ -10,9 +10,16 @@ import { PopUp } from '../view/pop-up-information.js';
 import { render, replaceChild, remove } from '../utils/utils-render.js';
 // import { updateItem } from '../utils/utils-common.js';
 
-// const FILMS_MAX_COUNT = 20;
+import { FooterStatisticPresenter } from '../presenter/footer.js';
+import { UserProfilePresenter } from '../presenter/user.js';
+import { MenuProfilePresenter } from '../presenter/menu.js';
+
+
+const FILMS_MAX_COUNT = 20;
 const FILMS_MIN_COUNT = 2;
 const FILM_COUNT_PER_STEP = 5;
+const siteFooterElement = document.querySelector('.footer__statistics');
+const siteHeaderElement = document.querySelector('.header');
 
 
 class FilmBoard {
@@ -35,24 +42,26 @@ class FilmBoard {
   }
 
   _renderFilmBoard() {
-    this._renderMenu(this._films);
 
-    if (!this._films.length) {
+    if (FILMS_MAX_COUNT === 0) {
+      this._renderSiteMenuPresenter(0, 0, 0);
       this._renderNoFilms();
-      const filmRemove = this._boardContainer.querySelector('.sort');
-      filmRemove.classList.add('visually-hidden');
+      this._renderFooterStatisticPresenter(FILMS_MAX_COUNT);
 
     } else {
+      this._renderMenu(this._films);
       this._renderContainers();
     }
 
   }
 
   _renderContainers() {
+    this._renderUserPresenter();
     render(this._boardContainer, this._sortComponents); // сортировка фильмов
     render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
     this._renderFilmList();
     this._renderFilmAdditionalList();
+    this._renderFooterStatisticPresenter(FILMS_MAX_COUNT);
   }
 
   _renderLoadMoreButton() {
@@ -149,26 +158,19 @@ class FilmBoard {
   }
 
 
-  _favoriteClickHandler() { Object.assign({}, this._films, { isFavorit: !this._films.isFavorit });
+  _favoriteClickHandler() {
+    Object.assign({}, this._films, { isFavorit: !this._films.isFavorit });
   }
 
   _clearTaskList() { // мне нужно вызвать его в начале цикла следующего метода при клике?
     Object
-      .values(this._filmListComponent) //
+      .values(this._filmListComponent)
       .forEach((presenter) => presenter.remove(this._filmListComponent));
     this._filmPresenter = {};
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     remove(this._loadMoreButtonComponent);
   }
 
-
-  _renderMenu(films) {
-    const favoritFilm = films.filter((film) => film.isFavorit).length;
-    const watchedFilm = films.filter((film) => film.isWatched).length;
-    const futureFilm = films.filter((film) => film.futureFilm).length;
-
-    render(this._boardContainer, new SiteMenu(favoritFilm, watchedFilm, futureFilm));
-  }
 
   _renderFilmAdditionalList() {
 
@@ -186,6 +188,29 @@ class FilmBoard {
 
   _renderNoFilms() {
     render(this._boardContainer, this._noFilmsComponent);
+  }
+
+  _renderMenu(films) {
+    const favoritFilm = films.filter((film) => film.isFavorit).length;
+    const watchedFilm = films.filter((film) => film.isWatched).length;
+    const futureFilm = films.filter((film) => film.futureFilm).length;
+
+    this._renderSiteMenuPresenter(favoritFilm, watchedFilm, futureFilm);
+  }
+
+  _renderSiteMenuPresenter(favoritFilm, watchedFilm, futureFilm) {
+    const SiteMenuPresenter = new MenuProfilePresenter(this._boardContainer);
+    SiteMenuPresenter.init(favoritFilm, watchedFilm, futureFilm);
+  }
+
+  _renderUserPresenter() {
+    const userPresenter = new UserProfilePresenter(siteHeaderElement);
+    userPresenter.init();
+  }
+
+  _renderFooterStatisticPresenter(totalFilms) {
+    const footerStatisticPresenter = new FooterStatisticPresenter(siteFooterElement);
+    footerStatisticPresenter.init(totalFilms);
   }
 }
 export { FilmBoard };
