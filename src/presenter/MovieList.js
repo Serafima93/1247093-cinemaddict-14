@@ -1,12 +1,10 @@
-// import { SiteMenu } from '../view/menu.js';
 import { FilmList } from '../view/film-list-section';
 import { EmptyWrap } from '../view/empty';
 import { Sort } from '../view/sort';
-
-
 import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
+
 import { render, replaceChild, remove } from '../utils/utils-render.js';
 // import { updateItem } from '../utils/utils-common.js';
 
@@ -20,6 +18,13 @@ const FILMS_MIN_COUNT = 2;
 const FILM_COUNT_PER_STEP = 5;
 const siteFooterElement = document.querySelector('.footer__statistics');
 const siteHeaderElement = document.querySelector('.header');
+const bodyElement = document.querySelector('body');
+
+
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  POPUP: 'POPUP',
+};
 
 
 class FilmBoard {
@@ -33,7 +38,12 @@ class FilmBoard {
     this._loadMoreButtonComponent = new ShowMoreButton();
 
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
+
+    this._mode = Mode.DEFAULT;
+    this._popupComponent = null;
   }
+
   init(films) {
     this._films = films.slice();
 
@@ -88,30 +98,66 @@ class FilmBoard {
   }
 
   _renderPopUp(film) {
-    const popupElement = new PopUp(film);
+    this._mode === Mode.POPUP;
 
-    replaceChild(this._boardContainer, popupElement, true);
+    const prevPopupComponent = this._popupComponent;
+    this._popupComponent = new PopUp(film);
 
-    const popupPlace = this._boardContainer.querySelector('.film-details__top-container');
-    popupPlace.classList.add('hide-overflow');
+    // const onEscKeyDown = (evt) => {
+    //   if (evt.key === 'Escape' || evt.key === 'Esc') {
+    //     evt.preventDefault();
+    //     this._removePopup();
+    //     document.removeEventListener('keydown', onEscKeyDown);
+    //   }
+    // };
 
-    const removePopup = () => {
-      replaceChild(this._boardContainer, popupElement, false);
-      popupPlace.classList.remove('hide-overflow');
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        removePopup();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    popupElement.setEditClickHandler(() => {
-      removePopup();
+    this._popupComponent.setCloseBtnClickHandler(() => {
+      this._handleCloseButtonClick();
     });
-    document.addEventListener('keydown', onEscKeyDown);
+
+    if (prevPopupComponent === null) {
+      render(bodyElement, this._popupComponent);
+      bodyElement.classList.add('hide-overflow');
+      document.addEventListener('keydown', this._onEscKeyDown);
+
+      return;
+    }
+
+    if (this._mode === Mode.POPUP) {
+      replaceChild(this._boardContainer, this._popupComponent, true);
+      bodyElement.classList.add('hide-overflow');
+      document.addEventListener('keydown', this._onEscKeyDown);
+    }
+  }
+
+  _removePopup() {
+    // if (this._mode !== Mode.DEFAULT) {
+    this._popupComponent.getElement().remove();
+    this._popupComponent = null;
+    this._mode = Mode.DEFAULT;
+    // }
+  }
+
+  _onEscKeyDown(evt) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this._removePopup();
+      bodyElement.classList.remove('hide-overflow');
+
+      document.removeEventListener('keydown', this._onEscKeyDown);
+    }
+  }
+
+  _handleCloseButtonClick() {
+    this._removePopup();
+    bodyElement.classList.remove('hide-overflow');
+    document.removeEventListener('keydown', this._onEscKeyDown);
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._films)
+      .forEach((film) => film._removePopup());
   }
 
   _renderFilms(container, films, count) {
