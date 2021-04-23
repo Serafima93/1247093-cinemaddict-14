@@ -36,6 +36,26 @@ const emersion = (parent, child) => {
   return parent.appendChild(child);
 };
 
+// А эта уже для замены
+
+const replace = (newChild, oldChild) => {
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  parent.replaceChild(newChild, oldChild);
+};
+
 
 const remove = (component) => {
   if (!(component instanceof Abstract)) {
@@ -56,5 +76,6 @@ export {
   render,
   createSiteElement,
   remove,
-  emersion
+  emersion,
+  replace
 };

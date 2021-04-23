@@ -66,7 +66,7 @@ class FilmBoard {
   }
 
   _renderContainers() {
-    render(this._boardContainer, this._sortComponents); // сортировка фильмов
+    render(this._boardContainer, this._sortComponents); // отрисовка поля для послд. выбора сортировки фильмов
     render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
     this._renderFilmList();
     this._renderFilmAdditionalList();
@@ -234,5 +234,6 @@ class FilmBoard {
     const footerStatisticPresenter = new FooterStatisticPresenter(siteFooterElement);
     footerStatisticPresenter.init(totalFilms);
   }
+
 }
 export { FilmBoard };
