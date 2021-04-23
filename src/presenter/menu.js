@@ -1,7 +1,7 @@
 import { SiteMenu } from '../view/menu.js';
 import { render } from '../utils/utils-render';
 
-class MenuProfilePresenter {
+class MenuPresenter {
   constructor(container) {
     this._container = container;
     this._SiteMenuComponent = null;
@@ -13,4 +13,4 @@ class MenuProfilePresenter {
     render(this._container, this._SiteMenuComponent);
   }
 }
-export { MenuProfilePresenter };
+export { MenuPresenter };

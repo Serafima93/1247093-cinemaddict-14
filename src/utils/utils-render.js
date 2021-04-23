@@ -24,17 +24,16 @@ const render = (container, child, place = RenderPosition.BEFOREEND) => {
   }
 };
 
-const replaceChild = (parent, newChild, status) => {
-  if (newChild instanceof Abstract) {
-    newChild = newChild.getElement();
-  }
+// эта функция нужна не для замены одного элемента другим, а только для его всплытия.
 
-  if (parent === null || newChild === null) {
-    throw new Error('Can\'t replace unexisting elements');
+const emersion = (parent, child) => {
+  if (parent === null || child === null) {
+    throw new Error('Can\'t show unexisting elements');
   }
-  if (status === true) {
-    return parent.appendChild(newChild);
-  } else { parent.removeChild(newChild); }
+  if (child instanceof Abstract) {
+    child = child.getElement();
+  }
+  return parent.appendChild(child);
 };
 
 
@@ -43,7 +42,6 @@ const remove = (component) => {
     throw new Error('Can remove only components');
   }
   component.getElement().remove();
-  component.removeElement();
 };
 
 const createSiteElement = (template) => {
@@ -58,5 +56,5 @@ export {
   render,
   createSiteElement,
   remove,
-  replaceChild
+  emersion
 };

@@ -1,7 +1,7 @@
-import { FilmBoard } from './presenter/MovieList';
+import { FilmBoard } from './presenter/movieList';
 import { generateFilm } from './mock/film.js';
+import { FILMS_MAX_COUNT } from './utils/utils-constans.js';
 
-const FILMS_MAX_COUNT = 20;
 
 const films = new Array(FILMS_MAX_COUNT).fill().map(generateFilm);
 
