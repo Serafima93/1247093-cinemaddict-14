@@ -75,17 +75,17 @@ class FilmCard extends Abstract {
     this.getElement().querySelector('.film-card__comments').addEventListener('click', this._editClickHandlerPopup);
   }
 
-  favoriteClickHandler(callback) {
+  setFavoriteClickHandler(callback) {
     this._callback.favorite = callback;
     this.getElement().querySelector('.film-card__controls-item--favorite').addEventListener('click', this._editClickHandlerFavorite);
   }
 
-  watchedClickHandler(callback) {
+  setWatchedClickHandler(callback) {
     this._callback.watched = callback;
     this.getElement().querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this._editClickHandlerWatched);
   }
 
-  futureClickHandler(callback) {
+  setFutureClickHandler(callback) {
     this._callback.future = callback;
     this.getElement().querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', this._editClickHandlerFuture);
   }

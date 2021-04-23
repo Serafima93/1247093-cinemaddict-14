@@ -56,6 +56,8 @@ class FilmBoard {
   _renderFilmBoard() {
     this._renderUserPresenter();
     this._renderSiteMenuPresenter(this._films);
+    // this._SiteMenuPresenter.init(this._films);
+
 
     if (this._films.length) {
       this._renderContainers();
@@ -90,12 +92,59 @@ class FilmBoard {
       const film = films[i];
       const filmView = new FilmCard(film);
       render(container, filmView);
+      filmView.setEditClickHandler(() => {this._renderPopUp(film);});
+      // filmView.setEditClickHandler(this._renderPopUp);
 
-      this._renderFilmListner(filmView, film);
-      this._buttonsClickHandler(filmView);
+
+      // this._filmComponents[film.id] = filmView;
+      filmView.setFavoriteClickHandler(() => { this._favoriteClickHandler(film); });
+      // this._buttonsClickHandler(filmView);
+    }
+  }
+  /*
+
+   */
+
+  _favoriteClickHandler(film) {
+    const newFilm = Object.assign(
+      {},
+      film,
+      { isFavorit: !film.isFavorit },
+    );
+    const oldFilm = this._films.find((item) => item.id === film.id); // находим среди всех фильмов эту карточку
+    const index = this._films.indexOf(oldFilm);
+    if (index !== -1) {
+      this._films[index] = newFilm;
+    }
+    // update menu
+    // this._SiteMenuPresenter.update(this._films);
+    // replace();
+
+    this._renderSiteMenuPresenter(this._films);
+
+    // // update film card
+    // this._clearFilmList();
+    // this._renderFilmList();
+    // const filmView = this._filmComponents[film.id]
+    // if (filmView) {
+    //   replaceChild();
+    // }
+  }
+
+  _clearFilmList() {
+    for (let i = 0; this._films.length; i++) {
+      const film = this._films[i];
+      const filmView = this._filmComponents[film.id];
+      if (filmView) {
+        filmView.remove();
+      }
     }
   }
 
+  _updateMoviesList() {
+    this._clearFilmList();
+    this._renderFilmList();
+  }
   /*
 
    */
@@ -112,17 +161,21 @@ class FilmBoard {
       .forEach((film) => {
         const newFilm = new FilmCard(film);
         render(filmCardContainers, newFilm);
-        this._renderFilmListner(newFilm, film);
 
-        this._buttonsClickHandler(newFilm);
+        newFilm.setEditClickHandler(() => { this._renderPopUp(film); });
+        newFilm.setFavoriteClickHandler(() => { this._favoriteClickHandler(film); });
+
       });
     this._renderedFilmCount += FILM_COUNT_PER_STEP;
     if (this._renderedFilmCount >= this._films.length) {
       remove(this._loadMoreButtonComponent);
     }
   }
+  /*
 
+   */
   _renderPopUp(film) {
+    this._renderSiteMenuPresenter(this._films);
     this._mode === Mode.POPUP;
 
     const prevPopupComponent = this._popupComponent;
@@ -176,28 +229,6 @@ class FilmBoard {
       .values(this._films)
       .forEach((film) => film._removePopup());
   }
-  /*
-
-   */
-
-  _renderFilmListner(film, filmPopUp) {
-    film.setEditClickHandler(() => {
-      this._renderPopUp(filmPopUp);
-    });
-  }
-
-  _buttonsClickHandler(film) {
-    film.favoriteClickHandler(() => {
-      // const filmIdHistoryNumber = filmView._film.id;
-      film._film.isFavorit = true; // создаю на фильме флаг - верно
-    });
-  }
-
-  _favoriteClickHandler() {
-    Object.assign({}, this._films, { isFavorit: !this._films.isFavorit });
-  }
-
-  _clearTaskList() { }
   /*
 
    */

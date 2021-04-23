@@ -17,9 +17,8 @@ class MenuPresenter {
     const state = this._getFilterState(films);
     this._SiteMenuComponent.setValue(state.favoritFilm, state.watchedFilm, state.futureFilm);
 
-    // replace child
-    // replaceChild(...);
-    // render(this._container, this._SiteMenuComponent);
+    // replace();
+    render(this._container, this._SiteMenuComponent);
   }
 
   _getFilterState(films) {
