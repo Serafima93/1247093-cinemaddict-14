@@ -53,19 +53,6 @@ class FilmBoard {
     this._renderFilmBoard();
   }
 
-  // _renderFilmBoard() {
-  //   this._renderUserPresenter();
-  //   if (FILMS_MAX_COUNT === 0) {
-  //     this._renderSiteMenuPresenter(0, 0, 0);
-  //     this._renderNoFilms();
-  //     this._renderFooterStatisticPresenter(FILMS_MAX_COUNT);
-
-  //   } else {
-  //     this._renderMenu(this._films);
-  //     this._renderContainers();
-  //   }
-  // }
-
   _renderFilmBoard() {
     this._renderUserPresenter();
     this._renderSiteMenuPresenter(this._films);
@@ -100,9 +87,11 @@ class FilmBoard {
 
   _renderFilms(container, films) {
     for (let i = 0; i < films.length; i++) {
-      const filmView = new FilmCard(films[i]);
+      const film = films[i];
+      const filmView = new FilmCard(film);
       render(container, filmView);
-      this._renderFilmListner(filmView, films[i]);
+
+      this._renderFilmListner(filmView, film);
       this._buttonsClickHandler(filmView);
     }
   }
@@ -204,14 +193,11 @@ class FilmBoard {
     });
   }
 
-
   _favoriteClickHandler() {
     Object.assign({}, this._films, { isFavorit: !this._films.isFavorit });
   }
 
-  _clearTaskList() { // мне нужно вызвать его в начале цикла следующего метода при клике?
-
-  }
+  _clearTaskList() { }
   /*
 
    */
@@ -234,17 +220,9 @@ class FilmBoard {
     render(this._boardContainer, this._noFilmsComponent);
   }
 
-  _renderMenu(films) {
-    const favoritFilm = films.filter((film) => film.isFavorit).length;
-    const watchedFilm = films.filter((film) => film.isWatched).length;
-    const futureFilm = films.filter((film) => film.futureFilm).length;
-
-    this._renderSiteMenuPresenter(favoritFilm, watchedFilm, futureFilm);
-  }
-
-  _renderSiteMenuPresenter(favoritFilm, watchedFilm, futureFilm) {
+  _renderSiteMenuPresenter(films) {
     const SiteMenuPresenter = new MenuPresenter(this._boardContainer);
-    SiteMenuPresenter.init(favoritFilm, watchedFilm, futureFilm);
+    SiteMenuPresenter.init(films);
   }
 
   _renderUserPresenter() {
