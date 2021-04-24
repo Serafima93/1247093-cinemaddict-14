@@ -1,5 +1,5 @@
 import { SiteMenu } from '../view/menu.js';
-import { render } from '../utils/utils-render';
+import { render, remove, RenderPosition } from '../utils/utils-render';
 
 class MenuPresenter {
   constructor(container) {
@@ -15,10 +15,16 @@ class MenuPresenter {
 
   update(films = []) {
     const state = this._getFilterState(films);
-    this._SiteMenuComponent.setValue(state.favoritFilm, state.watchedFilm, state.futureFilm);
 
-    // replace();
-    render(this._container, this._SiteMenuComponent);
+    if (this._SiteMenuComponent != null) {
+      remove(this._SiteMenuComponent);
+      this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm);
+      render(this._container, this._SiteMenuComponent, RenderPosition.AFTERBEGIN);
+    }
+
+    // this._SiteMenuComponent.setValue(state.favoritFilm, state.watchedFilm, state.futureFilm);
+    // render(this._container, this._SiteMenuComponent);
+    // console.log(this._SiteMenuComponent);
   }
 
   _getFilterState(films) {

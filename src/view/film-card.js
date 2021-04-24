@@ -67,7 +67,6 @@ class FilmCard extends Abstract {
     this._callback.future(this._film);
   }
 
-
   setEditClickHandler(callback) {
     this._callback.openPopup = callback;
     this.getElement().querySelector('.film-card__poster').addEventListener('click', this._editClickHandlerPopup);

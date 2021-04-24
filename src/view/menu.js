@@ -16,17 +16,17 @@ const createSiteMenuTemplate = (favorite, watched, futureFilm) => {
 class SiteMenu extends Abstract {
   constructor(favoritFilm = 0, watchedFilm = 0, futureFilm = 0) {
     super();
-    this._count = favoritFilm;
+    this._favorite = favoritFilm;
     this._watched = watchedFilm;
     this._future = futureFilm;
   }
 
   getTemplate() {
-    return createSiteMenuTemplate(this._count, this._watched, this._future);
+    return createSiteMenuTemplate(this._favorite, this._watched, this._future);
   }
 
   setValue(favoritFilm = 0, watchedFilm = 0, futureFilm = 0) {
-    this._count = favoritFilm;
+    this._favorite = favoritFilm;
     this._watched = watchedFilm;
     this._future = futureFilm;
   }

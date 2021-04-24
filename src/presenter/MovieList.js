@@ -39,11 +39,14 @@ class FilmBoard {
     this._loadMoreButtonComponent = new ShowMoreButton();
 
     this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
+    this._renderPopUp = this._renderPopUp.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
 
     this._mode = Mode.DEFAULT;
     this._popupComponent = null;
+
+    this._SiteMenuPresenter = new MenuPresenter(this._boardContainer);
   }
 
   init(films) {
@@ -55,9 +58,7 @@ class FilmBoard {
 
   _renderFilmBoard() {
     this._renderUserPresenter();
-    this._renderSiteMenuPresenter(this._films);
-    // this._SiteMenuPresenter.init(this._films);
-
+    this._SiteMenuPresenter.init(this._films);
 
     if (this._films.length) {
       this._renderContainers();
@@ -92,13 +93,11 @@ class FilmBoard {
       const film = films[i];
       const filmView = new FilmCard(film);
       render(container, filmView);
-      filmView.setEditClickHandler(() => {this._renderPopUp(film);});
-      // filmView.setEditClickHandler(this._renderPopUp);
+      filmView.setEditClickHandler(this._renderPopUp);
 
-
-      // this._filmComponents[film.id] = filmView;
       filmView.setFavoriteClickHandler(() => { this._favoriteClickHandler(film); });
-      // this._buttonsClickHandler(filmView);
+      filmView.setWatchedClickHandler(() => { this._watchedClickHandler(film); });
+      filmView.setFutureClickHandler(() => { this._futureClickHandler(film); });
     }
   }
   /*
@@ -111,18 +110,16 @@ class FilmBoard {
       film,
       { isFavorit: !film.isFavorit },
     );
-    const oldFilm = this._films.find((item) => item.id === film.id); // находим среди всех фильмов эту карточку
+    const oldFilm = this._films.find((item) => item.id === film.id);
+    oldFilm.isFavorit = !film.isFavorit;
+
     const index = this._films.indexOf(oldFilm);
     if (index !== -1) {
       this._films[index] = newFilm;
     }
-    // update menu
-    // this._SiteMenuPresenter.update(this._films);
-    // replace();
+    this._SiteMenuPresenter.update(this._films);
 
-    this._renderSiteMenuPresenter(this._films);
-
-    // // update film card
+    // update film card
     // this._clearFilmList();
     // this._renderFilmList();
     // const filmView = this._filmComponents[film.id]
@@ -130,6 +127,39 @@ class FilmBoard {
     //   replaceChild();
     // }
   }
+
+  _watchedClickHandler(film) {
+    const newFilm = Object.assign(
+      {},
+      film,
+      { isWatched: !film.isWatched },
+    );
+    const oldFilm = this._films.find((item) => item.id === film.id);
+    oldFilm.isWatched = !film.isWatched;
+
+    const index = this._films.indexOf(oldFilm);
+    if (index !== -1) {
+      this._films[index] = newFilm;
+    }
+    this._SiteMenuPresenter.update(this._films);
+  }
+
+  _futureClickHandler(film) {
+    const newFilm = Object.assign(
+      {},
+      film,
+      { futureFilm: !film.futureFilm },
+    );
+    const oldFilm = this._films.find((item) => item.id === film.id);
+    oldFilm.futureFilm = !film.futureFilm;
+
+    const index = this._films.indexOf(oldFilm);
+    if (index !== -1) {
+      this._films[index] = newFilm;
+    }
+    this._SiteMenuPresenter.update(this._films);
+  }
+
 
   _clearFilmList() {
     for (let i = 0; this._films.length; i++) {
@@ -175,7 +205,6 @@ class FilmBoard {
 
    */
   _renderPopUp(film) {
-    this._renderSiteMenuPresenter(this._films);
     this._mode === Mode.POPUP;
 
     const prevPopupComponent = this._popupComponent;
@@ -249,11 +278,6 @@ class FilmBoard {
 
   _renderNoFilms() {
     render(this._boardContainer, this._noFilmsComponent);
-  }
-
-  _renderSiteMenuPresenter(films) {
-    const SiteMenuPresenter = new MenuPresenter(this._boardContainer);
-    SiteMenuPresenter.init(films);
   }
 
   _renderUserPresenter() {
