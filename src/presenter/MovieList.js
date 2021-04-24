@@ -55,7 +55,7 @@ class FilmBoard {
   init(films) {
     this._films = films;
 
-    this._filmPresenter = {};
+    this._filmView = {};
     this._renderFilmBoard();
   }
 
@@ -65,6 +65,7 @@ class FilmBoard {
 
     if (this._films.length) {
       this._renderContainers();
+      this._filmsSorting();
     } else {
       this._renderNoFilms();
     }
@@ -100,7 +101,14 @@ class FilmBoard {
 
       filmView.setFavoriteClickHandler(() => { this._favoriteClickHandler(film); });
       filmView.setWatchedClickHandler(() => { this._watchedClickHandler(film); });
-      filmView.setFutureClickHandler(() => { this._futureClickHandler(film); });
+      filmView.setFutureClickHandler(() => {
+        this._futureClickHandler(film);
+      });
+      this._filmView[film.id] = filmView;
+      // console.log(this._filmView[film.id]);
+      // Object
+      //   .values(this._filmView)
+      //   .forEach((presenter) => remove(presenter));
     }
   }
   /*
@@ -265,7 +273,23 @@ class FilmBoard {
   /*
 
    */
+  _filmRateSort() {
+    remove(this._filmListComponent);
+    const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
 
+    // render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
+
+    this._renderFilms(this._boardContainer, rateFilm);
+    // this._renderFilmAdditionalList();
+  }
+
+  _filmsSorting() {
+    this._sortComponents.setRatingClickHandler(() => { this._filmRateSort(); });
+    this._sortComponents.setYearClickHandler(() => { this._filmRateSort(); });
+  }
+  /*
+
+   */
   _renderFilmAdditionalList() {
 
     const filmCardContainerMostRate = this._boardContainer.querySelector('.films-list__container--rating');
