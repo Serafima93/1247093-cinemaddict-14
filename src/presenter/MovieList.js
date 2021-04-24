@@ -38,10 +38,13 @@ class FilmBoard {
     this._sortComponents = new Sort();
     this._loadMoreButtonComponent = new ShowMoreButton();
 
-    this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._renderPopUp = this._renderPopUp.bind(this);
-    this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleLoadMoreButtonClick = this._handleLoadMoreButtonClick.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
+
+    // this._favoriteClickHandlerPopup = this._favoriteClickHandlerPopup.bind(this);
+
+    this._handleModeChange = this._handleModeChange.bind(this);
 
     this._mode = Mode.DEFAULT;
     this._popupComponent = null;
@@ -160,7 +163,6 @@ class FilmBoard {
     this._SiteMenuPresenter.update(this._films);
   }
 
-
   _clearFilmList() {
     for (let i = 0; this._films.length; i++) {
       const film = this._films[i];
@@ -210,9 +212,11 @@ class FilmBoard {
     const prevPopupComponent = this._popupComponent;
     this._popupComponent = new PopUp(film);
 
-    this._popupComponent.setCloseBtnClickHandler(() => {
-      this._handleCloseButtonClick();
-    });
+    this._popupComponent.setCloseBtnClickHandler(() => { this._handleCloseButtonClick(); });
+
+    this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
+    this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
+    this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
 
     if (prevPopupComponent === null) {
       render(bodyElement, this._popupComponent);
