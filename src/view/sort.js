@@ -11,7 +11,6 @@ const createSorting = () => {
 class Sort extends Abstract {
   constructor() {
     super();
-    // this._film = film;
     this._editClickHandlerRating = this._editClickHandlerRating.bind(this);
     this._editClickHandlerYear = this._editClickHandlerYear.bind(this);
   }

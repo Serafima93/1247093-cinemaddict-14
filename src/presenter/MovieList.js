@@ -40,7 +40,7 @@ class FilmBoard {
 
     this._renderPopUp = this._renderPopUp.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-    this._handleModeChange = this._handleModeChange.bind(this);
+    // this._handleModeChange = this._handleModeChange.bind(this);
 
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
@@ -122,50 +122,35 @@ class FilmBoard {
    */
 
   _favoriteClickHandler(film) {
-    const newFilm = Object.assign(
-      {},
-      film,
-      { isFavorit: !film.isFavorit },
-    );
     const oldFilm = this._films.find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
 
-    const index = this._films.indexOf(oldFilm);
+    const index = this._films.indexOf(film);
     if (index !== -1) {
-      this._films[index] = newFilm;
+      this._films[index] = oldFilm;
     }
     this._SiteMenuPresenter.update(this._films);
 
   }
 
   _watchedClickHandler(film) {
-    const newFilm = Object.assign(
-      {},
-      film,
-      { isWatched: !film.isWatched },
-    );
     const oldFilm = this._films.find((item) => item.id === film.id);
     oldFilm.isWatched = !film.isWatched;
 
-    const index = this._films.indexOf(oldFilm);
+    const index = this._films.indexOf(film);
     if (index !== -1) {
-      this._films[index] = newFilm;
+      this._films[index] = oldFilm;
     }
     this._SiteMenuPresenter.update(this._films);
   }
 
   _futureClickHandler(film) {
-    const newFilm = Object.assign(
-      {},
-      film,
-      { futureFilm: !film.futureFilm },
-    );
     const oldFilm = this._films.find((item) => item.id === film.id);
     oldFilm.futureFilm = !film.futureFilm;
 
-    const index = this._films.indexOf(oldFilm);
+    const index = this._films.indexOf(film);
     if (index !== -1) {
-      this._films[index] = newFilm;
+      this._films[index] = oldFilm;
     }
     this._SiteMenuPresenter.update(this._films);
   }
@@ -176,8 +161,6 @@ class FilmBoard {
   _renderLoadMoreButton(films) {
     const buttonPlace = this._boardContainer.querySelector('.films-list');
     render(buttonPlace, this._loadMoreButtonComponent);
-    // this._loadMoreButtonComponent.setClickHandler(this._handleLoadMoreButtonClick);
-
     this._loadMoreButtonComponent.setClickHandler(() => { this._handleLoadMoreButtonClick(films); });
   }
 
@@ -188,10 +171,7 @@ class FilmBoard {
       .forEach((film) => {
         const newFilm = new FilmCard(film);
         render(filmCardContainers, newFilm);
-
-        newFilm.setEditClickHandler(() => { this._renderPopUp(film); });
-        newFilm.setFavoriteClickHandler(() => { this._favoriteClickHandler; });
-
+        newFilm.setEditClickHandler(this._renderPopUp);
       });
     this._renderedFilmCount += FILM_COUNT_PER_STEP;
     if (this._renderedFilmCount >= this._films.length) {
@@ -229,11 +209,9 @@ class FilmBoard {
   }
 
   _removePopup() {
-    // if (this._mode !== Mode.DEFAULT) {
     remove(this._popupComponent);
     this._popupComponent = null;
     this._mode = Mode.DEFAULT;
-    // }
   }
 
   _onEscKeyDown(evt) {
@@ -252,10 +230,17 @@ class FilmBoard {
     document.removeEventListener('keydown', this._onEscKeyDown);
   }
 
+  _resetFilmView() {
+    if (this._mode === Mode.POPUP) {
+      this._removePopup();
+      this._mode !== Mode.DEFAULT;
+    }
+  }
+
   _handleModeChange() {
     Object
-      .values(this._films)
-      .forEach((film) => film._removePopup());
+      .values(this._filmView)
+      .forEach((film) => film._resetFilmView());
   }
   /*
 
