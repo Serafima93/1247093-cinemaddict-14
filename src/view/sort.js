@@ -22,12 +22,12 @@ class Sort extends Abstract {
 
   _editClickHandlerRating(evt) {
     evt.preventDefault();
-    this._callback.rating(this._film);
+    this._callback.rating();
   }
 
   _editClickHandlerYear(evt) {
     evt.preventDefault();
-    this._callback.year(this._film);
+    this._callback.year();
   }
 
   _filmModeChange() {
