@@ -30,6 +30,11 @@ class Sort extends Abstract {
     this._callback.year(this._film);
   }
 
+  _filmModeChange() {
+    const oldElement = this.getElement().querySelector('.sort__button--active');
+    oldElement.classList.remove('sort__button--active');
+  }
+
   setRatingClickHandler(callback) {
     this._callback.rating = callback;
     this.getElement().querySelector('.sort__button--rate').addEventListener('click', this._editClickHandlerRating);
