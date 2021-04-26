@@ -40,8 +40,6 @@ class FilmBoard {
     this._renderPopUp = this._renderPopUp.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
 
-    // this._handleModeChange = this._handleModeChange.bind(this);
-
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._futureClickHandler = this._futureClickHandler.bind(this);
@@ -98,6 +96,7 @@ class FilmBoard {
     this._renderFilms(filmCardContainers, films.slice(0, this._renderedFilmCount));
   }
 
+
   _renderFilm(container, film) {
     const filmView = new FilmCard(film);
     render(container, filmView);
@@ -118,6 +117,8 @@ class FilmBoard {
 
   _clearFilmList() {
     Object.values(this._filmView).forEach((presenter) => remove(presenter));
+    Object.values(this._filmViewTop).forEach((presenter) => remove(presenter));
+    Object.values(this._filmViewComment).forEach((presenter) => remove(presenter));
 
     remove(this._loadMoreButtonComponent);
   }
@@ -264,19 +265,24 @@ class FilmBoard {
     }
     this._clearFilmList();
     this._sortFilmCards(type);
+    this._renderFilmAdditionalList();
   }
   /*
 
    */
-  _cleanAdditionalList (){
-    const filmCardContainerMostRate = this._boardContainer.querySelector('.films-list__container--rating');
-    const filmCardContainerMostComments = this._boardContainer.querySelector('.films-list__container--comments');
-    filmCardContainerMostRate.innerHTML = '';
-    filmCardContainerMostComments.innerHTML = '';
+  _renderAdditionalFilms(container, film) {
+    const filmView = new FilmCard(film);
+    render(container, filmView);
+    filmView.setEditClickHandler(this._renderPopUp);
+
+    filmView.setFavoriteClickHandler(this._favoriteClickHandler);
+    filmView.setWatchedClickHandler(this._watchedClickHandler);
+    filmView.setFutureClickHandler(this._futureClickHandler);
+    this._filmViewComment[film.id] = filmView;
+    this._filmViewTop[film.id] = filmView;
   }
 
   _renderFilmAdditionalList() {
-    // берет из массива this._films
 
     const filmCardContainerMostRate = this._boardContainer.querySelector('.films-list__container--rating');
     const filmCardContainerMostComments = this._boardContainer.querySelector('.films-list__container--comments');
@@ -285,8 +291,17 @@ class FilmBoard {
     const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
     const commentsFilm = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
-    this._renderFilms(filmCardContainerMostRate, rateFilm.slice(0, FILMS_EXTRA_SECTION));
-    this._renderFilms(filmCardContainerMostComments, commentsFilm.slice(0, FILMS_EXTRA_SECTION));
+    commentsFilm
+      .slice(0, FILMS_EXTRA_SECTION)
+      .forEach((movie) => {
+        this._renderAdditionalFilms(filmCardContainerMostComments, movie);
+      });
+
+    rateFilm
+      .slice(0, FILMS_EXTRA_SECTION)
+      .forEach((movie) => {
+        this._renderAdditionalFilms(filmCardContainerMostRate, movie);
+      });
   }
 
   _renderNoFilms() {
