@@ -41,6 +41,7 @@ class FilmCard extends Abstract {
     this._editClickHandlerFavorite = this._editClickHandlerFavorite.bind(this);
     this._editClickHandlerWatched = this._editClickHandlerWatched.bind(this);
     this._editClickHandlerFuture = this._editClickHandlerFuture.bind(this);
+    this._editRemoveListner = this._editRemoveListner.bind(this);
   }
 
   getTemplate() {
@@ -66,6 +67,17 @@ class FilmCard extends Abstract {
     evt.preventDefault();
     this._callback.future(this._film);
   }
+
+  _editRemoveListner(evt) {
+    evt.preventDefault();
+    this._callback.closePopup(this._film);
+  }
+
+  removeListner(callback) {
+    this._callback.closePopup = callback;
+    this.getElement().querySelector('.film-card__poster').removeEventListener('click', this._editRemoveListner);
+  }
+
 
   setEditClickHandler(callback) {
     this._callback.openPopup = callback;

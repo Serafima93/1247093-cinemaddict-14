@@ -23,7 +23,7 @@ const bodyElement = document.querySelector('body');
 
 const Mode = {
   DEFAULT: 'DEFAULT',
-  POPUP: 'POPUP',
+  POPUP: 'POP-UP',
 };
 
 class FilmBoard {
@@ -40,7 +40,7 @@ class FilmBoard {
     this._renderPopUp = this._renderPopUp.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
 
-    this._handleModeChange = this._handleModeChange.bind(this);
+    // this._handleModeChange = this._handleModeChange.bind(this);
 
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
@@ -186,26 +186,22 @@ class FilmBoard {
 
    */
   _renderPopUp(film) {
-    this._popupComponent = new PopUp(film);
-
-    this._popupComponent.setCloseBtnClickHandler(this._handleCloseButtonClick);
-
-    this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
-    this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
-    this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
-
-    if (this._mode === Mode.DEFAULT) {
-      emersion(bodyElement, this._popupComponent);
-      this._mode === Mode.POPUP;
-      bodyElement.classList.add('hide-overflow');
-      document.addEventListener('keydown', this._onEscKeyDown);
-
-      return;
-    }
 
     if (this._mode === Mode.POPUP) {
-      this._handleCloseButtonClick();
-      emersion(this._boardContainer, this._popupComponent);
+      this._removePopup();
+    }
+
+    if (this._mode === Mode.DEFAULT) {
+      this._popupComponent = new PopUp(film);
+
+      this._popupComponent.setCloseBtnClickHandler(this._handleCloseButtonClick);
+
+      this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
+      this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
+      this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
+
+      emersion(bodyElement, this._popupComponent);
+      this._mode = Mode.POPUP;
       bodyElement.classList.add('hide-overflow');
       document.addEventListener('keydown', this._onEscKeyDown);
     }
@@ -231,19 +227,6 @@ class FilmBoard {
     this._removePopup();
     bodyElement.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._onEscKeyDown);
-  }
-
-  _resetFilmView() {
-    if (this._mode === Mode.POPUP) {
-      this._removePopup();
-      this._mode === Mode.DEFAULT;
-    }
-  }
-
-  _handleModeChange() {
-    Object
-      .values(this._filmView)
-      .forEach((film) => film._resetFilmView());
   }
   /*
 
