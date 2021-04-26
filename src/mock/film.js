@@ -8,7 +8,7 @@ import { generateFilmComment } from './comments';
 
 
 const generateFilmPoster = () => {
-  const filmPoster = ['./images/posters/made-for-each-other.png', './images/posters/popeye-meets-sinbad.png', './images/posters/the-dance-of-life.jpg', './images/posters/the-man-with-the-golden-arm.jpg'];
+  const filmPoster = ['./images/posters/santa-claus-conquers-the-martians.jpg','./images/posters/sagebrush-trail.jpg', './images/posters/the-great-flamarion.jpg', './images/posters/made-for-each-other.png', './images/posters/popeye-meets-sinbad.png', './images/posters/the-dance-of-life.jpg', './images/posters/the-man-with-the-golden-arm.jpg'];
   const randomIndex = getRandomInteger(0, filmPoster.length - 1);
   return filmPoster[randomIndex];
 };
