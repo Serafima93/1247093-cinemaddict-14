@@ -8,7 +8,7 @@ import { PopUp } from '../view/pop-up-information.js';
 
  */
 import { render, emersion, remove } from '../utils/utils-render.js';
-import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP } from '../utils/utils-constans.js';
+import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType } from '../utils/utils-constans.js';
 
 // import { updateItem } from '../utils/utils-common.js';
 /*
@@ -37,6 +37,7 @@ class FilmBoard {
     this._noFilmsComponent = new EmptyWrap();
     this._sortComponents = new Sort();
     this._loadMoreButtonComponent = new ShowMoreButton();
+    this._SiteMenuPresenter = new MenuPresenter(this._boardContainer);
 
     this._renderPopUp = this._renderPopUp.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
@@ -50,11 +51,13 @@ class FilmBoard {
     this._mode = Mode.DEFAULT;
     this._popupComponent = null;
 
-    this._SiteMenuPresenter = new MenuPresenter(this._boardContainer);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._currentSortType = SortType.DEFAULT;
   }
 
   init(films) {
-    this._films = films;
+    this._films = films.slice();
+    this._sourcedBoardFilms = films.slice();
 
     this._filmView = {};
     this._renderFilmBoard();
@@ -66,7 +69,6 @@ class FilmBoard {
 
     if (this._films.length) {
       this._renderContainers();
-      this._filmsSorting();
     } else {
       this._renderNoFilms();
     }
@@ -75,6 +77,9 @@ class FilmBoard {
 
   _renderContainers() {
     render(this._boardContainer, this._sortComponents); // отрисовка поля для послд. выбора сортировки фильмов
+
+    this._sortComponents.setSortTypeChangeHandler(this._handleSortTypeChange);
+
     render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
     this._renderFilmList(this._films);
     // this._renderFilmAdditionalList(this._films);
@@ -245,33 +250,40 @@ class FilmBoard {
   /*
 
    */
+
+
   _filmRateSort() {
-    this._clearFilmList();
-    const newElement = this._boardContainer.querySelector('.sort__button--rate');
-    this._filmModeChange(newElement);
     const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
     this._renderFilmList(rateFilm);
-    // this._renderFilmAdditionalList(rateFilm);
   }
 
   _filmYearSort() {
-    this._clearFilmList();
-    const newElement = this._boardContainer.querySelector('.sort__button--date');
-    this._filmModeChange(newElement);
     const yearFilm = this._films.slice().sort((a, b) => b.productionYear - a.productionYear);
     this._renderFilmList(yearFilm);
+  }
+
+  _sortFilmCards(type) {
+    switch (type) {
+      case SortType.RATING:
+        this._filmRateSort();
+        break;
+      case SortType.DATE:
+        this._filmYearSort();
+        break;
+      case SortType.DEFAULT:
+        this._renderFilmList(this._sourcedBoardFilms);
+        break;
+    }
+    this._currentSortType = type;
+  }
+
+  _handleSortTypeChange(type) {
+    if (this._currentSortType === type) {
+      return;
+    }
+    this._clearFilmList();
+    this._sortFilmCards(type);
     // this._renderFilmAdditionalList(yearFilm);
-  }
-
-  _filmModeChange(newElement) {
-    const oldElement = this._boardContainer.querySelector('.sort__button--active');
-    oldElement.classList.remove('sort__button--active');
-    newElement.classList.add('sort__button--active');
-  }
-
-  _filmsSorting() {
-    this._sortComponents.setRatingClickHandler(() => { this._filmRateSort(); });
-    this._sortComponents.setYearClickHandler(() => { this._filmYearSort(); });
   }
   /*
 
