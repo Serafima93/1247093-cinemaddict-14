@@ -63,7 +63,6 @@ class FilmBoard {
 
   _renderFilmList(films) {
     this._renderFilmsMain(films);
-
     if (this._films.length > FILM_COUNT_PER_STEP) {
       this._renderLoadMoreButton(films);
     }
@@ -257,7 +256,6 @@ class FilmBoard {
   _renderFilmAdditionalList() {
     const filmCardContainerMostRate = this._boardContainer.querySelector('.films-list__container--rating');
     const filmCardContainerMostComments = this._boardContainer.querySelector('.films-list__container--comments');
-
     const rateFilm = this._createFilmRateArray();
     const commentsFilm = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
