@@ -1,4 +1,4 @@
-import { FilmBoard } from './presenter/movieList';
+import { FilmBoard } from './presenter/filmList';
 import { FooterStatisticPresenter } from './presenter/footer';
 import { UserProfilePresenter } from './presenter/user';
 import { generateFilm } from './mock/film.js';

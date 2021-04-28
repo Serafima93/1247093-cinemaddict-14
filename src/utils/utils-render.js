@@ -24,20 +24,6 @@ const render = (container, child, place = RenderPosition.BEFOREEND) => {
   }
 };
 
-// эта функция нужна не для замены одного элемента другим, а только для его всплытия.
-
-const emersion = (parent, child) => {
-  if (parent === null || child === null) {
-    throw new Error('Can\'t show unexisting elements');
-  }
-  if (child instanceof Abstract) {
-    child = child.getElement();
-  }
-  return parent.appendChild(child);
-};
-
-// А эта уже для замены
-
 const replace = (newChild, oldChild) => {
   if (parent === null || oldChild === null || newChild === null) {
     throw new Error('Can\'t replace unexisting elements');
@@ -76,6 +62,5 @@ export {
   render,
   createSiteElement,
   remove,
-  emersion,
   replace
 };

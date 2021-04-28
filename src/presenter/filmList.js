@@ -4,22 +4,19 @@ import { Sort } from '../view/sort';
 import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
-import { render, emersion, remove } from '../utils/utils-render.js';
+import { render, remove } from '../utils/utils-render.js';
 import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode } from '../utils/utils-constans.js';
 import { MenuPresenter } from './menu.js';
-
 
 class FilmBoard {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
-
     this._filmListComponent = new FilmList();
     this._noFilmsComponent = new EmptyWrap();
     this._sortComponents = new Sort();
     this._loadMoreButtonComponent = new ShowMoreButton();
     this._SiteMenuPresenter = new MenuPresenter(this._boardContainer);
-
     this._renderPopUp = this._renderPopUp.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
@@ -27,16 +24,13 @@ class FilmBoard {
     this._futureClickHandler = this._futureClickHandler.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
     this._currentSortType = SortType.DEFAULT;
     this._mode = Mode.DEFAULT;
     this._popupComponent = null;
   }
-
   init(films) {
     this._films = films.slice();
     this._sourcedBoardFilms = films.slice();
-
     this._filmView = {};
     this._filmViewTop = {};
     this._filmViewComment = {};
@@ -45,7 +39,6 @@ class FilmBoard {
 
   _renderFilmBoard() {
     this._SiteMenuPresenter.init(this._films);
-
     if (this._films.length) {
       this._sortComponents.setSortTypeChangeHandler(this._handleSortTypeChange);
       this._renderContainers();
@@ -63,6 +56,7 @@ class FilmBoard {
 
   _renderFilmList(films) {
     this._renderFilmsMain(films);
+
     if (this._films.length > FILM_COUNT_PER_STEP) {
       this._renderLoadMoreButton(films);
     }
@@ -73,12 +67,10 @@ class FilmBoard {
     this._renderFilms(filmCardContainers, films.slice(0, this._renderedFilmCount));
   }
 
-
   _renderFilm(container, film) {
     const filmView = new FilmCard(film);
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
-
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);
     filmView.setWatchedClickHandler(this._watchedClickHandler);
     filmView.setFutureClickHandler(this._futureClickHandler);
@@ -96,11 +88,10 @@ class FilmBoard {
     Object.values(this._filmView).forEach((presenter) => remove(presenter));
     Object.values(this._filmViewTop).forEach((presenter) => remove(presenter));
     Object.values(this._filmViewComment).forEach((presenter) => remove(presenter));
-
     remove(this._loadMoreButtonComponent);
   }
-  /*
 
+  /*
    */
   _updateMenu(films) {
     this._SiteMenuPresenter.update(films);
@@ -125,7 +116,6 @@ class FilmBoard {
   }
 
   /*
-
    */
   _renderLoadMoreButton(films) {
     const buttonPlace = this._boardContainer.querySelector('.films-list');
@@ -148,7 +138,6 @@ class FilmBoard {
     }
   }
   /*
-
    */
   _renderPopUp(film) {
     if (this._mode === Mode.POPUP) {
@@ -156,14 +145,11 @@ class FilmBoard {
     }
     if (this._mode === Mode.DEFAULT) {
       this._popupComponent = new PopUp(film);
-
       this._popupComponent.setCloseBtnClickHandler(this._handleCloseButtonClick);
-
       this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
       this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
       this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
-
-      emersion(this._boardContainer, this._popupComponent);
+      render(this._boardContainer, this._popupComponent);
       this._mode = Mode.POPUP;
       this._boardContainer.classList.add('hide-overflow');
       document.addEventListener('keydown', this._onEscKeyDown);
@@ -181,7 +167,6 @@ class FilmBoard {
       evt.preventDefault();
       this._removePopup();
       this._boardContainer.classList.remove('hide-overflow');
-
       document.removeEventListener('keydown', this._onEscKeyDown);
     }
   }
@@ -191,10 +176,9 @@ class FilmBoard {
     this._boardContainer.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._onEscKeyDown);
   }
+
   /*
-
    */
-
   _createFilmRateArray() {
     const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
     return rateFilm;
@@ -239,13 +223,12 @@ class FilmBoard {
     this._renderFilmAdditionalList();
   }
   /*
-
    */
+
   _renderAdditionalFilms(container, film) {
     const filmView = new FilmCard(film);
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
-
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);
     filmView.setWatchedClickHandler(this._watchedClickHandler);
     filmView.setFutureClickHandler(this._futureClickHandler);
@@ -256,6 +239,7 @@ class FilmBoard {
   _renderFilmAdditionalList() {
     const filmCardContainerMostRate = this._boardContainer.querySelector('.films-list__container--rating');
     const filmCardContainerMostComments = this._boardContainer.querySelector('.films-list__container--comments');
+
     const rateFilm = this._createFilmRateArray();
     const commentsFilm = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
@@ -264,7 +248,6 @@ class FilmBoard {
       .forEach((movie) => {
         this._renderAdditionalFilms(filmCardContainerMostComments, movie);
       });
-
     rateFilm
       .slice(0, FILMS_EXTRA_SECTION)
       .forEach((movie) => {
