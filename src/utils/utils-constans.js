@@ -8,4 +8,9 @@ const SortType = {
   RATING: 'rating',
 };
 
-export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType };
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  POPUP: 'POP-UP',
+};
+
+export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode };

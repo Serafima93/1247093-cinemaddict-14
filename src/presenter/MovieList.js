@@ -4,27 +4,10 @@ import { Sort } from '../view/sort';
 import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
-/*
-
- */
 import { render, emersion, remove } from '../utils/utils-render.js';
-import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType } from '../utils/utils-constans.js';
-/*
-
- */
-import { FooterStatisticPresenter } from './footer.js';
-import { UserProfilePresenter } from './user.js';
+import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode } from '../utils/utils-constans.js';
 import { MenuPresenter } from './menu.js';
 
-
-const siteFooterElement = document.querySelector('.footer__statistics');
-const siteHeaderElement = document.querySelector('.header');
-const bodyElement = document.querySelector('body');
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  POPUP: 'POP-UP',
-};
 
 class FilmBoard {
   constructor(boardContainer) {
@@ -39,15 +22,13 @@ class FilmBoard {
 
     this._renderPopUp = this._renderPopUp.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
-
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._futureClickHandler = this._futureClickHandler.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
-
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-    this._currentSortType = SortType.DEFAULT;
 
+    this._currentSortType = SortType.DEFAULT;
     this._mode = Mode.DEFAULT;
     this._popupComponent = null;
   }
@@ -63,17 +44,14 @@ class FilmBoard {
   }
 
   _renderFilmBoard() {
-    this._renderUserPresenter();
     this._SiteMenuPresenter.init(this._films);
 
     if (this._films.length) {
       this._sortComponents.setSortTypeChangeHandler(this._handleSortTypeChange);
-
       this._renderContainers();
     } else {
       this._renderNoFilms();
     }
-    this._renderFooterStatisticPresenter(this._films.length);
   }
 
   _renderContainers() {
@@ -125,39 +103,26 @@ class FilmBoard {
   /*
 
    */
+  _updateMenu(films) {
+    this._SiteMenuPresenter.update(films);
+  }
 
   _favoriteClickHandler(film) {
     const oldFilm = this._films.find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
-
-    const index = this._films.indexOf(film);
-    if (index !== -1) {
-      this._films[index] = oldFilm;
-    }
-    this._SiteMenuPresenter.update(this._films);
-
+    this._updateMenu(this._films);
   }
 
   _watchedClickHandler(film) {
     const oldFilm = this._films.find((item) => item.id === film.id);
     oldFilm.isWatched = !film.isWatched;
-
-    const index = this._films.indexOf(film);
-    if (index !== -1) {
-      this._films[index] = oldFilm;
-    }
-    this._SiteMenuPresenter.update(this._films);
+    this._updateMenu(this._films);
   }
 
   _futureClickHandler(film) {
     const oldFilm = this._films.find((item) => item.id === film.id);
     oldFilm.futureFilm = !film.futureFilm;
-
-    const index = this._films.indexOf(film);
-    if (index !== -1) {
-      this._films[index] = oldFilm;
-    }
-    this._SiteMenuPresenter.update(this._films);
+    this._updateMenu(this._films);
   }
 
   /*
@@ -187,11 +152,9 @@ class FilmBoard {
 
    */
   _renderPopUp(film) {
-
     if (this._mode === Mode.POPUP) {
       this._removePopup();
     }
-
     if (this._mode === Mode.DEFAULT) {
       this._popupComponent = new PopUp(film);
 
@@ -201,9 +164,9 @@ class FilmBoard {
       this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
       this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
 
-      emersion(bodyElement, this._popupComponent);
+      emersion(this._boardContainer, this._popupComponent);
       this._mode = Mode.POPUP;
-      bodyElement.classList.add('hide-overflow');
+      this._boardContainer.classList.add('hide-overflow');
       document.addEventListener('keydown', this._onEscKeyDown);
     }
   }
@@ -218,7 +181,7 @@ class FilmBoard {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._removePopup();
-      bodyElement.classList.remove('hide-overflow');
+      this._boardContainer.classList.remove('hide-overflow');
 
       document.removeEventListener('keydown', this._onEscKeyDown);
     }
@@ -226,21 +189,30 @@ class FilmBoard {
 
   _handleCloseButtonClick() {
     this._removePopup();
-    bodyElement.classList.remove('hide-overflow');
+    this._boardContainer.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._onEscKeyDown);
   }
   /*
 
    */
 
+  _createFilmRateArray() {
+    const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
+    return rateFilm;
+  }
+
+  _createFilmYearArray() {
+    const yearFilm = this._films.slice().sort((a, b) => b.productionYear - a.productionYear);
+    return yearFilm;
+  }
 
   _filmRateSort() {
-    const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
+    const rateFilm = this._createFilmRateArray();
     this._renderFilmList(rateFilm);
   }
 
   _filmYearSort() {
-    const yearFilm = this._films.slice().sort((a, b) => b.productionYear - a.productionYear);
+    const yearFilm = this._createFilmYearArray();
     this._renderFilmList(yearFilm);
   }
 
@@ -283,12 +255,10 @@ class FilmBoard {
   }
 
   _renderFilmAdditionalList() {
-
     const filmCardContainerMostRate = this._boardContainer.querySelector('.films-list__container--rating');
     const filmCardContainerMostComments = this._boardContainer.querySelector('.films-list__container--comments');
 
-    /* функция для самых рейтинговых и коментированных фильмов  */
-    const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
+    const rateFilm = this._createFilmRateArray();
     const commentsFilm = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
 
     commentsFilm
@@ -306,16 +276,6 @@ class FilmBoard {
 
   _renderNoFilms() {
     render(this._boardContainer, this._noFilmsComponent);
-  }
-
-  _renderUserPresenter() {
-    const userPresenter = new UserProfilePresenter(siteHeaderElement);
-    userPresenter.init();
-  }
-
-  _renderFooterStatisticPresenter(totalFilms) {
-    const footerStatisticPresenter = new FooterStatisticPresenter(siteFooterElement);
-    footerStatisticPresenter.init(totalFilms);
   }
 }
 export { FilmBoard };
