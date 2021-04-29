@@ -12,18 +12,22 @@ class FilmBoard {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
+
     this._filmListComponent = new FilmList();
     this._noFilmsComponent = new EmptyWrap();
     this._sortComponents = new Sort();
     this._loadMoreButtonComponent = new ShowMoreButton();
     this._SiteMenuPresenter = new MenuPresenter(this._boardContainer);
+
     this._renderPopUp = this._renderPopUp.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._futureClickHandler = this._futureClickHandler.bind(this);
+
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
     this._currentSortType = SortType.DEFAULT;
     this._mode = Mode.DEFAULT;
     this._popupComponent = null;
@@ -31,6 +35,7 @@ class FilmBoard {
   init(films) {
     this._films = films.slice();
     this._sourcedBoardFilms = films.slice();
+
     this._filmView = {};
     this._filmViewTop = {};
     this._filmViewComment = {};
@@ -97,6 +102,8 @@ class FilmBoard {
     this._SiteMenuPresenter.update(films);
   }
 
+  /*вариант номер 1 */
+
   _favoriteClickHandler(film) {
     const oldFilm = this._films.find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
@@ -114,6 +121,31 @@ class FilmBoard {
     oldFilm.futureFilm = !film.futureFilm;
     this._updateMenu(this._films);
   }
+  /*вариант номер 2 */
+
+  // _changeClickHandler(film, parameter) {
+  //   const oldFilm = this._films.find((item) => item.id === film.id);
+  //   oldFilm[parameter] = !film[parameter];
+  //   this._updateMenu(this._films);
+  // }
+
+
+  /*вариант номер 3 */
+
+  // _updateFilm(film, newFilmState) {
+  //   const oldFilm = this._films.find((item) => item.id === film.id); // находим элемент массива пришедш. фильма
+  //   const filmIndex2 = this._films.indexOf(oldFilm); // узнаем его индекс в массиве всех фильмов
+
+  //   console.log(this._films[filmIndex2].isFavorit);
+  //   this._films[filmIndex2] = Object.assign({}, film, newFilmState); // фильм с этим индексом равен копии с протиположн состоянием
+  //   console.log(this._films[filmIndex2].isFavorit);
+  // }
+
+  // _favoriteClickHandler(film) {
+  //   this._updateFilm(film, { isFavorit: !film.isFavorit });
+  //   this._updateMenu(this._films);
+  // }
+
 
   /*
    */
@@ -146,9 +178,11 @@ class FilmBoard {
     if (this._mode === Mode.DEFAULT) {
       this._popupComponent = new PopUp(film);
       this._popupComponent.setCloseBtnClickHandler(this._handleCloseButtonClick);
+
       this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
       this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
       this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
+
       render(this._boardContainer, this._popupComponent);
       this._mode = Mode.POPUP;
       this._boardContainer.classList.add('hide-overflow');

@@ -14,17 +14,12 @@ class MenuPresenter {
   }
 
   update(films = []) {
-    const state = this._getFilterState(films);
-
     if (this._SiteMenuComponent != null) {
+      const state = this._getFilterState(films);
       remove(this._SiteMenuComponent);
       this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm);
       render(this._container, this._SiteMenuComponent, RenderPosition.AFTERBEGIN);
     }
-
-    // this._SiteMenuComponent.setValue(state.favoritFilm, state.watchedFilm, state.futureFilm);
-    // render(this._container, this._SiteMenuComponent);
-    // console.log(this._SiteMenuComponent);
   }
 
   _getFilterState(films) {

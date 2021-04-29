@@ -171,19 +171,23 @@ class PopUp extends Abstract {
     return createPopUp(this._filters);
   }
 
+
   _editClickHandlerPopupFavorite(evt) {
     evt.preventDefault();
     this._callback.favorite(this._film);
+    this.getElement().querySelector('.film-details__control-label--favorite').classList.add('sort__button--active');
   }
 
   _editClickHandlerPopupWatched(evt) {
     evt.preventDefault();
     this._callback.watched(this._film);
+    this.getElement().querySelector('.film-details__control-label--watched').classList.add('sort__button--active');
   }
 
   _editClickHandlerPopupFuture(evt) {
     evt.preventDefault();
     this._callback.future(this._film);
+    this.getElement().querySelector('.film-details__control-label--watchlist').classList.add('sort__button--active');
   }
 
   _closeClickHandler(evt) {
