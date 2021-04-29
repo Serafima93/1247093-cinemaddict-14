@@ -137,7 +137,7 @@ const createPopUp = (films) => {
       </div>
       <section class="film-details__controls">
         <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
-        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to
+        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ">Add to
           watchlist</label>
 
         <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
@@ -145,7 +145,7 @@ const createPopUp = (films) => {
           watched</label>
 
         <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
-        <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to
+        <label for="favorite" class="film-details__control-label film-details__control-label--favorite ">Add to
           favorites</label>
       </section>
     </div>
@@ -156,10 +156,13 @@ const createPopUp = (films) => {
 
 
 class PopUp extends Abstract {
-  constructor(films) {
+  constructor(films, favoriteStatus, watchedStatus, futureStatus) {
     super();
     this._filters = films;
-    this._element = null;
+    this._favoriteStatus = favoriteStatus;
+    this._watchedStatus = watchedStatus;
+    this._futureStatus = futureStatus;
+
     this._closeClickHandler = this._closeClickHandler.bind(this);
 
     this._editClickHandlerPopupFavorite = this._editClickHandlerPopupFavorite.bind(this);
@@ -171,23 +174,29 @@ class PopUp extends Abstract {
     return createPopUp(this._filters);
   }
 
+  _changeActiveStatus(target) {
+    if (target.classList.contains('sort__button--active')) {
+      target.classList.remove('sort__button--active');
+    } else { target.classList.add('sort__button--active'); }
+  }
+
 
   _editClickHandlerPopupFavorite(evt) {
     evt.preventDefault();
+    this._changeActiveStatus(evt.target);
     this._callback.favorite(this._film);
-    this.getElement().querySelector('.film-details__control-label--favorite').classList.add('sort__button--active');
   }
 
   _editClickHandlerPopupWatched(evt) {
     evt.preventDefault();
+    this._changeActiveStatus(evt.target);
     this._callback.watched(this._film);
-    this.getElement().querySelector('.film-details__control-label--watched').classList.add('sort__button--active');
   }
 
   _editClickHandlerPopupFuture(evt) {
     evt.preventDefault();
+    this._changeActiveStatus(evt.target);
     this._callback.future(this._film);
-    this.getElement().querySelector('.film-details__control-label--watchlist').classList.add('sort__button--active');
   }
 
   _closeClickHandler(evt) {
@@ -202,17 +211,32 @@ class PopUp extends Abstract {
 
   setFavoritePopupClickHandler(callback) {
     this._callback.favorite = callback;
-    this.getElement().querySelector('.film-details__control-label--favorite').addEventListener('click', this._editClickHandlerPopupFavorite);
+    const favoriteFilms = this.getElement().querySelector('.film-details__control-label--favorite');
+    favoriteFilms.addEventListener('click', this._editClickHandlerPopupFavorite);
+
+    if (this._favoriteStatus !== false) {
+      favoriteFilms.classList.add('sort__button--active');
+    }
   }
 
   setWatchedPopupClickHandler(callback) {
     this._callback.watched = callback;
-    this.getElement().querySelector('.film-details__control-label--watched').addEventListener('click', this._editClickHandlerPopupWatched);
+    const watchedFilms = this.getElement().querySelector('.film-details__control-label--watched');
+    watchedFilms.addEventListener('click', this._editClickHandlerPopupWatched);
+
+    if (this._watchedStatus !== false) {
+      watchedFilms.classList.add('sort__button--active');
+    }
   }
 
   setFuturePopupClickHandler(callback) {
     this._callback.future = callback;
-    this.getElement().querySelector('.film-details__control-label--watchlist').addEventListener('click', this._editClickHandlerPopupFuture);
+    const futureFilms = this.getElement().querySelector('.film-details__control-label--watchlist');
+    futureFilms.addEventListener('click', this._editClickHandlerPopupFuture);
+
+    if (this._futureStatus !== false) {
+      futureFilms.classList.add('sort__button--active');
+    }
   }
 }
 

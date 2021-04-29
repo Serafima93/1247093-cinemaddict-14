@@ -73,7 +73,14 @@ class FilmBoard {
   }
 
   _renderFilm(container, film) {
-    const filmView = new FilmCard(film);
+    let favoriteStatus = false;
+    let watchedStatus = false;
+    let futureStatus = false;
+    if (film.isFavorit === true) { favoriteStatus = true; }
+    if (film.isWatched === true) { watchedStatus = true; }
+    if (film.futureFilm === true) { futureStatus = true; }
+
+    const filmView = new FilmCard(film, favoriteStatus, watchedStatus, futureStatus);
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);
@@ -160,9 +167,7 @@ class FilmBoard {
     films
       .slice(this._renderedFilmCount, this._renderedFilmCount + FILM_COUNT_PER_STEP)
       .forEach((film) => {
-        const newFilm = new FilmCard(film);
-        render(filmCardContainers, newFilm);
-        newFilm.setEditClickHandler(this._renderPopUp);
+        this._renderFilm(filmCardContainers, film);
       });
     this._renderedFilmCount += FILM_COUNT_PER_STEP;
     if (this._renderedFilmCount >= this._films.length) {
@@ -176,7 +181,14 @@ class FilmBoard {
       this._removePopup();
     }
     if (this._mode === Mode.DEFAULT) {
-      this._popupComponent = new PopUp(film);
+      let favoriteStatus = false;
+      let watchedStatus = false;
+      let futureStatus = false;
+      if (film.isFavorit === true) { favoriteStatus = true; }
+      if (film.isWatched === true) { watchedStatus = true; }
+      if (film.futureFilm === true) { futureStatus = true; }
+
+      this._popupComponent = new PopUp(film, favoriteStatus, watchedStatus, futureStatus);
       this._popupComponent.setCloseBtnClickHandler(this._handleCloseButtonClick);
 
       this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
@@ -213,6 +225,12 @@ class FilmBoard {
 
   /*
    */
+
+  _createFilmCommentsArray() {
+    const commentsFilm = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
+    return commentsFilm;
+  }
+
   _createFilmRateArray() {
     const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
     return rateFilm;
@@ -260,7 +278,13 @@ class FilmBoard {
    */
 
   _renderAdditionalFilms(container, film) {
-    const filmView = new FilmCard(film);
+    let favoriteStatus = false;
+    let watchedStatus = false;
+    let futureStatus = false;
+    if (film.isFavorit === true) { favoriteStatus = true; }
+    if (film.isWatched === true) { watchedStatus = true; }
+    if (film.futureFilm === true) { futureStatus = true; }
+    const filmView = new FilmCard(film, favoriteStatus, watchedStatus, futureStatus);
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);
@@ -275,7 +299,7 @@ class FilmBoard {
     const filmCardContainerMostComments = this._boardContainer.querySelector('.films-list__container--comments');
 
     const rateFilm = this._createFilmRateArray();
-    const commentsFilm = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
+    const commentsFilm = this._createFilmCommentsArray();
 
     commentsFilm
       .slice(0, FILMS_EXTRA_SECTION)

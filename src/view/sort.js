@@ -12,7 +12,6 @@ const createSorting = () => {
 class Sort extends Abstract {
   constructor() {
     super();
-
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
