@@ -15,30 +15,31 @@ const render = (container, child, place = RenderPosition.BEFOREEND) => {
   }
 
   switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(child);
-      break;
     case RenderPosition.BEFOREEND:
       container.append(child);
       break;
     default:
-      alert('Wrong value in render function');
+      container.prepend(child);
       break;
   }
 };
 
-const replaceChild = (parent, newChild, status) => {
+const replace = (newChild, oldChild) => {
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
+
   if (newChild instanceof Abstract) {
     newChild = newChild.getElement();
   }
 
-  if (parent === null || newChild === null) {
-    throw new Error('Can\'t replace unexisting elements');
-  }
-  if (status === true) {
-    return parent.appendChild(newChild);
-  } else { parent.removeChild(newChild);}
+  const parent = oldChild.parentElement;
 
+  parent.replaceChild(newChild, oldChild);
 };
 
 
@@ -47,7 +48,6 @@ const remove = (component) => {
     throw new Error('Can remove only components');
   }
   component.getElement().remove();
-  component.removeElement();
 };
 
 const createSiteElement = (template) => {
@@ -62,5 +62,5 @@ export {
   render,
   createSiteElement,
   remove,
-  replaceChild
+  replace
 };

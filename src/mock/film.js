@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import { nanoid } from 'nanoid';
 dayjs.extend(duration);
 
 import { getRandomInteger } from '../utils/utils-common';
@@ -7,7 +8,7 @@ import { generateFilmComment } from './comments';
 
 
 const generateFilmPoster = () => {
-  const filmPoster = ['./images/posters/made-for-each-other.png', './images/posters/popeye-meets-sinbad.png', './images/posters/the-dance-of-life.jpg', './images/posters/the-man-with-the-golden-arm.jpg'];
+  const filmPoster = ['./images/posters/santa-claus-conquers-the-martians.jpg','./images/posters/sagebrush-trail.jpg', './images/posters/the-great-flamarion.jpg', './images/posters/made-for-each-other.png', './images/posters/popeye-meets-sinbad.png', './images/posters/the-dance-of-life.jpg', './images/posters/the-man-with-the-golden-arm.jpg'];
   const randomIndex = getRandomInteger(0, filmPoster.length - 1);
   return filmPoster[randomIndex];
 };
@@ -80,6 +81,7 @@ const ageFilmRate = () => {
 };
 
 const generateFilm = () => ({
+  id: nanoid(),
   poster: generateFilmPoster(),
   title: generateFilmTitle(),
   originalName: generateFilmTitle(),
@@ -95,7 +97,7 @@ const generateFilm = () => ({
   ageRate: ageFilmRate(),
   isFavorit: Boolean(getRandomInteger(0, 1)),
   isWatched: Boolean(getRandomInteger(0, 1)),
-  futureFilm: Boolean(getRandomInteger(0, 1)),
+  isFutureFilm: Boolean(getRandomInteger(0, 1)),
   comments: new Array(getRandomInteger(1, 20)).fill().map(generateFilmComment),
 });
 
