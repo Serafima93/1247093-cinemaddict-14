@@ -25,7 +25,7 @@ class MenuPresenter {
   _getFilterState(films) {
     const favoritFilm = films.filter((film) => film.isFavorit).length;
     const watchedFilm = films.filter((film) => film.isWatched).length;
-    const futureFilm = films.filter((film) => film.futureFilm).length;
+    const futureFilm = films.filter((film) => film.isFutureFilm).length;
 
     return {
       favoritFilm,

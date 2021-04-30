@@ -26,20 +26,17 @@ const createFilmCard = (film) => {
   <p class="film-card__description">${description}</p>
   <a class="film-card__comments">${commentLength} comments</a>
   <div class="film-card__controls">
-    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-    <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
+    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${film.isFutureFilm ? 'film-card__controls-item--active' : ''}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${film.isWatched ? 'film-card__controls-item--active' : ''}" type="button">Mark as watched</button>
+    <button class="film-card__controls-item button film-card__controls-item--favorite ${film.isFavorit ? 'film-card__controls-item--active' : ''}" type="button">Mark as favorite</button>
   </div>
 </article>`;
 };
 
 class FilmCard extends Abstract {
-  constructor(film, favoriteStatus, watchedStatus, futureStatus) {
+  constructor(film) {
     super();
     this._film = film;
-    this._favoriteStatus = favoriteStatus;
-    this._watchedStatus = watchedStatus;
-    this._futureStatus = futureStatus;
 
     this._editClickHandlerPopup = this._editClickHandlerPopup.bind(this);
     this._editClickHandlerFavorite = this._editClickHandlerFavorite.bind(this);
@@ -92,9 +89,6 @@ class FilmCard extends Abstract {
     const favoriteFilms = this.getElement().querySelector('.film-card__controls-item--favorite');
     favoriteFilms.addEventListener('click', this._editClickHandlerFavorite);
 
-    if (this._favoriteStatus !== false) {
-      favoriteFilms.classList.add('film-card__controls-item--active');
-    }
   }
 
   setWatchedClickHandler(callback) {
@@ -102,20 +96,12 @@ class FilmCard extends Abstract {
     const watchedFilms = this.getElement().querySelector('.film-card__controls-item--mark-as-watched');
     watchedFilms.addEventListener('click', this._editClickHandlerWatched);
 
-    if (this._watchedStatus !== false) {
-      watchedFilms.classList.add('film-card__controls-item--active');
-    }
   }
 
   setFutureClickHandler(callback) {
     this._callback.future = callback;
-
     const futureFilms = this.getElement().querySelector('.film-card__controls-item--add-to-watchlist');
     futureFilms.addEventListener('click', this._editClickHandlerFuture);
-
-    if (this._futureStatus !== false) {
-      futureFilms.classList.add('film-card__controls-item--active');
-    }
   }
 }
 

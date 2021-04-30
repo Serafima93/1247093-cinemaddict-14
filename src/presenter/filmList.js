@@ -73,14 +73,7 @@ class FilmBoard {
   }
 
   _renderFilm(container, film) {
-    let favoriteStatus = false;
-    let watchedStatus = false;
-    let futureStatus = false;
-    if (film.isFavorit === true) { favoriteStatus = true; }
-    if (film.isWatched === true) { watchedStatus = true; }
-    if (film.futureFilm === true) { futureStatus = true; }
-
-    const filmView = new FilmCard(film, favoriteStatus, watchedStatus, futureStatus);
+    const filmView = new FilmCard(film);
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);
@@ -125,33 +118,9 @@ class FilmBoard {
 
   _futureClickHandler(film) {
     const oldFilm = this._films.find((item) => item.id === film.id);
-    oldFilm.futureFilm = !film.futureFilm;
+    oldFilm.isFutureFilm = !film.isFutureFilm;
     this._updateMenu(this._films);
   }
-  /*вариант номер 2 */
-
-  // _changeClickHandler(film, parameter) {
-  //   const oldFilm = this._films.find((item) => item.id === film.id);
-  //   oldFilm[parameter] = !film[parameter];
-  //   this._updateMenu(this._films);
-  // }
-
-
-  /*вариант номер 3 */
-
-  // _updateFilm(film, newFilmState) {
-  //   const oldFilm = this._films.find((item) => item.id === film.id); // находим элемент массива пришедш. фильма
-  //   const filmIndex2 = this._films.indexOf(oldFilm); // узнаем его индекс в массиве всех фильмов
-
-  //   console.log(this._films[filmIndex2].isFavorit);
-  //   this._films[filmIndex2] = Object.assign({}, film, newFilmState); // фильм с этим индексом равен копии с протиположн состоянием
-  //   console.log(this._films[filmIndex2].isFavorit);
-  // }
-
-  // _favoriteClickHandler(film) {
-  //   this._updateFilm(film, { isFavorit: !film.isFavorit });
-  //   this._updateMenu(this._films);
-  // }
 
 
   /*
@@ -181,14 +150,7 @@ class FilmBoard {
       this._removePopup();
     }
     if (this._mode === Mode.DEFAULT) {
-      let favoriteStatus = false;
-      let watchedStatus = false;
-      let futureStatus = false;
-      if (film.isFavorit === true) { favoriteStatus = true; }
-      if (film.isWatched === true) { watchedStatus = true; }
-      if (film.futureFilm === true) { futureStatus = true; }
-
-      this._popupComponent = new PopUp(film, favoriteStatus, watchedStatus, futureStatus);
+      this._popupComponent = new PopUp(film);
       this._popupComponent.setCloseBtnClickHandler(this._handleCloseButtonClick);
 
       this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
@@ -278,13 +240,7 @@ class FilmBoard {
    */
 
   _renderAdditionalFilms(container, film) {
-    let favoriteStatus = false;
-    let watchedStatus = false;
-    let futureStatus = false;
-    if (film.isFavorit === true) { favoriteStatus = true; }
-    if (film.isWatched === true) { watchedStatus = true; }
-    if (film.futureFilm === true) { futureStatus = true; }
-    const filmView = new FilmCard(film, favoriteStatus, watchedStatus, futureStatus);
+    const filmView = new FilmCard(film);
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);

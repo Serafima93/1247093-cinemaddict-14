@@ -63,8 +63,8 @@ const createComment = (comment) => {
 
 const createGenre = (genre) => `<span class="film-details__genre">${genre}</span>`;
 
-const createPopUp = (films) => {
-  const { title, description, director, comments, screenwriters, actors, ageRate, poster, rating, productionYear, timeContinue, country } = films;
+const createPopUp = (film) => {
+  const { title, description, director, comments, screenwriters, actors, ageRate, poster, rating, productionYear, timeContinue, country } = film;
 
 
   const { hours, minutes } = timeContinue.$d;
@@ -73,7 +73,7 @@ const createPopUp = (films) => {
     ? dayjs(productionYear).format('DD MMMM YYYY')
     : '';
 
-  const genres = films.genres.map(createGenre).join();
+  const genres = film.genres.map(createGenre).join();
 
   const commentsResult = createCommentsList(comments);
   return `<section class="film-details">
@@ -137,15 +137,15 @@ const createPopUp = (films) => {
       </div>
       <section class="film-details__controls">
         <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
-        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ">Add to
+        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist ${film.isFutureFilm ? 'sort__button--active' : ''}">Add to
           watchlist</label>
 
         <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
-        <label for="watched" class="film-details__control-label film-details__control-label--watched">Already
+        <label for="watched" class="film-details__control-label film-details__control-label--watched ${film.isWatched ? 'sort__button--active' : ''}">Already
           watched</label>
 
         <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
-        <label for="favorite" class="film-details__control-label film-details__control-label--favorite ">Add to
+        <label for="favorite" class="film-details__control-label film-details__control-label--favorite ${film.isFavorit ? 'sort__button--active' : ''}">Add to
           favorites</label>
       </section>
     </div>
@@ -156,13 +156,9 @@ const createPopUp = (films) => {
 
 
 class PopUp extends Abstract {
-  constructor(films, favoriteStatus, watchedStatus, futureStatus) {
+  constructor(films) {
     super();
     this._filters = films;
-    this._favoriteStatus = favoriteStatus;
-    this._watchedStatus = watchedStatus;
-    this._futureStatus = futureStatus;
-
     this._closeClickHandler = this._closeClickHandler.bind(this);
 
     this._editClickHandlerPopupFavorite = this._editClickHandlerPopupFavorite.bind(this);
@@ -213,30 +209,18 @@ class PopUp extends Abstract {
     this._callback.favorite = callback;
     const favoriteFilms = this.getElement().querySelector('.film-details__control-label--favorite');
     favoriteFilms.addEventListener('click', this._editClickHandlerPopupFavorite);
-
-    if (this._favoriteStatus !== false) {
-      favoriteFilms.classList.add('sort__button--active');
-    }
   }
 
   setWatchedPopupClickHandler(callback) {
     this._callback.watched = callback;
     const watchedFilms = this.getElement().querySelector('.film-details__control-label--watched');
     watchedFilms.addEventListener('click', this._editClickHandlerPopupWatched);
-
-    if (this._watchedStatus !== false) {
-      watchedFilms.classList.add('sort__button--active');
-    }
   }
 
   setFuturePopupClickHandler(callback) {
     this._callback.future = callback;
     const futureFilms = this.getElement().querySelector('.film-details__control-label--watchlist');
     futureFilms.addEventListener('click', this._editClickHandlerPopupFuture);
-
-    if (this._futureStatus !== false) {
-      futureFilms.classList.add('sort__button--active');
-    }
   }
 }
 

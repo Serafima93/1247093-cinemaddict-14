@@ -97,7 +97,7 @@ const generateFilm = () => ({
   ageRate: ageFilmRate(),
   isFavorit: Boolean(getRandomInteger(0, 1)),
   isWatched: Boolean(getRandomInteger(0, 1)),
-  futureFilm: Boolean(getRandomInteger(0, 1)),
+  isFutureFilm: Boolean(getRandomInteger(0, 1)),
   comments: new Array(getRandomInteger(1, 20)).fill().map(generateFilmComment),
 });
 
