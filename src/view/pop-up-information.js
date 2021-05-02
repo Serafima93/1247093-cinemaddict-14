@@ -1,5 +1,7 @@
 import dayjs from 'dayjs';
-import { Abstract } from './abstract.js';
+// import { Abstract } from './abstract.js';
+import { Smart } from './smart.js';
+
 
 const createCommentsList = (comments) => {
   const htmlPart = comments.map(createComment).join('');
@@ -155,27 +157,94 @@ const createPopUp = (film) => {
 };
 
 
-class PopUp extends Abstract {
-  constructor(films) {
+class PopUp extends Smart {
+  constructor(film) {
     super();
-    this._filters = films;
+    this._filters = film;
     this._closeClickHandler = this._closeClickHandler.bind(this);
 
     this._editClickHandlerPopupFavorite = this._editClickHandlerPopupFavorite.bind(this);
     this._editClickHandlerPopupWatched = this._editClickHandlerPopupWatched.bind(this);
     this._editClickHandlerPopupFuture = this._editClickHandlerPopupFuture.bind(this);
+
+
+    this._emogiWindowHandler = this._emogiWindowHandler.bind(this);
+    this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
+    this._emogiChangeHandler = this._emogiChangeHandler.bind(this);
+    this._setInnerHandlers();
   }
 
   getTemplate() {
     return createPopUp(this._filters);
   }
 
+  restoreHandlers() {
+    this._setInnerHandlers();
+    // this.setCloseBtnClickHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('.film-details__add-emoji-label')
+      .addEventListener('click', this._emogiWindowHandler);
+    this.getElement()
+      .querySelector('.film-details__comment-input')
+      .addEventListener('click', this._descriptionInputHandler);
+    this.getElement()
+      .querySelector('.film-details__emoji-list')
+      .addEventListener('change', this._emogiChangeHandler);
+  }
+
+  _emogiWindowHandler(evt) {
+    evt.preventDefault();
+  }
+
+  _descriptionInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      description: evt.target.value,
+    }, true);
+  }
+
+  _emogiChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      emogi: evt.target.value,
+    });
+  }
+
+  // reset(popUp) {
+  //   this.updateData(
+  //     this._film.parseFilmToData(popUp),
+  //   );
+  // }
+
+  // static parseFilmToData(film) {
+  //   return Object.assign(
+  //     {},
+  //     film,
+  //     {
+  //       isDueDate: film.dueDate !== null,
+  //     },
+  //   );
+  // }
+
+  // static parseDataToFilm(data) {
+  //   data = Object.assign({}, data);
+  //   if (!data.isDueDate) {
+  //     data.dueDate = null;
+  //   }
+
+  //   delete data.isDueDate;
+  //   return data;
+  // }
+
+
   _changeActiveStatus(target) {
     if (target.classList.contains('sort__button--active')) {
       target.classList.remove('sort__button--active');
     } else { target.classList.add('sort__button--active'); }
   }
-
 
   _editClickHandlerPopupFavorite(evt) {
     evt.preventDefault();
@@ -198,6 +267,7 @@ class PopUp extends Abstract {
   _closeClickHandler(evt) {
     evt.preventDefault();
     this._callback.closeClick();
+    // this.reset(this._films[i]);
   }
 
   setCloseBtnClickHandler(callback) {
