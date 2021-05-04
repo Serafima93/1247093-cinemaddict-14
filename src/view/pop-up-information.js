@@ -160,11 +160,12 @@ const createPopUp = (film) => {
 class PopUp extends Smart {
   constructor(film) {
     super();
-    this._data2 = PopUp.parseFilmToData(film.comments[0]); // невозможно иначе глубинное копирование
-
     this._data = film;
-    this._closeClickHandler = this._closeClickHandler.bind(this);
 
+    this._filmComment = PopUp.parseFilmToData(film.comments[0]); // невозможно иначе глубинное копирование
+
+
+    this._closeClickHandler = this._closeClickHandler.bind(this);
     this._editClickHandlerPopupFavorite = this._editClickHandlerPopupFavorite.bind(this);
     this._editClickHandlerPopupWatched = this._editClickHandlerPopupWatched.bind(this);
     this._editClickHandlerPopupFuture = this._editClickHandlerPopupFuture.bind(this);
@@ -206,17 +207,18 @@ class PopUp extends Smart {
 
   _descriptionInputHandler(evt) {
     evt.preventDefault();
-    this.updateData({
+    return this.updateData({
       description: evt.target.value,
     }, true);
-    this._data2.text = evt.target.value;
+    // this._filmComment.text = evt.target.value;
   }
 
   _emojiChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({ emoji: evt.target.value });
-    // this._emojiChangeHandlerPlace(evt.target.value);
+    return this._emojiChangeHandlerPlace(evt.target.value);
   }
+
   _emojiChangeHandlerPlace(value) {
     const emojiPlace = this.getElement().querySelector('.film-details__add-emoji-label');
     const newElement = document.createElement('img');
@@ -224,6 +226,7 @@ class PopUp extends Smart {
     newElement.setAttribute('style', 'width: 55px');
     emojiPlace.appendChild(newElement);
     document.addEventListener('keydown', this._onEnterKeyDown);
+    return newElement.src;
   } // Для создания отображения в иконке слева
 
   static parseFilmToData(film) {
@@ -237,19 +240,17 @@ class PopUp extends Smart {
     );
   } // Для создания нового коммента делаем копию массива и чистые поля для ввода эмоции и коммента
 
+
   static parseDataToFilm(film) {
     film = Object.assign({}, film);
+    const newComment = createComment(film);
 
-    const newComment = createComment();
+    newComment.text = this._descriptionInputHandler();
+    newComment.emoji = this._emojiChangeHandler(); // приравниваем свойства старые из объекта на новые
 
-    newComment.text = film.text;
-    newComment.emoji = film.emoji; // приравниваем свойства старые из объекта на новые
-
-    film.comments.push(newComment);
 
     delete film.text; // удаляем свойства старые из объекта
     delete film.emoji;
-
     return film;
   }
 
@@ -258,8 +259,11 @@ class PopUp extends Smart {
   //   const isHasTextContentAndEmoji = !this._data.comments.emoji || !this._data.comments.text.trim();
 
   //   if (isRightKeys && !isHasTextContentAndEmoji) {
-  //     this._data2 = PopUp.parseDataToFilm(this._data2.comments[0]);
-  //     this._callback.setSendNewComment(this._data2);
+  //     this._filmComment = PopUp.parseDataToFilm(this._filmComment);
+  //     //надо как-то запушить оъект в массив с комментами
+  //     // this._data.comments.push(this._filmComment);
+
+  //     this._callback.setSendNewComment(this._filmComment);
   //     this.updateElement();
   //   }
   // }
