@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
-// import { Abstract } from './abstract.js';
 import { Smart } from './smart.js';
+import { EmogiType } from '../utils/utils-constans';
 
 
 const createCommentsList = (comments) => {
@@ -15,19 +15,19 @@ const createCommentsList = (comments) => {
         <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
       </label>
       <div class="film-details__emoji-list">
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="${EmogiType.SMILE}">
         <label class="film-details__emoji-label" for="emoji-smile">
           <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
         </label>
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="${EmogiType.SLEEP}">
         <label class="film-details__emoji-label" for="emoji-sleeping">
           <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
         </label>
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="${EmogiType.PUKE}">
         <label class="film-details__emoji-label" for="emoji-puke">
           <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
         </label>
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="${EmogiType.ANGRY}">
         <label class="film-details__emoji-label" for="emoji-angry">
           <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
         </label>
@@ -160,85 +160,119 @@ const createPopUp = (film) => {
 class PopUp extends Smart {
   constructor(film) {
     super();
-    this._filters = film;
+    this._data2 = PopUp.parseFilmToData(film.comments[0]); // невозможно иначе глубинное копирование
+
+    this._data = film;
     this._closeClickHandler = this._closeClickHandler.bind(this);
 
     this._editClickHandlerPopupFavorite = this._editClickHandlerPopupFavorite.bind(this);
     this._editClickHandlerPopupWatched = this._editClickHandlerPopupWatched.bind(this);
     this._editClickHandlerPopupFuture = this._editClickHandlerPopupFuture.bind(this);
 
-
-    this._emogiWindowHandler = this._emogiWindowHandler.bind(this);
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
-    this._emogiChangeHandler = this._emogiChangeHandler.bind(this);
+    this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
+
+    // this._sendNewCommentHandler = this._sendNewCommentHandler.bind(this);
     this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPopUp(this._filters);
+    return createPopUp(this._data);
   }
 
-  restoreHandlers() {
-    this._setInnerHandlers();
-    // this.setCloseBtnClickHandler(this._callback.formSubmit);
+  getEmojis() {
+    return this.getElement().querySelector('.film-details__emoji-list');
+  }
+
+  getCommentField() {
+    return this.getElement().querySelector('.film-details__comment-input');
   }
 
   _setInnerHandlers() {
-    this.getElement()
-      .querySelector('.film-details__add-emoji-label')
-      .addEventListener('click', this._emogiWindowHandler);
-    this.getElement()
-      .querySelector('.film-details__comment-input')
-      .addEventListener('click', this._descriptionInputHandler);
-    this.getElement()
-      .querySelector('.film-details__emoji-list')
-      .addEventListener('change', this._emogiChangeHandler);
-  }
+    this.getCommentField().addEventListener('click', this._descriptionInputHandler);
+    this.getEmojis().addEventListener('change', this._emojiChangeHandler);
+  } // невешиваем обработчики кликов
 
-  _emogiWindowHandler(evt) {
-    evt.preventDefault();
-  }
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setCloseBtnClickHandler(this._callback.closeClick);
+  } // передаем заново обработчики кликов
+
+  reset(popUp) {
+    this.updateData(
+      this._data.parseFilmToData(popUp),
+    );
+  } // для перезагрузки поп-апа - в презентер
 
   _descriptionInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
       description: evt.target.value,
     }, true);
+    this._data2.text = evt.target.value;
   }
 
-  _emogiChangeHandler(evt) {
+  _emojiChangeHandler(evt) {
     evt.preventDefault();
-    this.updateData({
-      emogi: evt.target.value,
-    });
+    this.updateData({ emoji: evt.target.value });
+    // this._emojiChangeHandlerPlace(evt.target.value);
+  }
+  _emojiChangeHandlerPlace(value) {
+    const emojiPlace = this.getElement().querySelector('.film-details__add-emoji-label');
+    const newElement = document.createElement('img');
+    newElement.src = './images/emoji/' + value + '.png';
+    newElement.setAttribute('style', 'width: 55px');
+    emojiPlace.appendChild(newElement);
+    document.addEventListener('keydown', this._onEnterKeyDown);
+  } // Для создания отображения в иконке слева
+
+  static parseFilmToData(film) {
+    return Object.assign(
+      {},
+      film,
+      {
+        emoji: 'emoji' in film,
+        text: '',
+      },
+    );
+  } // Для создания нового коммента делаем копию массива и чистые поля для ввода эмоции и коммента
+
+  static parseDataToFilm(film) {
+    film = Object.assign({}, film);
+
+    const newComment = createComment();
+
+    newComment.text = film.text;
+    newComment.emoji = film.emoji; // приравниваем свойства старые из объекта на новые
+
+    film.comments.push(newComment);
+
+    delete film.text; // удаляем свойства старые из объекта
+    delete film.emoji;
+
+    return film;
   }
 
-  // reset(popUp) {
-  //   this.updateData(
-  //     this._film.parseFilmToData(popUp),
-  //   );
-  // }
+  // _sendNewCommentHandler(evt) {
+  //   const isRightKeys = (evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD));
+  //   const isHasTextContentAndEmoji = !this._data.comments.emoji || !this._data.comments.text.trim();
 
-  // static parseFilmToData(film) {
-  //   return Object.assign(
-  //     {},
-  //     film,
-  //     {
-  //       isDueDate: film.dueDate !== null,
-  //     },
-  //   );
-  // }
-
-  // static parseDataToFilm(data) {
-  //   data = Object.assign({}, data);
-  //   if (!data.isDueDate) {
-  //     data.dueDate = null;
+  //   if (isRightKeys && !isHasTextContentAndEmoji) {
+  //     this._data2 = PopUp.parseDataToFilm(this._data2.comments[0]);
+  //     this._callback.setSendNewComment(this._data2);
+  //     this.updateElement();
   //   }
-
-  //   delete data.isDueDate;
-  //   return data;
   // }
 
+  // setSendNewComment(callback) {
+  //   this._callback.setSendNewComment = callback;
+  // }
+
+  _onEnterKeyDown(evt) {
+    if ((evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD))) {
+      evt.preventDefault();
+    }
+  }
 
   _changeActiveStatus(target) {
     if (target.classList.contains('sort__button--active')) {
@@ -267,7 +301,6 @@ class PopUp extends Smart {
   _closeClickHandler(evt) {
     evt.preventDefault();
     this._callback.closeClick();
-    // this.reset(this._films[i]);
   }
 
   setCloseBtnClickHandler(callback) {

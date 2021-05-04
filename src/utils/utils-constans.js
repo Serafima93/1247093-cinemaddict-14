@@ -13,4 +13,11 @@ const Mode = {
   POPUP: 'POP-UP',
 };
 
-export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode };
+const EmogiType = {
+  SMILE: 'smile',
+  SLEEP: 'sleeping',
+  PUKE: 'puke',
+  ANGRY: 'angry',
+};
+
+export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, EmogiType };
