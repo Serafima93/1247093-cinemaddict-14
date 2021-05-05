@@ -158,12 +158,10 @@ const createPopUp = (film) => {
 
 
 class PopUp extends Smart {
-  constructor(film) {
+  constructor(film, newComment) {
     super();
     this._data = film;
-
-    this._filmComment = PopUp.parseFilmToData(film.comments[0]); // невозможно иначе глубинное копирование
-
+    this._filmComment = PopUp.parseFilmToData(newComment);
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._editClickHandlerPopupFavorite = this._editClickHandlerPopupFavorite.bind(this);
@@ -173,8 +171,9 @@ class PopUp extends Smart {
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
 
-    // this._sendNewCommentHandler = this._sendNewCommentHandler.bind(this);
+    this._sendNewCommentHandler = this._sendNewCommentHandler.bind(this);
     this._setInnerHandlers();
+
   }
 
   getTemplate() {
@@ -190,8 +189,9 @@ class PopUp extends Smart {
   }
 
   _setInnerHandlers() {
-    this.getCommentField().addEventListener('click', this._descriptionInputHandler);
+    this.getCommentField().addEventListener('input', this._descriptionInputHandler);
     this.getEmojis().addEventListener('change', this._emojiChangeHandler);
+    document.addEventListener('keydown', this._sendNewCommentHandler);
   } // невешиваем обработчики кликов
 
   restoreHandlers() {
@@ -201,22 +201,24 @@ class PopUp extends Smart {
 
   reset(popUp) {
     this.updateData(
-      this._data.parseFilmToData(popUp),
+      this._filmComment.parseFilmToData(popUp),
     );
   } // для перезагрузки поп-апа - в презентер
 
   _descriptionInputHandler(evt) {
     evt.preventDefault();
-    return this.updateData({
-      description: evt.target.value,
+    this.updateData({
+      commentText: evt.target.value,
     }, true);
-    // this._filmComment.text = evt.target.value;
+    this._filmComment.text = evt.target.value;
   }
 
   _emojiChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({ emoji: evt.target.value });
-    return this._emojiChangeHandlerPlace(evt.target.value);
+    const url = this._emojiChangeHandlerPlace(evt.target.value);
+
+    this._filmComment.emoji = url;
   }
 
   _emojiChangeHandlerPlace(value) {
@@ -225,7 +227,6 @@ class PopUp extends Smart {
     newElement.src = './images/emoji/' + value + '.png';
     newElement.setAttribute('style', 'width: 55px');
     emojiPlace.appendChild(newElement);
-    document.addEventListener('keydown', this._onEnterKeyDown);
     return newElement.src;
   } // Для создания отображения в иконке слева
 
@@ -234,7 +235,7 @@ class PopUp extends Smart {
       {},
       film,
       {
-        emoji: 'emoji' in film,
+        emoji: '',
         text: '',
       },
     );
@@ -243,40 +244,26 @@ class PopUp extends Smart {
 
   static parseDataToFilm(film) {
     film = Object.assign({}, film);
-    const newComment = createComment(film);
-
-    newComment.text = this._descriptionInputHandler();
-    newComment.emoji = this._emojiChangeHandler(); // приравниваем свойства старые из объекта на новые
-
-
-    delete film.text; // удаляем свойства старые из объекта
-    delete film.emoji;
     return film;
   }
 
-  // _sendNewCommentHandler(evt) {
-  //   const isRightKeys = (evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD));
-  //   const isHasTextContentAndEmoji = !this._data.comments.emoji || !this._data.comments.text.trim();
+  _sendNewCommentHandler(evt) {
+    const isRightKeys = (evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD));
+    const isHasTextContentAndEmoji = !this._filmComment.emoji || !this._filmComment.text.trim();
 
-  //   if (isRightKeys && !isHasTextContentAndEmoji) {
-  //     this._filmComment = PopUp.parseDataToFilm(this._filmComment);
-  //     //надо как-то запушить оъект в массив с комментами
-  //     // this._data.comments.push(this._filmComment);
+    if (isRightKeys && !isHasTextContentAndEmoji) {
+      this._newComment = PopUp.parseDataToFilm(this._filmComment);
+      this._filmComment = PopUp.parseFilmToData(this._newComment);
+      this._data.comments.push(this._newComment);
 
-  //     this._callback.setSendNewComment(this._filmComment);
-  //     this.updateElement();
-  //   }
-  // }
+      // this._callback.setSendNewComment(this._newComment);
+      this.updateElement();
+    }
+  }
 
   // setSendNewComment(callback) {
   //   this._callback.setSendNewComment = callback;
   // }
-
-  _onEnterKeyDown(evt) {
-    if ((evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD))) {
-      evt.preventDefault();
-    }
-  }
 
   _changeActiveStatus(target) {
     if (target.classList.contains('sort__button--active')) {

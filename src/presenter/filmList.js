@@ -7,12 +7,13 @@ import { PopUp } from '../view/pop-up-information.js';
 import { render, remove } from '../utils/utils-render.js';
 import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode } from '../utils/utils-constans.js';
 import { MenuPresenter } from './menu.js';
+import { generateFilmComment } from '../mock/comments';
+
 
 class FilmBoard {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
-
     this._filmListComponent = new FilmList();
     this._noFilmsComponent = new EmptyWrap();
     this._sortComponents = new Sort();
@@ -102,8 +103,6 @@ class FilmBoard {
     this._SiteMenuPresenter.update(films);
   }
 
-  /*вариант номер 1 */
-
   _favoriteClickHandler(film) {
     const oldFilm = this._films.find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
@@ -121,7 +120,6 @@ class FilmBoard {
     oldFilm.isFutureFilm = !film.isFutureFilm;
     this._updateMenu(this._films);
   }
-
 
   /*
    */
@@ -150,7 +148,7 @@ class FilmBoard {
       this._removePopup();
     }
     if (this._mode === Mode.DEFAULT) {
-      this._popupComponent = new PopUp(film);
+      this._popupComponent = new PopUp(film, this._renderRandomComment());
       this._popupComponent.setCloseBtnClickHandler(this._handleCloseButtonClick);
 
       this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
@@ -184,6 +182,10 @@ class FilmBoard {
     this._removePopup();
     this._boardContainer.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._onEscKeyDown);
+  }
+
+  _renderRandomComment() {
+    return generateFilmComment();
   }
 
   /*
