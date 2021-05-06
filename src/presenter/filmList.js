@@ -11,8 +11,10 @@ import { generateFilmComment } from '../mock/comments';
 
 
 class FilmBoard {
-  constructor(boardContainer) {
+  constructor(boardContainer, bodyElement) {
     this._boardContainer = boardContainer;
+    this._body = bodyElement;
+
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmListComponent = new FilmList();
     this._noFilmsComponent = new EmptyWrap();
@@ -157,7 +159,7 @@ class FilmBoard {
 
       render(this._boardContainer, this._popupComponent);
       this._mode = Mode.POPUP;
-      this._boardContainer.classList.add('hide-overflow');
+      this._body.classList.add('hide-overflow');
       document.addEventListener('keydown', this._onEscKeyDown);
     }
   }
@@ -173,7 +175,7 @@ class FilmBoard {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._removePopup();
-      this._boardContainer.classList.remove('hide-overflow');
+      this._body.classList.remove('hide-overflow');
       document.removeEventListener('keydown', this._onEscKeyDown);
     }
   }
