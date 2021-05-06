@@ -224,7 +224,7 @@ class PopUp extends Smart {
     const newElement = document.createElement('img');
     newElement.src = './images/emoji/' + value + '.png';
     newElement.setAttribute('style', 'width: 55px');
-    emojiPlace.innerHTML= '';
+    emojiPlace.innerHTML = '';
     emojiPlace.appendChild(newElement);
     return newElement.src;
   }
@@ -238,7 +238,7 @@ class PopUp extends Smart {
         text: '',
       },
     );
-  } // Для создания нового коммента делаем копию массива и чистые поля для ввода эмоции и коммента
+  }
 
 
   static parseDataToFilm(film) {
@@ -247,25 +247,17 @@ class PopUp extends Smart {
   }
 
   _sendNewCommentHandler(evt) {
-    // document.querySelector('body').classList.add('hide-overflow');
-
     const isRightKeys = (evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD));
     const isHasTextAndEmoji = !this._filmComment.emoji || !this._filmComment.text.trim();
 
     if (isRightKeys && !isHasTextAndEmoji) {
-
       this._newComment = PopUp.parseDataToFilm(this._filmComment);
       this._filmComment = PopUp.parseFilmToData(this._newComment);
       this._data.comments.push(this._newComment);
 
-      // this._callback.setSendNewComment(this._newComment);
       this.updateElement();
     }
   }
-
-  // setSendNewComment(callback) {
-  //   this._callback.setSendNewComment = callback;
-  // }
 
   _changeActiveStatus(target) {
     if (target.classList.contains('sort__button--active')) {
