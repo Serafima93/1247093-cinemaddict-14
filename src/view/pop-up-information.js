@@ -170,10 +170,9 @@ class PopUp extends Smart {
 
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
-
     this._sendNewCommentHandler = this._sendNewCommentHandler.bind(this);
-    this._setInnerHandlers();
 
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -192,7 +191,7 @@ class PopUp extends Smart {
     this.getCommentField().addEventListener('input', this._descriptionInputHandler);
     this.getEmojis().addEventListener('change', this._emojiChangeHandler);
     document.addEventListener('keydown', this._sendNewCommentHandler);
-  } // невешиваем обработчики кликов
+  }
 
   restoreHandlers() {
     this._setInnerHandlers();
@@ -215,9 +214,8 @@ class PopUp extends Smart {
 
   _emojiChangeHandler(evt) {
     evt.preventDefault();
-    this.updateData({ emoji: evt.target.value });
+    this.updateData({ emoji: evt.target.value }, true);
     const url = this._emojiChangeHandlerPlace(evt.target.value);
-
     this._filmComment.emoji = url;
   }
 
@@ -226,9 +224,10 @@ class PopUp extends Smart {
     const newElement = document.createElement('img');
     newElement.src = './images/emoji/' + value + '.png';
     newElement.setAttribute('style', 'width: 55px');
+    emojiPlace.innerHTML= '';
     emojiPlace.appendChild(newElement);
     return newElement.src;
-  } // Для создания отображения в иконке слева
+  }
 
   static parseFilmToData(film) {
     return Object.assign(
@@ -248,10 +247,13 @@ class PopUp extends Smart {
   }
 
   _sendNewCommentHandler(evt) {
-    const isRightKeys = (evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD));
-    const isHasTextContentAndEmoji = !this._filmComment.emoji || !this._filmComment.text.trim();
+    // document.querySelector('body').classList.add('hide-overflow');
 
-    if (isRightKeys && !isHasTextContentAndEmoji) {
+    const isRightKeys = (evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD));
+    const isHasTextAndEmoji = !this._filmComment.emoji || !this._filmComment.text.trim();
+
+    if (isRightKeys && !isHasTextAndEmoji) {
+
       this._newComment = PopUp.parseDataToFilm(this._filmComment);
       this._filmComment = PopUp.parseFilmToData(this._newComment);
       this._data.comments.push(this._newComment);
