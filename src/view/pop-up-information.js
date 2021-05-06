@@ -256,6 +256,9 @@ class PopUp extends Smart {
       this._data.comments.push(this._newComment);
 
       this.updateElement();
+
+      const block = this.getElement();
+      block.scrollTop = block.scrollHeight;
     }
   }
 
