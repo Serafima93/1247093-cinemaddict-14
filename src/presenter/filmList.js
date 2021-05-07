@@ -168,14 +168,13 @@ class FilmBoard {
     remove(this._popupComponent);
     this._popupComponent = null;
     this._mode = Mode.DEFAULT;
-    // this._popupComponent.reset(this._films[i]);
+    this._body.classList.remove('hide-overflow');
   }
 
   _onEscKeyDown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._removePopup();
-      this._body.classList.remove('hide-overflow');
       document.removeEventListener('keydown', this._onEscKeyDown);
     }
   }

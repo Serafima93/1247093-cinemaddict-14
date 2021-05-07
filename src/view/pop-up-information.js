@@ -254,9 +254,7 @@ class PopUp extends Smart {
       this._newComment = PopUp.parseDataToFilm(this._filmComment);
       this._filmComment = PopUp.parseFilmToData(this._newComment);
       this._data.comments.push(this._newComment);
-
       this.updateElement();
-
       const block = this.getElement();
       block.scrollTop = block.scrollHeight;
     }
