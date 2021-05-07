@@ -7,10 +7,11 @@ import { FILMS_MAX_COUNT } from './utils/utils-constans.js';
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer__statistics');
 const siteHeaderElement = document.querySelector('.header');
+const siteBodyElement = document.querySelector('body');
 
 const films = new Array(FILMS_MAX_COUNT).fill().map(generateFilm);
 
-const boardPresenter = new FilmBoard(siteMainElement);
+const boardPresenter = new FilmBoard(siteMainElement, siteBodyElement);
 boardPresenter.init(films);
 
 const footerStatisticPresenter = new FooterStatisticPresenter(siteFooterElement);

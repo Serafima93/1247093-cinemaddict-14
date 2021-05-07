@@ -1,5 +1,7 @@
 import dayjs from 'dayjs';
-import { Abstract } from './abstract.js';
+import { Smart } from './smart.js';
+import { EmogiType } from '../utils/utils-constans';
+
 
 const createCommentsList = (comments) => {
   const htmlPart = comments.map(createComment).join('');
@@ -13,19 +15,19 @@ const createCommentsList = (comments) => {
         <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
       </label>
       <div class="film-details__emoji-list">
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="${EmogiType.SMILE}">
         <label class="film-details__emoji-label" for="emoji-smile">
           <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
         </label>
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="${EmogiType.SLEEP}">
         <label class="film-details__emoji-label" for="emoji-sleeping">
           <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
         </label>
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="${EmogiType.PUKE}">
         <label class="film-details__emoji-label" for="emoji-puke">
           <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
         </label>
-        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="${EmogiType.ANGRY}">
         <label class="film-details__emoji-label" for="emoji-angry">
           <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
         </label>
@@ -155,19 +157,107 @@ const createPopUp = (film) => {
 };
 
 
-class PopUp extends Abstract {
-  constructor(films) {
+class PopUp extends Smart {
+  constructor(film, newComment) {
     super();
-    this._filters = films;
-    this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._data = film;
+    this._filmComment = PopUp.parseFilmToData(newComment);
 
+    this._closeClickHandler = this._closeClickHandler.bind(this);
     this._editClickHandlerPopupFavorite = this._editClickHandlerPopupFavorite.bind(this);
     this._editClickHandlerPopupWatched = this._editClickHandlerPopupWatched.bind(this);
     this._editClickHandlerPopupFuture = this._editClickHandlerPopupFuture.bind(this);
+
+    this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
+    this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
+    this._sendNewCommentHandler = this._sendNewCommentHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPopUp(this._filters);
+    return createPopUp(this._data);
+  }
+
+  getEmojis() {
+    return this.getElement().querySelector('.film-details__emoji-list');
+  }
+
+  getCommentField() {
+    return this.getElement().querySelector('.film-details__comment-input');
+  }
+
+  _setInnerHandlers() {
+    this.getCommentField().addEventListener('input', this._descriptionInputHandler);
+    this.getEmojis().addEventListener('change', this._emojiChangeHandler);
+    document.addEventListener('keydown', this._sendNewCommentHandler);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setCloseBtnClickHandler(this._callback.closeClick);
+  } // передаем заново обработчики кликов
+
+  reset(popUp) {
+    this.updateData(
+      this._filmComment.parseFilmToData(popUp),
+    );
+  } // для перезагрузки поп-апа - в презентер
+
+  _descriptionInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      commentText: evt.target.value,
+    }, true);
+    this._filmComment.text = evt.target.value;
+  }
+
+  _emojiChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({ emoji: evt.target.value }, true);
+    const url = this._emojiChangeHandlerPlace(evt.target.value);
+    this._filmComment.emoji = url;
+  }
+
+  _emojiChangeHandlerPlace(value) {
+    const emojiPlace = this.getElement().querySelector('.film-details__add-emoji-label');
+    const newElement = document.createElement('img');
+    newElement.src = './images/emoji/' + value + '.png';
+    newElement.setAttribute('style', 'width: 55px');
+    emojiPlace.innerHTML = '';
+    emojiPlace.appendChild(newElement);
+    return newElement.src;
+  }
+
+  static parseFilmToData(film) {
+    return Object.assign(
+      {},
+      film,
+      {
+        emoji: '',
+        text: '',
+      },
+    );
+  }
+
+
+  static parseDataToFilm(film) {
+    film = Object.assign({}, film);
+    return film;
+  }
+
+  _sendNewCommentHandler(evt) {
+    const isRightKeys = (evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD));
+    const isHasTextAndEmoji = !this._filmComment.emoji || !this._filmComment.text.trim();
+
+    if (isRightKeys && !isHasTextAndEmoji) {
+      this._newComment = PopUp.parseDataToFilm(this._filmComment);
+      this._filmComment = PopUp.parseFilmToData(this._newComment);
+      this._data.comments.push(this._newComment);
+      this.updateElement();
+      const block = this.getElement();
+      block.scrollTop = block.scrollHeight;
+    }
   }
 
   _changeActiveStatus(target) {
@@ -175,7 +265,6 @@ class PopUp extends Abstract {
       target.classList.remove('sort__button--active');
     } else { target.classList.add('sort__button--active'); }
   }
-
 
   _editClickHandlerPopupFavorite(evt) {
     evt.preventDefault();
