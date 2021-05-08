@@ -5,7 +5,7 @@ import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
 import { render, remove } from '../utils/utils-render.js';
-import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType } from '../utils/utils-constans.js';
+import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, /*UserAction, UpdateType*/ } from '../utils/utils-constans.js';
 import { MenuPresenter } from './menu.js';
 import { generateFilmComment } from '../mock/comments';
 
@@ -52,21 +52,21 @@ class FilmBoard {
     return this._filmsModel.getFilms();
   }
 
-  _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
-  }
+  // _handleViewAction(actionType, updateType, update) {
+  //   console.log(actionType, updateType, update);
+  //   // Здесь будем вызывать обновление модели.
+  //   // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+  //   // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+  //   // update - обновленные данные
+  // }
 
-  _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
-  }
+  // _handleModelEvent(updateType, data) {
+  //   console.log(updateType, data);
+  //   // В зависимости от типа изменений решаем, что делать:
+  //   // - обновить часть списка (например, когда поменялось описание)
+  //   // - обновить список (например, когда задача ушла в архив)
+  //   // - обновить всю доску (например, при переключении фильтра)
+  // }
 
   _renderFilmBoard() {
     this._SiteMenuPresenter.init(this._getFilms());
