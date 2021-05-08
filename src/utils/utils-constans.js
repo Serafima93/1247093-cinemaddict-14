@@ -20,4 +20,16 @@ const EmogiType = {
   ANGRY: 'angry',
 };
 
-export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, EmogiType };
+const UserAction = {
+  UPDATE_TASK: 'UPDATE_TASK',
+  ADD_TASK: 'ADD_TASK',
+  DELETE_TASK: 'DELETE_TASK',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, EmogiType, UpdateType, UserAction };

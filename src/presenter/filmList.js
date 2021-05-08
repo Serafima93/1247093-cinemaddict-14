@@ -5,15 +5,16 @@ import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
 import { render, remove } from '../utils/utils-render.js';
-import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode } from '../utils/utils-constans.js';
+import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType } from '../utils/utils-constans.js';
 import { MenuPresenter } from './menu.js';
 import { generateFilmComment } from '../mock/comments';
 
 
 class FilmBoard {
-  constructor(boardContainer, bodyElement) {
+  constructor(boardContainer, bodyElement, filmsModel) {
     this._boardContainer = boardContainer;
     this._body = bodyElement;
+    this._filmsModel = filmsModel;
 
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmListComponent = new FilmList();
@@ -31,23 +32,45 @@ class FilmBoard {
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._currentSortType = SortType.DEFAULT;
     this._mode = Mode.DEFAULT;
     this._popupComponent = null;
-  }
-  init(films) {
-    this._films = films.slice();
-    this._sourcedBoardFilms = films.slice();
 
+    this._filmsModel.addObserver(this._handleModelEvent);
+  }
+  init() {
     this._filmView = {};
     this._filmViewTop = {};
     this._filmViewComment = {};
     this._renderFilmBoard();
   }
 
+  _getFilms() {
+    return this._filmsModel.getFilms();
+  }
+
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
+  }
+
   _renderFilmBoard() {
-    this._SiteMenuPresenter.init(this._films);
-    if (this._films.length) {
+    this._SiteMenuPresenter.init(this._getFilms());
+    if (this._getFilms().length) {
       this._sortComponents.setSortTypeChangeHandler(this._handleSortTypeChange);
       this._renderContainers();
     } else {
@@ -58,14 +81,14 @@ class FilmBoard {
   _renderContainers() {
     render(this._boardContainer, this._sortComponents); // отрисовка поля для послд. выбора сортировки фильмов
     render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
-    this._renderFilmList(this._films);
+    this._renderFilmList(this._getFilms());
     this._renderFilmAdditionalList();
   }
 
   _renderFilmList(films) {
     this._renderFilmsMain(films);
 
-    if (this._films.length > FILM_COUNT_PER_STEP) {
+    if (this._getFilms().length > FILM_COUNT_PER_STEP) {
       this._renderLoadMoreButton(films);
     }
   }
@@ -106,21 +129,21 @@ class FilmBoard {
   }
 
   _favoriteClickHandler(film) {
-    const oldFilm = this._films.find((item) => item.id === film.id);
+    const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
-    this._updateMenu(this._films);
+    this._updateMenu(this._getFilms());
   }
 
   _watchedClickHandler(film) {
-    const oldFilm = this._films.find((item) => item.id === film.id);
+    const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isWatched = !film.isWatched;
-    this._updateMenu(this._films);
+    this._updateMenu(this._getFilms());
   }
 
   _futureClickHandler(film) {
-    const oldFilm = this._films.find((item) => item.id === film.id);
+    const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFutureFilm = !film.isFutureFilm;
-    this._updateMenu(this._films);
+    this._updateMenu(this._getFilms());
   }
 
   /*
@@ -139,7 +162,7 @@ class FilmBoard {
         this._renderFilm(filmCardContainers, film);
       });
     this._renderedFilmCount += FILM_COUNT_PER_STEP;
-    if (this._renderedFilmCount >= this._films.length) {
+    if (this._renderedFilmCount >= this._getFilms().length) {
       remove(this._loadMoreButtonComponent);
     }
   }
@@ -193,17 +216,17 @@ class FilmBoard {
    */
 
   _createFilmCommentsArray() {
-    const commentsFilm = this._films.slice().sort((a, b) => b.comments.length - a.comments.length);
+    const commentsFilm = this._getFilms().slice().sort((a, b) => b.comments.length - a.comments.length);
     return commentsFilm;
   }
 
   _createFilmRateArray() {
-    const rateFilm = this._films.slice().sort((a, b) => b.rating - a.rating);
+    const rateFilm = this._getFilms().slice().sort((a, b) => b.rating - a.rating);
     return rateFilm;
   }
 
   _createFilmYearArray() {
-    const yearFilm = this._films.slice().sort((a, b) => b.productionYear - a.productionYear);
+    const yearFilm = this._getFilms().slice().sort((a, b) => b.productionYear - a.productionYear);
     return yearFilm;
   }
 
@@ -226,7 +249,7 @@ class FilmBoard {
         this._filmYearSort();
         break;
       case SortType.DEFAULT:
-        this._renderFilmList(this._sourcedBoardFilms);
+        this._renderFilmList(this._getFilms());
         break;
     }
     this._currentSortType = type;
