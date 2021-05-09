@@ -247,7 +247,7 @@ class PopUp extends Smart {
   }
 
   _sendNewCommentHandler(evt) {
-    const isRightKeys = (evt.ctrlKey) && ((evt.keyCode == 0xA) || (evt.keyCode == 0xD));
+    const isRightKeys = (evt.ctrlKey || evt.metaKey) && evt.keyCode === 13;
     const isHasTextAndEmoji = !this._filmComment.emoji || !this._filmComment.text.trim();
 
     if (isRightKeys && !isHasTextAndEmoji) {

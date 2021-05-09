@@ -16,14 +16,13 @@ class FilmBoard {
     this._body = bodyElement;
     this._filmsModel = filmsModel;
 
-    this._sortComponents = null;
+    this._sortComponent = null;
     this._loadMoreButtonComponent = null;
+    this._popupComponent = null;
 
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmListComponent = new FilmList();
     this._noFilmsComponent = new EmptyWrap();
-    this._sortComponents = new Sort();
-    this._loadMoreButtonComponent = new ShowMoreButton();
     this._SiteMenuPresenter = new MenuPresenter(this._boardContainer);
 
     this._renderPopUp = this._renderPopUp.bind(this);
@@ -40,7 +39,6 @@ class FilmBoard {
 
     this._currentSortType = SortType.DEFAULT;
     this._mode = Mode.DEFAULT;
-    this._popupComponent = null;
 
     this._filmsModel.addObserver(this._handleModelEvent);
   }
@@ -84,22 +82,19 @@ class FilmBoard {
         this._renderFilmBoard();
         break;
       case UpdateType.MAJOR:
-        this._clearBoard({resetRenderedFilmCount: true, resetSortType: true});
+        this._clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
         this._renderFilmBoard();
         // - обновить всю доску (например, при переключении фильтра)
         break;
     }
   }
 
-  _clearBoard({resetRenderedFilmCount = false, resetSortType = false} = {}) {
-    const filmCount = this._getTasks().length;
+  _clearBoard({ resetRenderedFilmCount = false, resetSortType = false } = {}) {
+    const filmCount = this._getFilms().length;
+    this._clearFilmList();
+    this._filmView = {};
 
-    Object
-      .values(this._getFilms())
-      .forEach((presenter) => presenter.remove());
-    this._filmPresenter = {};
-
-    remove(this._sortComponents);
+    remove(this._sortComponent);
     remove(this._noFilmsComponent);
     remove(this._loadMoreButtonComponent);
 
@@ -120,15 +115,23 @@ class FilmBoard {
   _renderFilmBoard() {
     this._SiteMenuPresenter.init(this._getFilms());
     if (this._getFilms().length) {
-      this._sortComponents.setSortTypeChangeHandler(this._handleSortTypeChange);
       this._renderContainers();
     } else {
       this._renderNoFilms();
     }
   }
 
+  _renderSort() {
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+    this._sortComponent = new Sort(this._currentSortType);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._boardContainer, this._sortComponent);
+  }
+
   _renderContainers() {
-    render(this._boardContainer, this._sortComponents); // отрисовка поля для послд. выбора сортировки фильмов
+    this._renderSort(); // отрисовка поля для послд. выбора сортировки фильмов
     render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
     this._renderFilmList(this._getFilms());
     this._renderFilmAdditionalList();
@@ -138,7 +141,7 @@ class FilmBoard {
     this._renderFilmsMain(films);
 
     if (this._getFilms().length > this._renderedFilmCount) {
-      this._renderLoadMoreButton(films);
+      this._renderLoadMoreButton();
     }
   }
 
@@ -155,12 +158,21 @@ class FilmBoard {
     filmView.setWatchedClickHandler(this._watchedClickHandler);
     filmView.setFutureClickHandler(this._futureClickHandler);
     this._filmView[film.id] = filmView;
+    return filmView;
   }
 
   _renderFilms(container, films) {
     for (let i = 0; i < films.length; i++) {
       const film = films[i];
       this._renderFilm(container, film);
+    }
+  }
+
+  _removeFims(container, films) {
+    for (let i = 0; i < films.length; i++) {
+      const film = films[i];
+      const filmCard = this._renderFilm(container, film);
+      remove(filmCard);
     }
   }
 
@@ -209,10 +221,17 @@ class FilmBoard {
 
   /*
    */
-  _renderLoadMoreButton(films) {
+
+
+  _renderLoadMoreButton() {
+    if (this._loadMoreButtonComponent !== null) {
+      this._loadMoreButtonComponent = null;
+    }
+
+    this._loadMoreButtonComponent = new ShowMoreButton();
     const buttonPlace = this._boardContainer.querySelector('.films-list');
     render(buttonPlace, this._loadMoreButtonComponent);
-    this._loadMoreButtonComponent.setClickHandler(() => { this._handleLoadMoreButtonClick(films); });
+    this._loadMoreButtonComponent.setClickHandler(() => { this._handleLoadMoreButtonClick(this._getFilms()); });
   }
 
   _handleLoadMoreButtonClick(films) {
@@ -320,6 +339,8 @@ class FilmBoard {
     if (this._currentSortType === type) {
       return;
     }
+    // this._clearBoard();
+
     this._clearFilmList();
     this._sortFilmCards(type);
     this._renderFilmAdditionalList();
