@@ -46,10 +46,17 @@ class FilmBoard {
     this._filmView = {};
     this._filmViewTop = {};
     this._filmViewComment = {};
+    this._SiteMenuPresenter.init(this._getFilms());
     this._renderFilmBoard();
   }
 
   _getFilms() {
+    switch (this._currentSortType) {
+      case SortType.RATING:
+        return this._filmsModel.getFilms().slice().sort((a, b) => b.productionYear - a.productionYear);
+      case SortType.DATE:
+        return this._filmsModel.getFilms().slice().sort((a, b) => b.rating - a.rating);
+    }
     return this._filmsModel.getFilms();
   }
 
@@ -89,31 +96,7 @@ class FilmBoard {
     }
   }
 
-  _clearBoard({ resetRenderedFilmCount = false, resetSortType = false } = {}) {
-    const filmCount = this._getFilms().length;
-    this._clearFilmList();
-    this._filmView = {};
-
-    remove(this._sortComponent);
-    remove(this._noFilmsComponent);
-    remove(this._loadMoreButtonComponent);
-
-    if (resetRenderedFilmCount) {
-      this._renderedFilmCount = FILM_COUNT_PER_STEP;
-    } else {
-      // На случай, если перерисовка доски вызвана
-      // уменьшением количества задач (например, удаление или перенос в архив)
-      // нужно скорректировать число показанных задач
-      this._renderedFilmCount = Math.min(filmCount, this._renderedFilmCount);
-    }
-
-    if (resetSortType) {
-      this._currentSortType = SortType.DEFAULT;
-    }
-  }
-
   _renderFilmBoard() {
-    this._SiteMenuPresenter.init(this._getFilms());
     if (this._getFilms().length) {
       this._renderContainers();
     } else {
@@ -129,6 +112,41 @@ class FilmBoard {
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._boardContainer, this._sortComponent);
   }
+
+  _handleSortTypeChange(type) {
+    if (this._currentSortType === type) {
+      return;
+    }
+    this._currentSortType = type;
+    this._clearBoard({resetRenderedTaskCount: true});
+    this._renderFilmBoard();
+  }
+
+  _clearBoard({ resetRenderedFilmCount = false, resetSortType = false } = {}) {
+    const filmCount = this._getFilms().length;
+    this._clearFilmList();
+    this._filmView = {};
+
+    remove(this._sortComponent);
+    remove(this._noFilmsComponent);
+    remove(this._loadMoreButtonComponent);
+    this._renderedFilmCount = FILM_COUNT_PER_STEP;
+
+
+    if (resetRenderedFilmCount) {
+      this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    } else {
+      // На случай, если перерисовка доски вызвана
+      // уменьшением количества задач (например, удаление или перенос в архив)
+      // нужно скорректировать число показанных задач
+      this._renderedFilmCount = Math.min(filmCount, this._renderedFilmCount);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
+  }
+
 
   _renderContainers() {
     this._renderSort(); // отрисовка поля для послд. выбора сортировки фильмов
@@ -305,46 +323,21 @@ class FilmBoard {
     return rateFilm;
   }
 
-  _createFilmYearArray() {
-    const yearFilm = this._getFilms().slice().sort((a, b) => b.productionYear - a.productionYear);
-    return yearFilm;
-  }
+  // _createFilmYearArray() {
+  //   const yearFilm = this._getFilms().slice().sort((a, b) => b.productionYear - a.productionYear);
+  //   return yearFilm;
+  // }
 
-  _filmRateSort() {
-    const rateFilm = this._createFilmRateArray();
-    this._renderFilmList(rateFilm);
-  }
+  // _filmRateSort() {
+  //   const rateFilm = this._createFilmRateArray();
+  //   this._renderFilmList(rateFilm);
+  // }
 
-  _filmYearSort() {
-    const yearFilm = this._createFilmYearArray();
-    this._renderFilmList(yearFilm);
-  }
+  // _filmYearSort() {
+  //   const yearFilm = this._createFilmYearArray();
+  //   this._renderFilmList(yearFilm);
+  // }
 
-  _sortFilmCards(type) {
-    switch (type) {
-      case SortType.RATING:
-        this._filmRateSort();
-        break;
-      case SortType.DATE:
-        this._filmYearSort();
-        break;
-      case SortType.DEFAULT:
-        this._renderFilmList(this._getFilms());
-        break;
-    }
-    this._currentSortType = type;
-  }
-
-  _handleSortTypeChange(type) {
-    if (this._currentSortType === type) {
-      return;
-    }
-    // this._clearBoard();
-
-    this._clearFilmList();
-    this._sortFilmCards(type);
-    this._renderFilmAdditionalList();
-  }
   /*
    */
 
