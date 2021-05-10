@@ -8,6 +8,13 @@ const SortType = {
   RATING: 'rating',
 };
 
+const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'Favorites',
+};
+
 const Mode = {
   DEFAULT: 'DEFAULT',
   POPUP: 'POP-UP',
@@ -32,4 +39,4 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, EmogiType, UpdateType, UserAction };
+export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, FilterType, SortType, Mode, EmogiType, UpdateType, UserAction };

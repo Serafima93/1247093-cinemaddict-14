@@ -1,16 +1,19 @@
 import { SiteMenu } from '../view/menu.js';
 import { render, remove, RenderPosition } from '../utils/utils-render';
+import { FilterType } from '../utils/utils-constans.js';
 
 class MenuPresenter {
   constructor(container) {
     this._container = container;
     this._SiteMenuComponent = null;
+    this._activeFilter = FilterType.ALL;
   }
 
   init(films = []) {
     const state = this._getFilterState(films);
-    this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm);
+    this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm, this._activeFilter);
     render(this._container, this._SiteMenuComponent);
+    this._SiteMenuComponent.setFilterClick(this._filterClickHandler); // Почему ошибка?
   }
 
   update(films = []) {

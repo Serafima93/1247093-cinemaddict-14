@@ -46,6 +46,7 @@ class FilmBoard {
     this._filmView = {};
     this._filmViewTop = {};
     this._filmViewComment = {};
+
     this._SiteMenuPresenter.init(this._getFilms());
     this._renderFilmBoard();
   }
