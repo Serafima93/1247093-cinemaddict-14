@@ -61,6 +61,7 @@ class FilmBoard {
     return this._filmsModel.getFilms();
   }
 
+
   _handleViewAction(actionType, updateType, update) {
     // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
     // updateType - тип изменений, нужно чтобы понять, что после нужно обновить

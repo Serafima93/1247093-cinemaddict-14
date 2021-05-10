@@ -12,7 +12,7 @@ const FilterType = {
   ALL: 'all',
   WATCHLIST: 'watchlist',
   HISTORY: 'history',
-  FAVORITES: 'Favorites',
+  FAVORITES: 'favorites',
 };
 
 const Mode = {

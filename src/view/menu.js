@@ -5,12 +5,12 @@ import { FilterType } from '../utils/utils-constans.js';
 const createSiteMenuTemplate = (favorite, watched, futureFilm, activeFilter) => {
   return ` <div> <nav class="main-navigation">
     <div class="main-navigation__items">
-      <a href="#all" data-sort-type="${FilterType.ALL}" class="main-navigation__item ${activeFilter === FilterType.ALL ? 'main-navigation__item--active' : ''}">All movies</a>
-      <a href="#watchlist" data-sort-type="${FilterType.WATCHLIST}" class="main-navigation__item ${activeFilter === FilterType.WATCHLIST ? 'main-navigation__item--active' : ''}">Watchlist
+      <a href="#all" class="main-navigation__item ${activeFilter === FilterType.ALL ? 'main-navigation__item--active' : ''}" data-sort-type="${FilterType.ALL}">All movies</a>
+      <a href="#watchlist" class="main-navigation__item ${activeFilter === FilterType.WATCHLIST ? 'main-navigation__item--active' : ''}" data-sort-type="${FilterType.WATCHLIST}" >Watchlist
        <span class="main-navigation__item-count">${futureFilm}</span></a>
-      <a href="#history" data-sort-type="${FilterType.HISTORY}" class="main-navigation__item ${activeFilter === FilterType.HISTORY ? 'main-navigation__item--active' : ''}">History
+      <a href="#history" class="main-navigation__item ${activeFilter === FilterType.HISTORY ? 'main-navigation__item--active' : ''}" data-sort-type="${FilterType.HISTORY}" >History
        <span class="main-navigation__item-count">${watched}</span></a>
-      <a href="#favorites" data-sort-type="${FilterType.FAVORITES}" class="main-navigation__item ${activeFilter === FilterType.FAVORITES ? 'main-navigation__item--active' : ''}">Favorites
+      <a href="#favorites" class="main-navigation__item ${activeFilter === FilterType.FAVORITES ? 'main-navigation__item--active' : ''}"  data-sort-type="${FilterType.FAVORITES}" >Favorites
       <span class="main-navigation__item-count">${favorite}</span></a>
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
@@ -29,13 +29,17 @@ class SiteMenu extends Abstract {
   }
 
   getTemplate() {
-    return createSiteMenuTemplate(this._favorite, this._watched, this._future);
+    return createSiteMenuTemplate(this._favorite, this._watched, this._future, this._activeFilter);
   }
 
   setValue(favoritFilm = 0, watchedFilm = 0, futureFilm = 0) {
     this._favorite = favoritFilm;
     this._watched = watchedFilm;
     this._future = futureFilm;
+  }
+
+  restoreHandlers() {
+    this.setFilterClick(this._callback.filterClick);
   }
 
   _filterClickHandler(evt) {

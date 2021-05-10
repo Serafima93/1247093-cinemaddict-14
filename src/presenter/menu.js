@@ -13,7 +13,7 @@ class MenuPresenter {
     const state = this._getFilterState(films);
     this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm, this._activeFilter);
     render(this._container, this._SiteMenuComponent);
-    this._SiteMenuComponent.setFilterClick(this._filterClickHandler); // Почему ошибка?
+    this._renderFilter();
   }
 
   update(films = []) {
@@ -35,6 +35,17 @@ class MenuPresenter {
       watchedFilm,
       futureFilm,
     };
+  }
+
+  _renderFilter() {
+    this._SiteMenuComponent.setFilterClick(this._handleFilterTypeChange);
+  }
+
+  _handleFilterTypeChange(type) {
+    if (this._activeFilter === type) {
+      return;
+    }
+    this._activeFilter = type;
   }
 }
 export { MenuPresenter };
