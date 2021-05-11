@@ -11,10 +11,12 @@ import { generateFilmComment } from '../mock/comments';
 
 
 class FilmBoard {
-  constructor(boardContainer, bodyElement, filmsModel) {
+  constructor(boardContainer, bodyElement, filmsModel, filterModel, commentsModel) {
     this._boardContainer = boardContainer;
     this._body = bodyElement;
     this._filmsModel = filmsModel;
+    this._filterModel = filterModel;
+    this._commentsModel = commentsModel;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
@@ -70,12 +72,12 @@ class FilmBoard {
       case UserAction.UPDATE_TASK:
         this._filmsModel.updateFilm(updateType, update);
         break;
-      case UserAction.ADD_TASK:
-        this._filmsModel.addFilm(updateType, update);
-        break;
-      case UserAction.DELETE_TASK:
-        this._filmsModel.deleteFilm(updateType, update);
-        break;
+      // case UserAction.ADD_TASK:
+      //   this._filmsModel.addFilm(updateType, update);
+      //   break;
+      // case UserAction.DELETE_TASK:
+      //   this._filmsModel.deleteFilm(updateType, update);
+      //   break;
     }
   }
 
@@ -132,7 +134,7 @@ class FilmBoard {
     remove(this._sortComponent);
     remove(this._noFilmsComponent);
     remove(this._loadMoreButtonComponent);
-    this._renderedFilmCount = FILM_COUNT_PER_STEP;
+    this._renderedFilmCount = FILM_COUNT_PER_STEP; // почему не работает true
 
 
     if (resetRenderedFilmCount) {
@@ -217,6 +219,7 @@ class FilmBoard {
     UpdateType.MINOR;
 
     this._handleViewAction(UserAction.UPDATE_TASK, UpdateType.MINOR, film);
+    // возникает баг - фильмы над поп-апом
   }
 
   _watchedClickHandler(film) {

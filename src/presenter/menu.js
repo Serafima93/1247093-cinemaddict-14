@@ -7,6 +7,9 @@ class MenuPresenter {
     this._container = container;
     this._SiteMenuComponent = null;
     this._activeFilter = FilterType.ALL;
+
+    // this._filmsModel = filmsModel;
+    // this._filmsModel.addObserver(this._handleModelEvent);
   }
 
   init(films = []) {
@@ -14,6 +17,33 @@ class MenuPresenter {
     this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm, this._activeFilter);
     render(this._container, this._SiteMenuComponent);
     this._renderFilter();
+  }
+
+  _getFilters () {
+    // const films =  this._filmsModel.getData();
+
+    return [
+      {
+        type: FilterType.ALL,
+        filterName: 'all',
+        // count: filtersFunctionMap[FILTER.ALL_MOVIES](films).length,
+      },
+      {
+        type: FilterType.FAVORITES,
+        filterName: 'favorites',
+        // count: filtersFunctionMap[FILTER.FAVORITES](films).length,
+      },
+      {
+        type: FilterType.WATCHLIST,
+        filterName: 'watchlist',
+        // count: filtersFunctionMap[FILTER.WATCHLIST](films).length,
+      },
+      {
+        type: FilterType.HISTORY,
+        filterName: 'history',
+        // count: filtersFunctionMap[FILTER.HISTORY](films).length,
+      },
+    ];
   }
 
   update(films = []) {

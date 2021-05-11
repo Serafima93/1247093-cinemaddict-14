@@ -171,6 +171,7 @@ class PopUp extends Smart {
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
     this._sendNewCommentHandler = this._sendNewCommentHandler.bind(this);
+    this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -191,6 +192,7 @@ class PopUp extends Smart {
     this.getCommentField().addEventListener('input', this._descriptionInputHandler);
     this.getEmojis().addEventListener('change', this._emojiChangeHandler);
     document.addEventListener('keydown', this._sendNewCommentHandler);
+    this.getElement().querySelector('.film-details__comments-list').addEventListener('click', this._deleteCommentHandler);
   }
 
   restoreHandlers() {
@@ -258,6 +260,17 @@ class PopUp extends Smart {
       const block = this.getElement();
       block.scrollTop = block.scrollHeight;
     }
+  }
+
+  _deleteCommentHandler(evt) {
+    if (!evt.target.classList.contains('film-details__comment-delete')) {
+      return;
+    }
+    this._callback.deleteComment(evt.target.dataset.commentId);
+  }
+
+  setDeleteComment(callback) {
+    this._callback.deleteComment = callback;
   }
 
   _changeActiveStatus(target) {
