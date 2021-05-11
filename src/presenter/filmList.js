@@ -25,7 +25,7 @@ class FilmBoard {
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmListComponent = new FilmList();
     this._noFilmsComponent = new EmptyWrap();
-    this._SiteMenuPresenter = new MenuPresenter(this._boardContainer);
+    this._SiteMenuPresenter = new MenuPresenter(this._boardContainer, this._filmsModel, this._filterModel);
 
     this._renderPopUp = this._renderPopUp.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
@@ -49,7 +49,7 @@ class FilmBoard {
     this._filmViewTop = {};
     this._filmViewComment = {};
 
-    this._SiteMenuPresenter.init(this._getFilms());
+    this._SiteMenuPresenter.init();
     this._renderFilmBoard();
   }
 

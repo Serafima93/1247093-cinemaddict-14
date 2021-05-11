@@ -20,8 +20,11 @@ const filmsModel = new Films();
 filmsModel.setFilms(films);
 
 const filterModel = new Filter();
+
 const commentsModel = new Comments();
-//Правильно ли я передаю?
+
+films.forEach((film) => film.comments);
+//Правильно ли я передаю? может надо только значение комментов?Или это внутри презентера?
 
 const boardPresenter = new FilmBoard(siteMainElement, siteBodyElement, filmsModel, filterModel, commentsModel);
 boardPresenter.init();
