@@ -8,6 +8,7 @@ import { render, remove } from '../utils/utils-render.js';
 import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType } from '../utils/utils-constans.js';
 import { MenuPresenter } from './menu.js';
 import { generateFilmComment } from '../mock/comments';
+// import { filters } from '../utils/utils-constans.js';
 
 
 class FilmBoard {
@@ -43,6 +44,7 @@ class FilmBoard {
     this._mode = Mode.DEFAULT;
 
     this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
   init() {
     this._filmView = {};
@@ -54,6 +56,10 @@ class FilmBoard {
   }
 
   _getFilms() {
+    // const filterType = this._filterModel.getFilter();
+    // const films = this._filmsModel.getFilms();
+    // const filtredFilms = filters[filterType](films); - Что значит []()
+
     switch (this._currentSortType) {
       case SortType.RATING:
         return this._filmsModel.getFilms().slice().sort((a, b) => b.productionYear - a.productionYear);
@@ -122,7 +128,7 @@ class FilmBoard {
       return;
     }
     this._currentSortType = type;
-    this._clearBoard({resetRenderedTaskCount: true});
+    this._clearBoard({ resetRenderedTaskCount: true });
     this._renderFilmBoard();
   }
 
@@ -134,7 +140,7 @@ class FilmBoard {
     remove(this._sortComponent);
     remove(this._noFilmsComponent);
     remove(this._loadMoreButtonComponent);
-    this._renderedFilmCount = FILM_COUNT_PER_STEP; // почему не работает true
+    this._renderedFilmCount = FILM_COUNT_PER_STEP; // почему не работает true и приходится делать так?
 
 
     if (resetRenderedFilmCount) {
@@ -207,9 +213,9 @@ class FilmBoard {
 
   /*
    */
-  _updateMenu(films) {
-    this._SiteMenuPresenter.update(films);
-  }
+  _updateMenu(/*films*/) {
+    // this._SiteMenuPresenter.update(films);
+  } // что делать с этим?
 
   _favoriteClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);

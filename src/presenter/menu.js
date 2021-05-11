@@ -1,5 +1,5 @@
 import { SiteMenu } from '../view/menu.js';
-import { replace, render, remove, RenderPosition } from '../utils/utils-render';
+import { replace, render, remove } from '../utils/utils-render';
 import { FilterType } from '../utils/utils-constans.js';
 import { filters } from '../utils/utils-filter.js';
 
@@ -8,7 +8,6 @@ class MenuPresenter {
   constructor(container, filmsModel, filterModel) {
     this._container = container;
     this._SiteMenuComponent = null;
-    // this._activeFilter = FilterType.ALL; // нужно ли? ведь теперь есть в модели
 
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
@@ -20,15 +19,15 @@ class MenuPresenter {
     // this._filterModel.addToObserve(this._handlerFromModel);
   }
 
-  init() {
-    const films = this._filmsModel.getFilms();
-    const state = this._getFilterState(films);
-    this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm, this._activeFilter);
-    render(this._container, this._SiteMenuComponent);
-    this._renderFilter();
-  }
+  // initOld() {
+  //   const films = this._filmsModel.getFilms();
+  //   const state = this._getFilterState(films);
+  //   this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm, this._activeFilter);
+  //   render(this._container, this._SiteMenuComponent);
+  //   this._renderFilter();
+  // }
 
-  init2() {
+  init() {
     const choosenFilter = this._getFilters();
     const prevFilterComponent = this._SiteMenuComponent;
 
@@ -36,7 +35,7 @@ class MenuPresenter {
     this._SiteMenuComponent.setFilterClick(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this._filterContainer, this._SiteMenuComponent);
+      render(this._container, this._SiteMenuComponent);
       return;
     }
     replace(this._SiteMenuComponent, prevFilterComponent);
@@ -61,11 +60,6 @@ class MenuPresenter {
         count: filters[FilterType.ALL](films).length,
       },
       {
-        type: FilterType.FAVORITES,
-        filterName: 'favorites',
-        count: filters[FilterType.FAVORITES](films).length,
-      },
-      {
         type: FilterType.WATCHLIST,
         filterName: 'watchlist',
         count: filters[FilterType.WATCHLIST](films).length,
@@ -75,35 +69,41 @@ class MenuPresenter {
         filterName: 'history',
         count: filters[FilterType.HISTORY](films).length,
       },
+      {
+        type: FilterType.FAVORITES,
+        filterName: 'favorites',
+        count: filters[FilterType.FAVORITES](films).length,
+      },
     ];
   }
 
   // старое
-  update(films = []) {
-    if (this._SiteMenuComponent != null) {
-      const state = this._getFilterState(films);
-      remove(this._SiteMenuComponent);
-      this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm);
-      render(this._container, this._SiteMenuComponent, RenderPosition.AFTERBEGIN);
-    }
-  }
+  // update(films = []) {
+  //   if (this._SiteMenuComponent != null) {
+  //     const state = this._getFilterState(films);
+  //     remove(this._SiteMenuComponent);
+  //     this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm);
+  //     render(this._container, this._SiteMenuComponent, RenderPosition.AFTERBEGIN);
+  //   }
+  // }
 
-  _getFilterState(films) {
-    const favoritFilm = films.filter((film) => film.isFavorit).length;
-    const watchedFilm = films.filter((film) => film.isWatched).length;
-    const futureFilm = films.filter((film) => film.isFutureFilm).length;
+  // _getFilterState(films) {
+  //   const favoritFilm = films.filter((film) => film.isFavorit).length;
+  //   const watchedFilm = films.filter((film) => film.isWatched).length;
+  //   const futureFilm = films.filter((film) => film.isFutureFilm).length;
 
-    return {
-      favoritFilm,
-      watchedFilm,
-      futureFilm,
-    };
-  }
+  //   return {
+  //     favoritFilm,
+  //     watchedFilm,
+  //     futureFilm,
+  //   };
+  // }
 
   // клики
-  _renderFilter() {
-    this._SiteMenuComponent.setFilterClick(this._handleFilterTypeChange);
-  }
+
+  // _renderFilter() {
+  //   this._SiteMenuComponent.setFilterClick(this._handleFilterTypeChange);
+  // }
 
   _handleFilterTypeChange(type) {
     if (this._activeFilter === type) {
