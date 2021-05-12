@@ -1,6 +1,6 @@
 import { SiteMenu } from '../view/menu.js';
-import { replace, render, remove } from '../utils/utils-render';
-import { FilterType } from '../utils/utils-constans.js';
+import { replace, render, remove, RenderPosition } from '../utils/utils-render';
+import { FilterType, UpdateType } from '../utils/utils-constans.js';
 import { filters } from '../utils/utils-filter.js';
 
 
@@ -12,20 +12,12 @@ class MenuPresenter {
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
 
-    this._handlerFromModel = this._handlerFromModel.bind(this);
-    this._handlerFilterClick = this._handlerFilterClick.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
 
-    this._filmsModel.addObserver(this._handlerFromModel);
-    this._filterModel.addObserver(this._handlerFromModel);
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
-
-  // initOld() {
-  //   const films = this._filmsModel.getFilms();
-  //   const state = this._getFilterState(films);
-  //   this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm, this._activeFilter);
-  //   render(this._container, this._SiteMenuComponent);
-  //   this._renderFilter();
-  // }
 
   init() {
     const choosenFilter = this._getFilters();
@@ -35,19 +27,22 @@ class MenuPresenter {
     this._SiteMenuComponent.setFilterClick(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this._container, this._SiteMenuComponent);
+      render(this._container, this._SiteMenuComponent, RenderPosition.AFTERBEGIN);
       return;
     }
     replace(this._SiteMenuComponent, prevFilterComponent);
     remove(prevFilterComponent);
   }
 
-  _handlerFromModel() {
+  _handleModelEvent() {
     this.init();
   }
 
-  _handlerFilterClick(updateType, filterType) {
-    this._filterModel.set(updateType, filterType);
+  _handleFilterTypeChange(filterType) {
+    if (this._filterModel.getFilter() === filterType) {
+      return;
+    }
+    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
   _getFilters() {
@@ -98,18 +93,5 @@ class MenuPresenter {
   //     futureFilm,
   //   };
   // }
-
-  // клики
-
-  // _renderFilter() {
-  //   this._SiteMenuComponent.setFilterClick(this._handleFilterTypeChange);
-  // }
-
-  _handleFilterTypeChange(type) {
-    if (this._activeFilter === type) {
-      return;
-    }
-    this._activeFilter = type;
-  }
 }
 export { MenuPresenter };

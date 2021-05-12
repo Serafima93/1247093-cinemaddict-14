@@ -6,9 +6,8 @@ import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
 import { render, remove } from '../utils/utils-render.js';
 import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType } from '../utils/utils-constans.js';
-// import { MenuPresenter } from './menu.js';
 import { generateFilmComment } from '../mock/comments';
-// import { filters } from '../utils/utils-constans.js';
+import { filters } from '../utils/utils-filter.js';
 
 
 class FilmBoard {
@@ -53,17 +52,20 @@ class FilmBoard {
   }
 
   _getFilms() {
-    // const filterType = this._filterModel.getFilter();
-    // const films = this._filmsModel.getFilms();
-    // const filtredFilms = filters[filterType](films); - Что значит []()
+    const filterType = this._filterModel.getFilter();
+    const films = this._filmsModel.getFilms();
+    const filtredFilms = filters[filterType](films);
+    const defaultFilms = this._filmsModel.getFilms().slice();
 
     switch (this._currentSortType) {
-      case SortType.RATING:
-        return this._filmsModel.getFilms().slice().sort((a, b) => b.productionYear - a.productionYear);
       case SortType.DATE:
-        return this._filmsModel.getFilms().slice().sort((a, b) => b.rating - a.rating);
+        return filtredFilms.sort((a, b) => b.productionYear - a.productionYear);
+      case SortType.RATING:
+        return filtredFilms.sort((a, b) => b.rating - a.rating);
+      case SortType.DEFAULT:
+        return defaultFilms;
     }
-    return this._filmsModel.getFilms();
+    return filtredFilms;
   }
 
 
