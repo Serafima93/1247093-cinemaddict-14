@@ -15,8 +15,8 @@ class MenuPresenter {
     this._handlerFromModel = this._handlerFromModel.bind(this);
     this._handlerFilterClick = this._handlerFilterClick.bind(this);
 
-    // this._filmsModel.addToObserve(this._handlerFromModel);
-    // this._filterModel.addToObserve(this._handlerFromModel);
+    this._filmsModel.addObserver(this._handlerFromModel);
+    this._filterModel.addObserver(this._handlerFromModel);
   }
 
   // initOld() {

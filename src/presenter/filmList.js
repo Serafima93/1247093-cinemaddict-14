@@ -6,7 +6,7 @@ import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
 import { render, remove } from '../utils/utils-render.js';
 import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType } from '../utils/utils-constans.js';
-import { MenuPresenter } from './menu.js';
+// import { MenuPresenter } from './menu.js';
 import { generateFilmComment } from '../mock/comments';
 // import { filters } from '../utils/utils-constans.js';
 
@@ -26,7 +26,6 @@ class FilmBoard {
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmListComponent = new FilmList();
     this._noFilmsComponent = new EmptyWrap();
-    this._SiteMenuPresenter = new MenuPresenter(this._boardContainer, this._filmsModel, this._filterModel);
 
     this._renderPopUp = this._renderPopUp.bind(this);
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
@@ -50,8 +49,6 @@ class FilmBoard {
     this._filmView = {};
     this._filmViewTop = {};
     this._filmViewComment = {};
-
-    this._SiteMenuPresenter.init();
     this._renderFilmBoard();
   }
 
@@ -71,17 +68,14 @@ class FilmBoard {
 
 
   _handleViewAction(actionType, updateType, update) {
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
     switch (actionType) {
-      case UserAction.UPDATE_TASK:
+      case UserAction.UPDATE_FILM:
         this._filmsModel.updateFilm(updateType, update);
         break;
-      // case UserAction.ADD_TASK:
+      // case UserAction.ADD_FILM:
       //   this._filmsModel.addFilm(updateType, update);
       //   break;
-      // case UserAction.DELETE_TASK:
+      // case UserAction.DELETE_FILM:
       //   this._filmsModel.deleteFilm(updateType, update);
       //   break;
     }
@@ -132,7 +126,7 @@ class FilmBoard {
     this._renderFilmBoard();
   }
 
-  _clearBoard({ resetRenderedFilmCount = false, resetSortType = false } = {}) {
+  _clearBoard(resetRenderedFilmCount = false, resetSortType = false) {
     const filmCount = this._getFilms().length;
     this._clearFilmList();
     this._filmView = {};
@@ -140,8 +134,6 @@ class FilmBoard {
     remove(this._sortComponent);
     remove(this._noFilmsComponent);
     remove(this._loadMoreButtonComponent);
-    this._renderedFilmCount = FILM_COUNT_PER_STEP; // почему не работает true и приходится делать так?
-
 
     if (resetRenderedFilmCount) {
       this._renderedFilmCount = FILM_COUNT_PER_STEP;
@@ -156,7 +148,6 @@ class FilmBoard {
       this._currentSortType = SortType.DEFAULT;
     }
   }
-
 
   _renderContainers() {
     this._renderSort(); // отрисовка поля для послд. выбора сортировки фильмов
@@ -220,32 +211,24 @@ class FilmBoard {
   _favoriteClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
-    this._updateMenu(this._getFilms());
-    UserAction.UPDATE_TASK;
-    UpdateType.MINOR;
+    // this._updateMenu(films);
 
-    this._handleViewAction(UserAction.UPDATE_TASK, UpdateType.MINOR, film);
+    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
     // возникает баг - фильмы над поп-апом
   }
 
   _watchedClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isWatched = !film.isWatched;
-    this._updateMenu(this._getFilms());
-    UserAction.UPDATE_TASK;
-    UpdateType.MINOR;
-
-    this._handleViewAction(UserAction.UPDATE_TASK, UpdateType.MINOR, film);
+    // this._updateMenu(this._getFilms());
+    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
   }
 
   _futureClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFutureFilm = !film.isFutureFilm;
-    this._updateMenu(this._getFilms());
-    UserAction.UPDATE_TASK;
-    UpdateType.MINOR;
-
-    this._handleViewAction(UserAction.UPDATE_TASK, UpdateType.MINOR, film);
+    // this._updateMenu(this._getFilms());
+    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
   }
 
   /*

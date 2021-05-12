@@ -1,6 +1,8 @@
 import { FilmBoard } from './presenter/filmList';
 import { FooterStatisticPresenter } from './presenter/footer';
 import { UserProfilePresenter } from './presenter/user';
+import { MenuPresenter } from './presenter/menu.js';
+
 import { generateFilm } from './mock/film.js';
 import { FILMS_MAX_COUNT } from './utils/utils-constans.js';
 
@@ -23,8 +25,11 @@ const filterModel = new Filter();
 
 const commentsModel = new Comments();
 
-films.forEach((film) => film.comments);
+// films.forEach((film) => film.comments);
 //Правильно ли я передаю? может надо только значение комментов?Или это внутри презентера?
+
+const menuPresenter =  new MenuPresenter(siteMainElement, filmsModel, filterModel);
+menuPresenter.init();
 
 const boardPresenter = new FilmBoard(siteMainElement, siteBodyElement, filmsModel, filterModel, commentsModel);
 boardPresenter.init();
