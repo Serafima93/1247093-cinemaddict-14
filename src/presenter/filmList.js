@@ -310,7 +310,7 @@ class FilmBoard {
       { comments });
 
     this._filmsModel.updateFilm(UpdateType.MINOR, updatedFilm);
-    this._popupComponent.updateData({ comments });
+    // this._popupComponent.updateData({ comments });
   }
 
   /*

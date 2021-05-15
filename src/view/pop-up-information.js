@@ -40,7 +40,7 @@ const createCommentsList = (comments) => {
 };
 
 const createComment = (comment) => {
-  const { text, author, commentDate, emoji } = comment;
+  const { text, author, commentDate, emoji, id } = comment;
 
 
   const date = commentDate !== null
@@ -56,7 +56,8 @@ const createComment = (comment) => {
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author}</span>
       <span class="film-details__comment-day">${date}</span>
-      <button class="film-details__comment-delete">Delete</button>
+
+      <button class="film-details__comment-delete"  data-id = "${id}"> Delete </button>
     </p>
   </div>
 </li>
