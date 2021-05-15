@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { Smart } from './smart.js';
 import { EmogiType } from '../utils/utils-constans';
-
+import he from 'he';
 
 const createCommentsList = (comments) => {
   const htmlPart = comments.map(createComment).join('');
@@ -52,7 +52,7 @@ const createComment = (comment) => {
     <img src="${emoji}" width="55" height="55" alt="emoji-smile">
   </span>
   <div>
-    <p class="film-details__comment-text">${text}</p>
+    <p class="film-details__comment-text">${he.encode(text)}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author}</span>
       <span class="film-details__comment-day">${date}</span>
@@ -133,7 +133,7 @@ const createPopUp = (film) => {
             </tbody>
           </table>
           <p class="film-details__film-description">
-            ${description}
+          ${description}
           </p>
         </div>
       </div>
@@ -242,7 +242,6 @@ class PopUp extends Smart {
     );
   }
 
-
   static parseDataToFilm(film) {
     film = Object.assign({}, film);
     return film;
@@ -266,7 +265,7 @@ class PopUp extends Smart {
     if (!evt.target.classList.contains('film-details__comment-delete')) {
       return;
     }
-    this._callback.deleteComment(evt.target.dataset.commentId);
+    this._callback.deleteComment(evt.target.dataset.id);
   }
 
   setDeleteComment(callback) {

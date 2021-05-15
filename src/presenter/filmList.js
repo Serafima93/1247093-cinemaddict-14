@@ -43,6 +43,9 @@ class FilmBoard {
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._handlerDeleteComment = this._handlerDeleteComment.bind(this);
+
   }
   init() {
     this._filmView = {};
@@ -68,7 +71,6 @@ class FilmBoard {
     return filtredFilms;
   }
 
-
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
@@ -86,18 +88,15 @@ class FilmBoard {
   _handleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновить часть списка (например, когда поменялось описание)
         this._filmView[data.id];
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
         this._clearBoard();
         this._renderFilmBoard();
         break;
       case UpdateType.MAJOR:
         this._clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
         this._renderFilmBoard();
-        // - обновить всю доску (например, при переключении фильтра)
         break;
     }
   }
@@ -140,9 +139,6 @@ class FilmBoard {
     if (resetRenderedFilmCount) {
       this._renderedFilmCount = FILM_COUNT_PER_STEP;
     } else {
-      // На случай, если перерисовка доски вызвана
-      // уменьшением количества задач (например, удаление или перенос в архив)
-      // нужно скорректировать число показанных задач
       this._renderedFilmCount = Math.min(filmCount, this._renderedFilmCount);
     }
 
@@ -206,15 +202,11 @@ class FilmBoard {
 
   /*
    */
-  _updateMenu(/*films*/) {
-    // this._SiteMenuPresenter.update(films);
-  } // что делать с этим?
+
 
   _favoriteClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
-    // this._updateMenu(films);
-
     this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
     // возникает баг - фильмы над поп-апом
   }
@@ -222,14 +214,12 @@ class FilmBoard {
   _watchedClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isWatched = !film.isWatched;
-    // this._updateMenu(this._getFilms());
     this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
   }
 
   _futureClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFutureFilm = !film.isFutureFilm;
-    // this._updateMenu(this._getFilms());
     this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
   }
 
@@ -274,6 +264,8 @@ class FilmBoard {
       this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
       this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
 
+      this._popupComponent.setDeleteComment(this._handlerDeleteComment);
+
       render(this._boardContainer, this._popupComponent);
       this._mode = Mode.POPUP;
       this._body.classList.add('hide-overflow');
@@ -306,6 +298,21 @@ class FilmBoard {
     return generateFilmComment();
   }
 
+  _handlerDeleteComment(film, commentId) {
+    this._films = this._filmsModel.getFilms();
+
+    film = this._films.find((filmItem) => filmItem.id === film.id);
+
+    const comments = film.comments.filter((existedId) => String(existedId) !== String(commentId));
+    const updatedFilm = Object.assign(
+      {},
+      film,
+      { comments });
+
+    this._filmsModel.updateFilm(UpdateType.MINOR, updatedFilm);
+    this._popupComponent.updateData({ comments });
+  }
+
   /*
    */
 
@@ -318,22 +325,6 @@ class FilmBoard {
     const rateFilm = this._getFilms().slice().sort((a, b) => b.rating - a.rating);
     return rateFilm;
   }
-
-  // _createFilmYearArray() {
-  //   const yearFilm = this._getFilms().slice().sort((a, b) => b.productionYear - a.productionYear);
-  //   return yearFilm;
-  // }
-
-  // _filmRateSort() {
-  //   const rateFilm = this._createFilmRateArray();
-  //   this._renderFilmList(rateFilm);
-  // }
-
-  // _filmYearSort() {
-  //   const yearFilm = this._createFilmYearArray();
-  //   this._renderFilmList(yearFilm);
-  // }
-
   /*
    */
 
