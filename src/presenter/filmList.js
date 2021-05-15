@@ -38,7 +38,7 @@ class FilmBoard {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._currentSortType = SortType.DEFAULT;
+    this._currentSortType = SortType.DATE;
     this._mode = Mode.DEFAULT;
 
     this._filmsModel.addObserver(this._handleModelEvent);
