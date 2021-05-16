@@ -40,4 +40,12 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, FilterType, SortType, Mode, EmogiType, UpdateType, UserAction };
+const statisticsPeriod = {
+  ALL: 'all-time',
+  TODAY: 'day',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
+};
+
+export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, FilterType, SortType, Mode, EmogiType, UpdateType, UserAction, statisticsPeriod };

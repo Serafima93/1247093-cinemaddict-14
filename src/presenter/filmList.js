@@ -4,7 +4,7 @@ import { Sort } from '../view/sort.js';
 import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
-import { Stat } from '../view/stats.js';
+import { Stats } from '../view/stats.js';
 
 import { render, remove, replace } from '../utils/utils-render.js';
 import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType, FilterType } from '../utils/utils-constans.js';
@@ -381,7 +381,7 @@ class FilmBoard {
   }
 
   _renderStatistic() {
-    this._statisticComponent = new Stat();
+    this._statisticComponent = new Stats(this._filmsModel.getFilms());
     render(this._boardContainer, this._statisticComponent);
   }
 }
