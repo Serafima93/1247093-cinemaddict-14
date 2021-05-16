@@ -1,11 +1,13 @@
-import { FilmList } from '../view/film-list-section';
-import { EmptyWrap } from '../view/empty';
-import { Sort } from '../view/sort';
+import { FilmList } from '../view/film-list-section.js';
+import { EmptyWrap } from '../view/empty.js';
+import { Sort } from '../view/sort.js';
 import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
-import { render, remove } from '../utils/utils-render.js';
-import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType } from '../utils/utils-constans.js';
+import { Stat } from '../view/stats.js';
+
+import { render, remove, replace } from '../utils/utils-render.js';
+import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType, FilterType } from '../utils/utils-constans.js';
 import { generateFilmComment } from '../mock/comments';
 import { filters } from '../utils/utils-filter.js';
 
@@ -21,6 +23,7 @@ class FilmBoard {
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
     this._popupComponent = null;
+    this._statisticComponent = null;
 
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmListComponent = new FilmList();
@@ -76,17 +79,27 @@ class FilmBoard {
       case UserAction.UPDATE_FILM:
         this._filmsModel.updateFilm(updateType, update);
         break;
-      // case UserAction.ADD_FILM:
-      //   this._filmsModel.addFilm(updateType, update);
-      //   break;
-      // case UserAction.DELETE_FILM:
-      //   this._filmsModel.deleteFilm(updateType, update);
-      //   break;
+      // можно ли так? Это две разные чати
+      case UserAction.ADD_COMMENT:
+        this._commentsModel.addComment(updateType, update);
+        break;
+      case UserAction.DELETE_COMMENT:
+        this._commentsModel.deleteComment(updateType, update);
+        break;
     }
   }
 
   _handleModelEvent(updateType, data) {
+    if (data === FilterType.STATS) {
+      updateType = FilterType.STATS;
+    }
     switch (updateType) {
+      case FilterType.STATS:
+        this._clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
+        this._renderStatistic();
+        replace(this._statisticComponent, this._filmListComponent);
+        break;
+
       case UpdateType.PATCH:
         this._filmView[data.id];
         break;
@@ -95,6 +108,9 @@ class FilmBoard {
         this._renderFilmBoard();
         break;
       case UpdateType.MAJOR:
+        if (this._statisticComponent !== null) {
+          remove(this._statisticComponent);
+        }
         this._clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
         this._renderFilmBoard();
         break;
@@ -311,6 +327,8 @@ class FilmBoard {
 
     this._filmsModel.updateFilm(UpdateType.MINOR, updatedFilm);
     // this._popupComponent.updateData({ comments });
+
+    this._handleViewAction(UserAction.ADD_COMMENT, UpdateType.MINOR, updatedFilm);
   }
 
   /*
@@ -360,6 +378,11 @@ class FilmBoard {
 
   _renderNoFilms() {
     render(this._boardContainer, this._noFilmsComponent);
+  }
+
+  _renderStatistic() {
+    this._statisticComponent = new Stat();
+    render(this._boardContainer, this._statisticComponent);
   }
 }
 export { FilmBoard };

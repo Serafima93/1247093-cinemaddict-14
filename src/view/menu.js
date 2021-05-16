@@ -1,5 +1,7 @@
 import { Abstract } from './abstract.js';
 import { FilterType } from '../utils/utils-constans.js';
+// import { Smart } from './smart.js';
+
 
 const generateFilterItem = (filter, activeFilter) => {
 
@@ -20,8 +22,7 @@ const createSiteMenuTemplate = (filters, activeFilter) => {
    <div class="main-navigation__items">
     ${generateFiltersTemplate(filters, activeFilter)}
     </div>
-    <a href="#stats"
-    class="main-navigation__additional ${activeFilter === FilterType.STATS ?'main-navigation__additional--active':''}"
+    <a href="#stats" class="main-navigation__additional ${activeFilter === FilterType.STATS ?'main-navigation__additional--active':''}"
     data-filter = "${FilterType.STATS}">Stats</a>
     </nav>`;
 };
