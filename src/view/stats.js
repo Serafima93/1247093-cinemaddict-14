@@ -8,20 +8,18 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween);
 
-// фильмы за период
-const getWatchedFilmByPeriod = (films, period) => {
+// фильмы за период - но у меня пока нет периода
+const getWatchedFilmByChoosenPeriod = (films, period) => {
   const watchedFilm = films.filter((film) => film.isWatched);
   if (period === statisticsPeriod.ALL) {
     return watchedFilm;
   }
-  return watchedFilm
-    .slice()
-    .filter((film) => dayjs(film));
+  return watchedFilm.slice().filter((film) => dayjs(film));
   // .filter((film) => dayjs(film.watchedDate).isBetween(dayjs(), dayjs().subtract(1, period)));
 };
 
 // статистика этих фильмов
-const getWatchedStatistic = (watchedFilms) => {
+const getStatisticByWatchedFilms = (watchedFilms) => {
   let fullTime = 0;
   let minuteTime = 0;
   const genresStatistic = {};
@@ -41,11 +39,9 @@ const getWatchedStatistic = (watchedFilms) => {
     minuteTime += film.timeContinue.$d.minutes,
     film.genres.forEach((film) => genresStatistic[film] = genresStatistic[film] + 1 || 1);
   }
-  fullTime = fullTime + Math.trunc(minuteTime/60);
-
+  fullTime = fullTime + Math.trunc(minuteTime / 60);
 
   const topGenres = Object.entries(genresStatistic).sort((a, b) => b[1] - a[1]);
-
   return {
     fullTime,
     topGenre: topGenres[0][0],
@@ -56,7 +52,7 @@ const getWatchedStatistic = (watchedFilms) => {
 };
 
 // создание жанра
-const renderGenresChart = (statisticCtx, genresStats) => {
+const createChartGenres = (statisticCtx, genresStats) => {
   let data;
   let label;
   if (!Object.keys(genresStats)) {
@@ -132,14 +128,14 @@ const inputTemplate = (input, currentInput) => {
   ${input === statisticsPeriod.ALL ? 'All time' : `${input.charAt(0).toUpperCase() + input.slice(1)}`}</label>`;
 };
 
-const periodControlsTemplate = (currentInput) => {
+const periodTemplate = (currentInput) => {
   return Object.values(statisticsPeriod).map((input) => inputTemplate(input, currentInput)).join('');
 };
 
 const createStatistics = (data) => {
   const { films, statisticPeriod } = data;
-  const watchedFilmByPeriod = getWatchedFilmByPeriod(films, statisticPeriod);
-  const watchedStatistic = getWatchedStatistic(watchedFilmByPeriod);
+  const watchedFilmByPeriod = getWatchedFilmByChoosenPeriod(films, statisticPeriod);
+  const watchedStatistic = getStatisticByWatchedFilms(watchedFilmByPeriod);
   const { fullTime, topGenre, watchedFilmCount, userStatus } = watchedStatistic;
 
   return `<section class="statistic">
@@ -149,8 +145,7 @@ const createStatistics = (data) => {
     <span class="statistic__rank-label">${userStatus}</span>
   </p>
   <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
-    <p class="statistic__filters-description">Show stats:</p>
-    ${periodControlsTemplate(statisticPeriod)}
+    <p class="statistic__filters-description">Show stats:</p>${periodTemplate(statisticPeriod)}
   </form>
   <ul class="statistic__text-list">
     <li class="statistic__text-item">
@@ -194,6 +189,11 @@ class Stats extends Smart {
     return createStatistics(this._data);
   }
 
+  restoreHandlers() {
+    this._setInnersHandler();
+    this._setChart();
+  }
+
   _setInnersHandler() {
     this.getElement().querySelector('.statistic__filters').addEventListener('change', this._periodChangeHandler);
   }
@@ -204,20 +204,14 @@ class Stats extends Smart {
     });
   }
 
-  restoreHandlers() {
-    this._setInnersHandler();
-    this._setChart();
-  }
-
   _setChart() {
     const { films, statisticPeriod } = this._data;
-    const statisticCtx = this.getElement().querySelector('.statistic__chart');
     const BAR_HEIGHT = 50;
+    const statisticCtx = this.getElement().querySelector('.statistic__chart');
     statisticCtx.height = BAR_HEIGHT * 5;
-
-    const watchedFilmByPeriod = getWatchedFilmByPeriod(films, statisticPeriod);
-    const watchedStatistic = getWatchedStatistic(watchedFilmByPeriod);
-    this._genresChart = renderGenresChart(statisticCtx, watchedStatistic.genresStatistic);
+    const watchedFilmByPeriod = getWatchedFilmByChoosenPeriod(films, statisticPeriod);
+    const watchedStatistic = getStatisticByWatchedFilms(watchedFilmByPeriod);
+    this._genresChart = createChartGenres(statisticCtx, watchedStatistic.genresStatistic);
   }
 }
 

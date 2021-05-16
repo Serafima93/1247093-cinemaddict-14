@@ -1,30 +1,12 @@
-const USER_RATING = {
-  'none': {
-    FROM: 0,
-    TO: 0,
-  },
-  'novice': {
-    FROM: 1,
-    TO: 10,
-  },
-  'fan': {
-    FROM: 11,
-    TO: 20,
-  },
-  'movie buff': {
-    FROM: 21,
-    TO: 100,
-  },
-};
+import { USER_RATING } from './utils-constans.js';
 
 const getRating = (number) => {
-  const status = [];
+  const rating = [];
   for (const key in USER_RATING) {
     if (USER_RATING[key].FROM <= number && number <= USER_RATING[key].TO) {
-      status.push(key);
+      rating.push(key);
     }
   }
-
   return status;
 };
 

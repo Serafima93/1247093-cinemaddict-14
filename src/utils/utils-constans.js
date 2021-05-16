@@ -48,4 +48,23 @@ const statisticsPeriod = {
   YEAR: 'year',
 };
 
-export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, FilterType, SortType, Mode, EmogiType, UpdateType, UserAction, statisticsPeriod };
+const USER_RATING = {
+  'none': {
+    FROM: 0,
+    TO: 0,
+  },
+  'novice': {
+    FROM: 1,
+    TO: 10,
+  },
+  'fan': {
+    FROM: 11,
+    TO: 20,
+  },
+  'movie buff': {
+    FROM: 21,
+    TO: 100,
+  },
+};
+
+export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, FilterType, SortType, Mode, EmogiType, UpdateType, UserAction, statisticsPeriod, USER_RATING };

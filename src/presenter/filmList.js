@@ -5,7 +5,6 @@ import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
 import { Stats } from '../view/stats.js';
-
 import { render, remove, replace } from '../utils/utils-render.js';
 import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType, FilterType } from '../utils/utils-constans.js';
 import { generateFilmComment } from '../mock/comments';
@@ -218,8 +217,6 @@ class FilmBoard {
 
   /*
    */
-
-
   _favoriteClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
@@ -241,8 +238,6 @@ class FilmBoard {
 
   /*
    */
-
-
   _renderLoadMoreButton() {
     if (this._loadMoreButtonComponent !== null) {
       this._loadMoreButtonComponent = null;
