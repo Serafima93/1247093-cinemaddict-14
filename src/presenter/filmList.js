@@ -48,6 +48,7 @@ class FilmBoard {
     this._commentsModel.addObserver(this._handleModelEvent);
 
     this._deleteComment = this._deleteComment.bind(this);
+    this._addComment = this._addComment.bind(this);
 
   }
   init() {
@@ -277,6 +278,7 @@ class FilmBoard {
       this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
 
       this._popupComponent.setDeleteComment(this._deleteComment);
+      this._popupComponent.setSendNewComment(this._addComment);
 
       render(this._boardContainer, this._popupComponent);
       this._mode = Mode.POPUP;
@@ -321,36 +323,30 @@ class FilmBoard {
     // находим комментарий внутри этого фильма
     // перезаписываем измененный массив
     // изменяем модель фильмов
-    //
     const comments = film.comments.filter((filmId) => filmId.id !== commentId);
     const updatedFilm = Object.assign(
       {},
       film,
       { comments });
 
-    this._popupComponent.updateData({ comments });
     this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, updatedFilm);
+    this._popupComponent.updateData({ comments });
   }
 
-  // _addComment(film, comment) {
-  //   film = this._films.find((movieItem) => movieItem.id === film.id);
+  _addComment(film, comment) {
+    this._films = this._filmsModel.getFilms();
+    film = this._films.find((filmItem) => filmItem.id === film.id);
+    const filmComments = film.comments;
+    filmComments.push(comment);
 
-  //   const filmComments = film.comments;
+    const updatedFilm = Object.assign(
+      {},
+      film,
+      { filmComments });
 
-  //   filmComments.push(comment.id);
-
-  //   const updatedFilm = Object.assign(
-  //     {},
-  //     film,
-  //     {filmComments});
-
-  //   this._commentsModel.addComment(comment);
-  //   this._filmModel.updateFilm(UpdateType.MINOR, updatedFilm);
-  //   this._films = this._filmsModel.getFilms();
-  //   this._comments = this._commentsModel.getComments();
-  //   this._popupComponent.updateComments(this._commentsModel.getComments().slice());
-  //   this._popupComponent.updateData({filmComments});
-  // }
+    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, updatedFilm);
+    this._popupComponent.updateData({ filmComments });
+  }
 
   /*
    */

@@ -244,20 +244,12 @@ class PopUp extends Smart {
     );
   }
 
-  static parseDataToFilm(film) {
-    film = Object.assign({}, film);
-    return film;
-  }
-
   _sendNewCommentHandler(evt) {
     const isRightKeys = (evt.ctrlKey || evt.metaKey) && evt.keyCode === 13;
     const isHasTextAndEmoji = !this._filmComment.emoji || !this._filmComment.text.trim();
 
     if (isRightKeys && !isHasTextAndEmoji) {
-      this._newComment = PopUp.parseDataToFilm(this._filmComment);
-      this._filmComment = PopUp.parseFilmToData(this._newComment);
-      this._data.comments.push(this._newComment);
-      this.updateElement();
+      this._callback.setSendNewComment(this._data, this._filmComment);
       const block = this.getElement();
       block.scrollTop = block.scrollHeight;
     }
@@ -267,12 +259,13 @@ class PopUp extends Smart {
     this._callback.setSendNewComment = callback;
   }
 
-
   _deleteCommentHandler(evt) {
     if (!evt.target.classList.contains('film-details__comment-delete')) {
       return;
     }
     this._callback.deleteComment(this._data, evt.target.dataset.id);
+    const block = this.getElement();
+    block.scrollTop = block.scrollHeight;
   }
 
   setDeleteComment(callback) {
