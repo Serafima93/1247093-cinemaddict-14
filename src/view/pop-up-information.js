@@ -171,6 +171,7 @@ class PopUp extends Smart {
 
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
+
     this._sendNewCommentHandler = this._sendNewCommentHandler.bind(this);
     this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
 
@@ -262,11 +263,16 @@ class PopUp extends Smart {
     }
   }
 
+  setSendNewComment(callback) {
+    this._callback.setSendNewComment = callback;
+  }
+
+
   _deleteCommentHandler(evt) {
     if (!evt.target.classList.contains('film-details__comment-delete')) {
       return;
     }
-    this._callback.deleteComment(evt.target.dataset.id);
+    this._callback.deleteComment(this._data, evt.target.dataset.id);
   }
 
   setDeleteComment(callback) {

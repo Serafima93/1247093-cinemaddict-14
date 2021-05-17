@@ -45,8 +45,9 @@ class FilmBoard {
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+    this._commentsModel.addObserver(this._handleModelEvent);
 
-    this._handlerDeleteComment = this._handlerDeleteComment.bind(this);
+    this._deleteComment = this._deleteComment.bind(this);
 
   }
   init() {
@@ -275,7 +276,7 @@ class FilmBoard {
       this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
       this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
 
-      this._popupComponent.setDeleteComment(this._handlerDeleteComment);
+      this._popupComponent.setDeleteComment(this._deleteComment);
 
       render(this._boardContainer, this._popupComponent);
       this._mode = Mode.POPUP;
@@ -289,6 +290,7 @@ class FilmBoard {
     this._popupComponent = null;
     this._mode = Mode.DEFAULT;
     this._body.classList.remove('hide-overflow');
+    // this._popupComponent.reset();
   }
 
   _onEscKeyDown(evt) {
@@ -309,33 +311,57 @@ class FilmBoard {
     return generateFilmComment();
   }
 
-  _handlerDeleteComment(film, commentId) {
+  _deleteComment(film, commentId) {
     this._films = this._filmsModel.getFilms();
-
+    this._comments = this._commentsModel.getComments();
     film = this._films.find((filmItem) => filmItem.id === film.id);
-
-    const comments = film.comments.filter((existedId) => String(existedId) !== String(commentId));
+    // находим фильм в котором произошло изменение
+    // находим id комментария
+    // находим фильм внутри списка фильмов
+    // находим комментарий внутри этого фильма
+    // перезаписываем измененный массив
+    // изменяем модель фильмов
+    //
+    const comments = film.comments.filter((filmId) => filmId.id !== commentId);
     const updatedFilm = Object.assign(
       {},
       film,
       { comments });
 
-    this._filmsModel.updateFilm(UpdateType.MINOR, updatedFilm);
-    // this._popupComponent.updateData({ comments });
-
-    this._handleViewAction(UserAction.ADD_COMMENT, UpdateType.MINOR, updatedFilm);
+    this._popupComponent.updateData({ comments });
+    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, updatedFilm);
   }
+
+  // _addComment(film, comment) {
+  //   film = this._films.find((movieItem) => movieItem.id === film.id);
+
+  //   const filmComments = film.comments;
+
+  //   filmComments.push(comment.id);
+
+  //   const updatedFilm = Object.assign(
+  //     {},
+  //     film,
+  //     {filmComments});
+
+  //   this._commentsModel.addComment(comment);
+  //   this._filmModel.updateFilm(UpdateType.MINOR, updatedFilm);
+  //   this._films = this._filmsModel.getFilms();
+  //   this._comments = this._commentsModel.getComments();
+  //   this._popupComponent.updateComments(this._commentsModel.getComments().slice());
+  //   this._popupComponent.updateData({filmComments});
+  // }
 
   /*
    */
 
   _createFilmCommentsArray() {
-    const commentsFilm = this._getFilms().slice().sort((a, b) => b.comments.length - a.comments.length);
+    const commentsFilm = this._filmsModel.getFilms().slice().sort((a, b) => b.comments.length - a.comments.length);
     return commentsFilm;
   }
 
   _createFilmRateArray() {
-    const rateFilm = this._getFilms().slice().sort((a, b) => b.rating - a.rating);
+    const rateFilm = this._filmsModel.getFilms().slice().sort((a, b) => b.rating - a.rating);
     return rateFilm;
   }
   /*
