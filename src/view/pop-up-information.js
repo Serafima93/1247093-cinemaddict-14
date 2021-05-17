@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { Smart } from './smart.js';
-import { EmogiType } from '../utils/utils-constans';
+import { EmogiType } from '../utils/constans';
 import he from 'he';
 
 const createCommentsList = (comments) => {

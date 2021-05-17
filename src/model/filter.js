@@ -1,5 +1,5 @@
-import { Observer } from '../utils/utis-observer.js';
-import { FilterType } from '../utils/utils-constans.js';
+import { Observer } from '../utils/observer.js';
+import { FilterType } from '../utils/constans.js';
 
 
 class Filter extends Observer {

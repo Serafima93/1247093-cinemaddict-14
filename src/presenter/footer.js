@@ -1,5 +1,5 @@
 import { FooterStatistic } from '../view/footer.js';
-import { render } from '../utils/utils-render';
+import { render } from '../utils/render';
 
 class FooterStatisticPresenter {
   constructor(container) {

@@ -1,5 +1,5 @@
 import { Abstract } from './abstract.js';
-import { SortType } from '../utils/utils-constans';
+import { SortType } from '../utils/constans';
 
 const createSorting = (currentSortType) => {
   return `  <ul class="sort">

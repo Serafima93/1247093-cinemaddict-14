@@ -1,7 +1,7 @@
 import { SiteMenu } from '../view/menu.js';
-import { replace, render, remove, RenderPosition } from '../utils/utils-render';
-import { FilterType, UpdateType } from '../utils/utils-constans.js';
-import { filters } from '../utils/utils-filter.js';
+import { replace, render, remove, RenderPosition } from '../utils/render';
+import { FilterType, UpdateType } from '../utils/constans.js';
+import { filters } from '../utils/filter.js';
 
 class MenuPresenter {
   constructor(container, filmsModel, filterModel) {

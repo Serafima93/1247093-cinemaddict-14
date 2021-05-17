@@ -1,8 +1,8 @@
 import { Smart } from './smart.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { getRating } from '../utils/utils-stats.js';
-import { statisticsPeriod } from '../utils/utils-constans.js';
+import { getRating } from '../utils/stats.js';
+import { statisticsPeriod } from '../utils/constans.js';
 
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';

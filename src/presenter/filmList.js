@@ -5,10 +5,10 @@ import { FilmCard } from '../view/film-card.js';
 import { ShowMoreButton } from '../view/button-show-more.js';
 import { PopUp } from '../view/pop-up-information.js';
 import { Stats } from '../view/stats.js';
-import { render, remove, replace } from '../utils/utils-render.js';
-import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType, FilterType } from '../utils/utils-constans.js';
+import { render, remove, replace } from '../utils/render.js';
+import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType, FilterType } from '../utils/constans.js';
 import { generateFilmComment } from '../mock/comments';
-import { filters } from '../utils/utils-filter.js';
+import { filters } from '../utils/filter.js';
 
 
 class FilmBoard {
@@ -40,7 +40,7 @@ class FilmBoard {
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
-    this._currentSortType = SortType.DATE;
+    this._currentSortType = SortType.DEFAULT;
     this._mode = Mode.DEFAULT;
 
     this._filmsModel.addObserver(this._handleModelEvent);
@@ -59,10 +59,9 @@ class FilmBoard {
   }
 
   _getFilms() {
+    const defaultFilms = this._filmsModel.getDefaultFilms();
     const filterType = this._filterModel.getFilter();
-    const films = this._filmsModel.getFilms();
-    const filtredFilms = filters[filterType](films);
-    const defaultFilms = this._filmsModel.getFilms().slice();
+    const filtredFilms = filters[filterType](defaultFilms);
 
     switch (this._currentSortType) {
       case SortType.DATE:
@@ -70,7 +69,7 @@ class FilmBoard {
       case SortType.RATING:
         return filtredFilms.sort((a, b) => b.rating - a.rating);
       case SortType.DEFAULT:
-        return defaultFilms;
+        return filtredFilms;
     }
     return filtredFilms;
   }
@@ -158,7 +157,6 @@ class FilmBoard {
     } else {
       this._renderedFilmCount = Math.min(filmCount, this._renderedFilmCount);
     }
-
     if (resetSortType) {
       this._currentSortType = SortType.DEFAULT;
     }
@@ -223,7 +221,6 @@ class FilmBoard {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
     this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
-    // возникает баг - фильмы над поп-апом
   }
 
   _watchedClickHandler(film) {
@@ -280,7 +277,7 @@ class FilmBoard {
       this._popupComponent.setDeleteComment(this._deleteComment);
       this._popupComponent.setSendNewComment(this._addComment);
 
-      render(this._boardContainer, this._popupComponent);
+      render(this._body, this._popupComponent);
       this._mode = Mode.POPUP;
       this._body.classList.add('hide-overflow');
       document.addEventListener('keydown', this._onEscKeyDown);

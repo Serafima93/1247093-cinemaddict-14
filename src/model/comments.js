@@ -1,4 +1,4 @@
-import { Observer } from '../utils/utis-observer.js';
+import { Observer } from '../utils/observer.js';
 
 class Comments extends Observer {
   constructor() {

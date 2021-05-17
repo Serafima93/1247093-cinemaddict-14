@@ -1,5 +1,5 @@
 import { UserProfile } from '../view/user.js';
-import { render } from '../utils/utils-render';
+import { render } from '../utils/render';
 
 class UserProfilePresenter {
   constructor(container) {

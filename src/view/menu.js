@@ -1,7 +1,5 @@
 import { Abstract } from './abstract.js';
-import { FilterType } from '../utils/utils-constans.js';
-// import { Smart } from './smart.js';
-
+import { FilterType } from '../utils/constans.js';
 
 const generateFilterItem = (filter, activeFilter) => {
 

@@ -1,4 +1,4 @@
-import { createSiteElement } from '../utils/utils-render.js';
+import { createSiteElement } from '../utils/render.js';
 
 class Abstract {
   constructor() {

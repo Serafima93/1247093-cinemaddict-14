@@ -1,4 +1,4 @@
-import { Observer } from '../utils/utis-observer.js';
+import { Observer } from '../utils/observer.js';
 
 class Films extends Observer {
   constructor() {
@@ -8,10 +8,15 @@ class Films extends Observer {
 
   setFilms(films) {
     this._films = films.slice();
+    this._dafaultFilms = films.slice();
   }
 
   getFilms() {
     return this._films;
+  }
+
+  getDefaultFilms () {
+    return this._dafaultFilms;
   }
 
   updateFilm(updateType, update) {

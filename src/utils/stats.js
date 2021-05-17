@@ -1,4 +1,4 @@
-import { USER_RATING } from './utils-constans.js';
+import { USER_RATING } from './constans.js';
 
 const getRating = (number) => {
   const rating = [];

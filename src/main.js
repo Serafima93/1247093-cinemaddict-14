@@ -4,7 +4,7 @@ import { UserProfilePresenter } from './presenter/user';
 import { MenuPresenter } from './presenter/menu.js';
 
 import { generateFilm } from './mock/film.js';
-import { FILMS_MAX_COUNT } from './utils/utils-constans.js';
+import { FILMS_MAX_COUNT } from './utils/constans.js';
 
 import { Films } from './model/films.js';
 import { Filter } from './model/filter.js';
