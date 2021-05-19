@@ -1,11 +1,11 @@
-import { Abstract } from './abstract.js';
+import Abstract from './abstract.js';
 
 const createShowMoreButton = () => {
   return `
 <button class="films-list__show-more">Show more</button>` ;
 };
 
-class ShowMoreButton extends Abstract {
+export default class ShowMoreButton extends Abstract {
   constructor() {
     super();
     this._clickHandler = this._clickHandler.bind(this);
@@ -26,4 +26,3 @@ class ShowMoreButton extends Abstract {
   }
 }
 
-export { ShowMoreButton };

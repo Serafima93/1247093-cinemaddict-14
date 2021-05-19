@@ -1,37 +1,70 @@
-import { SiteMenu } from '../view/menu.js';
-import { render, remove, RenderPosition } from '../utils/utils-render';
+import SiteMenu from '../view/menu.js';
+import { replace, render, remove, RenderPosition } from '../utils/render';
+import { FilterType, UpdateType } from '../utils/constans.js';
+import { UserFilters } from '../utils/filter.js';
 
-class MenuPresenter {
-  constructor(container) {
+export default class MenuPresenter {
+  constructor(container, filmsModel, filterModel) {
     this._container = container;
-    this._SiteMenuComponent = null;
+    this._filmsModel = filmsModel;
+    this._filterModel = filterModel;
+    this._siteMenuComponent = null;
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
-  init(films = []) {
-    const state = this._getFilterState(films);
-    this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm);
-    render(this._container, this._SiteMenuComponent);
-  }
+  init() {
+    const choosenFilter = this._getFilters();
+    const prevFilterComponent = this._siteMenuComponent;
 
-  update(films = []) {
-    if (this._SiteMenuComponent != null) {
-      const state = this._getFilterState(films);
-      remove(this._SiteMenuComponent);
-      this._SiteMenuComponent = new SiteMenu(state.favoritFilm, state.watchedFilm, state.futureFilm);
-      render(this._container, this._SiteMenuComponent, RenderPosition.AFTERBEGIN);
+    this._siteMenuComponent = new SiteMenu(choosenFilter, this._filterModel.getFilter());
+    this._siteMenuComponent.setFilterClick(this._handleFilterTypeChange);
+
+    if (prevFilterComponent === null) {
+      render(this._container, this._siteMenuComponent, RenderPosition.AFTERBEGIN);
+      return;
     }
+    replace(this._siteMenuComponent, prevFilterComponent);
+    remove(prevFilterComponent);
   }
 
-  _getFilterState(films) {
-    const favoritFilm = films.filter((film) => film.isFavorit).length;
-    const watchedFilm = films.filter((film) => film.isWatched).length;
-    const futureFilm = films.filter((film) => film.isFutureFilm).length;
+  _handleModelEvent() {
+    this.init();
+  }
 
-    return {
-      favoritFilm,
-      watchedFilm,
-      futureFilm,
-    };
+  _handleFilterTypeChange(filterType) {
+    if (this._filterModel.getFilter() === filterType) {
+      return;
+    }
+    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  _getFilters() {
+    const films = this._filmsModel.getFilms();
+
+    return [
+      {
+        type: FilterType.ALL,
+        filterName: 'all',
+        count: UserFilters[FilterType.ALL](films).length,
+      },
+      {
+        type: FilterType.WATCHLIST,
+        filterName: 'watchlist',
+        count: UserFilters[FilterType.WATCHLIST](films).length,
+      },
+      {
+        type: FilterType.HISTORY,
+        filterName: 'history',
+        count: UserFilters[FilterType.HISTORY](films).length,
+      },
+      {
+        type: FilterType.FAVORITES,
+        filterName: 'favorites',
+        count: UserFilters[FilterType.FAVORITES](films).length,
+      },
+    ];
   }
 }
-export { MenuPresenter };

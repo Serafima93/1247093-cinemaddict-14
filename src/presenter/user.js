@@ -1,16 +1,13 @@
-import { UserProfile } from '../view/user.js';
-import { render } from '../utils/utils-render';
+import UserProfile from '../view/user.js';
+import { render } from '../utils/render';
 
-class UserProfilePresenter {
+export default class UserProfilePresenter {
   constructor(container) {
     this._container = container;
-    this._UserProfileComponent = null;
+    this._userProfileComponent = null;
   }
-
   init() {
-    this._UserProfileComponent = new UserProfile();
-
-    render(this._container, this._UserProfileComponent);
+    this._userProfileComponent = new UserProfile();
+    render(this._container, this._userProfileComponent);
   }
 }
-export { UserProfilePresenter };

@@ -3,7 +3,7 @@ import duration from 'dayjs/plugin/duration';
 import { nanoid } from 'nanoid';
 dayjs.extend(duration);
 
-import { getRandomInteger } from '../utils/utils-common';
+import { getRandomInteger } from '../utils/common';
 import { generateFilmComment } from './comments';
 
 
@@ -54,7 +54,6 @@ const generateGenre = () => {
   return randomIndex;
 };
 
-//начало работы с поп-апом
 
 const generateFilmCountry = () => {
   const country = ['USA', 'UK', 'Israel', 'Spain'];

@@ -1,35 +1,60 @@
-import { Abstract } from './abstract.js';
+import Abstract from './abstract.js';
+import { FilterType } from '../utils/constans.js';
 
-const createSiteMenuTemplate = (favorite, watched, futureFilm) => {
-  return ` <div> <nav class="main-navigation">
-    <div class="main-navigation__items">
-      <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
-      <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${futureFilm}</span></a>
-      <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${watched}</span></a>
-      <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favorite}</span></a>
-    </div>
-    <a href="#stats" class="main-navigation__additional">Stats</a>
-  </nav>
-  </section> </div>`;
+const generateFilterItem = (filter, activeFilter) => {
+
+  const { type, filterName, count } = filter;
+  return `<a href="#${filterName}"
+  data-filter = "${type}"
+  class="main-navigation__item ${activeFilter === type ? 'main-navigation__item--active' : ''}">
+  ${type} ${type === FilterType.ALL ? '' : `<span class="main-navigation__item-count">${count}</span>`}</a>`;
 };
 
-class SiteMenu extends Abstract {
-  constructor(favoritFilm = 0, watchedFilm = 0, futureFilm = 0) {
+const generateFiltersTemplate = (filters, activeFilter) => {
+  return filters.map((filter) => generateFilterItem(filter, activeFilter)).join('');
+};
+
+const createSiteMenuTemplate = (filters, activeFilter) => {
+
+  return `<nav class="main-navigation">
+   <div class="main-navigation__items">
+    ${generateFiltersTemplate(filters, activeFilter)}
+    </div>
+    <a href="#stats" class="main-navigation__additional ${activeFilter === FilterType.STATS ? 'main-navigation__additional--active' : ''}"
+    data-filter = "${FilterType.STATS}">Stats</a>
+    </nav>`;
+};
+
+export default class SiteMenu extends Abstract {
+  constructor(filter, activeFilter) {
     super();
-    this._favorite = favoritFilm;
-    this._watched = watchedFilm;
-    this._future = futureFilm;
+    this._data = filter;
+    this._activeFilter = activeFilter;
+
+    this._filterClickHandler = this._filterClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createSiteMenuTemplate(this._favorite, this._watched, this._future);
+    return createSiteMenuTemplate(this._data, this._activeFilter);
   }
 
-  setValue(favoritFilm = 0, watchedFilm = 0, futureFilm = 0) {
-    this._favorite = favoritFilm;
-    this._watched = watchedFilm;
-    this._future = futureFilm;
+  restoreHandlers() {
+    this.setFilterClick(this._callback.filterClick);
+  }
+
+  _filterClickHandler(evt) {
+    const menuNavigation = evt.target.classList.contains('main-navigation__item') ||
+      evt.target.classList.contains('main-navigation__additional');
+
+    if (!menuNavigation) {
+      return;
+    }
+    this._callback.filterClick(evt.target.dataset.filter);
+  }
+
+  setFilterClick(callback) {
+    this._callback.filterClick = callback;
+    this.getElement().addEventListener('click', this._filterClickHandler);
   }
 }
 
-export { SiteMenu };

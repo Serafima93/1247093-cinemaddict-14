@@ -1,4 +1,4 @@
-import { Abstract } from './abstract.js';
+import Abstract from './abstract.js';
 
 const createFilmListWrap = () => {
   return `<section class="films">
@@ -18,11 +18,9 @@ const createFilmListWrap = () => {
   </section>`;
 };
 
-class FilmList extends Abstract {
+export default class FilmList extends Abstract {
 
   getTemplate() {
     return createFilmListWrap();
   }
 }
-
-export { FilmList };

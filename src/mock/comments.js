@@ -1,6 +1,6 @@
 import { generateFilmDescription } from './film.js';
-import { getRandomInteger } from '../utils/utils-common';
-
+import { getRandomInteger } from '../utils/common';
+import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
 
 const generateCommentAuthor = () => {
@@ -31,6 +31,7 @@ const generateFilmComment = () => {
     emoji: generateCommentEmoji(),
     author: generateCommentAuthor(),
     commentDate: generateCommentTime(),
+    id: nanoid(),
   };
 };
 

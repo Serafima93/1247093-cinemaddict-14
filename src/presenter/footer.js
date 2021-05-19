@@ -1,7 +1,7 @@
-import { FooterStatistic } from '../view/footer.js';
-import { render } from '../utils/utils-render';
+import FooterStatistic from '../view/footer.js';
+import { render } from '../utils/render';
 
-class FooterStatisticPresenter {
+export default class FooterStatisticPresenter {
   constructor(container) {
     this._container = container;
     this._footerStatisticComponent = null;
@@ -13,4 +13,3 @@ class FooterStatisticPresenter {
     render(this._container, this._footerStatisticComponent);
   }
 }
-export { FooterStatisticPresenter };
