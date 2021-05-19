@@ -37,26 +37,23 @@ export default class FilmBoard {
     this._noFilmsComponent = new EmptyWrap();
 
     this._renderPopUp = this._renderPopUp.bind(this);
-    this._onEscKeyDown = this._onEscKeyDown.bind(this);
+    this._keyDownHandler = this._keyDownHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._futureClickHandler = this._futureClickHandler.bind(this);
-
-    this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
-    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
-    this._handleViewAction = this._handleViewAction.bind(this);
-    this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
+    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
 
     this._currentSortType = SortType.DEFAULT;
     this._mode = Mode.DEFAULT;
 
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
     this._deleteComment = this._deleteComment.bind(this);
     this._addComment = this._addComment.bind(this);
-
   }
   init() {
     this._filmView = {};
@@ -129,11 +126,11 @@ export default class FilmBoard {
       this._sortComponent = null;
     }
     this._sortComponent = new Sort(this._currentSortType);
-    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    this._sortComponent.setSortTypeChangeHandler(this._sortTypeChangeHandler);
     render(this._boardContainer, this._sortComponent);
   }
 
-  _handleSortTypeChange(type) {
+  _sortTypeChangeHandler(type) {
     if (this._currentSortType === type) {
       return;
     }
@@ -266,7 +263,7 @@ export default class FilmBoard {
     }
     if (this._mode === Mode.DEFAULT) {
       this._popupComponent = new PopUp(film, this._renderRandomComment());
-      this._popupComponent.setCloseBtnClickHandler(this._handleCloseButtonClick);
+      this._popupComponent.setCloseBtnClickHandler(this._closeButtonClickHandler);
 
       this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
       this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
@@ -278,7 +275,7 @@ export default class FilmBoard {
       render(this._body, this._popupComponent);
       this._mode = Mode.POPUP;
       this._body.classList.add('hide-overflow');
-      document.addEventListener('keydown', this._onEscKeyDown);
+      document.addEventListener('keydown', this._keyDownHandler);
     }
   }
 
@@ -290,18 +287,18 @@ export default class FilmBoard {
     // this._popupComponent.reset();
   }
 
-  _onEscKeyDown(evt) {
+  _keyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._removePopup();
-      document.removeEventListener('keydown', this._onEscKeyDown);
+      document.removeEventListener('keydown', this._keyDownHandler);
     }
   }
 
-  _handleCloseButtonClick() {
+  _closeButtonClickHandler() {
     this._removePopup();
     this._boardContainer.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', this._onEscKeyDown);
+    document.removeEventListener('keydown', this._keyDownHandler);
   }
 
   _renderRandomComment() {
