@@ -240,10 +240,10 @@ export default class FilmBoard {
     this._loadMoreButtonComponent = new ShowMoreButton();
     const buttonPlace = this._boardContainer.querySelector('.films-list');
     render(buttonPlace, this._loadMoreButtonComponent);
-    this._loadMoreButtonComponent.setClickHandler(() => { this._handleLoadMoreButtonClick(this._getFilms()); });
+    this._loadMoreButtonComponent.setClickHandler(() => { this._loadMoreButtonClickHandler(this._getFilms()); });
   }
 
-  _handleLoadMoreButtonClick(films) {
+  _loadMoreButtonClickHandler(films) {
     const filmCardContainers = this._boardContainer.querySelector('.films-list__container--main');
     films
       .slice(this._renderedFilmCount, this._renderedFilmCount + this._renderedFilmCount)
@@ -335,12 +335,12 @@ export default class FilmBoard {
   /*
    */
 
-  _createFilmCommentsArray() {
+  _createFilmCommentsList() {
     const commentsFilm = this._filmsModel.getFilms().slice().sort((a, b) => b.comments.length - a.comments.length);
     return commentsFilm;
   }
 
-  _createFilmRateArray() {
+  _createFilmRateList() {
     const rateFilm = this._filmsModel.getFilms().slice().sort((a, b) => b.rating - a.rating);
     return rateFilm;
   }
@@ -362,8 +362,8 @@ export default class FilmBoard {
     const filmCardContainerMostRate = this._boardContainer.querySelector('.films-list__container--rating');
     const filmCardContainerMostComments = this._boardContainer.querySelector('.films-list__container--comments');
 
-    const rateFilm = this._createFilmRateArray();
-    const commentsFilm = this._createFilmCommentsArray();
+    const rateFilm = this._createFilmRateList();
+    const commentsFilm = this._createFilmCommentsList();
 
     commentsFilm
       .slice(0, FILMS_EXTRA_SECTION)

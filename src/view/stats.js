@@ -121,15 +121,15 @@ const createChartGenres = (statisticCtx, genresStats) => {
   });
 };
 
-const inputTemplate = (input, currentInput) => {
+const makeInputTemplate = (input, currentInput) => {
   return `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter"
    id="statistic-${input}" value="${input}"  ${input === currentInput ? 'checked' : ''}>
   <label for="statistic-${input}" class="statistic__filters-label">
   ${input === StatisticsPeriod.ALL ? 'All time' : `${input.charAt(0).toUpperCase() + input.slice(1)}`}</label>`;
 };
 
-const periodTemplate = (currentInput) => {
-  return Object.values(StatisticsPeriod).map((input) => inputTemplate(input, currentInput)).join('');
+const createPeriodTemplate = (currentInput) => {
+  return Object.values(StatisticsPeriod).map((input) => makeInputTemplate(input, currentInput)).join('');
 };
 
 const createStatistics = (data) => {
@@ -145,7 +145,7 @@ const createStatistics = (data) => {
     <span class="statistic__rank-label">${userStatus}</span>
   </p>
   <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
-    <p class="statistic__filters-description">Show stats:</p>${periodTemplate(statisticPeriod)}
+    <p class="statistic__filters-description">Show stats:</p>${createPeriodTemplate(statisticPeriod)}
   </form>
   <ul class="statistic__text-list">
     <li class="statistic__text-item">
