@@ -1,23 +1,31 @@
-import { FilmList } from '../view/film-list-section.js';
-import { EmptyWrap } from '../view/empty.js';
-import { Sort } from '../view/sort.js';
-import { FilmCard } from '../view/film-card.js';
-import { ShowMoreButton } from '../view/button-show-more.js';
-import { PopUp } from '../view/pop-up-information.js';
-import { Stats } from '../view/stats.js';
+import FilmList from '../view/film-list-section.js';
+import EmptyWrap from '../view/empty.js';
+import Sort from '../view/sort.js';
+import FilmCard from '../view/film-card.js';
+import ShowMoreButton from '../view/button-show-more.js';
+import PopUp from '../view/pop-up-information.js';
+import Stats from '../view/stats.js';
+
 import { render, remove, replace } from '../utils/render.js';
-import { FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, SortType, Mode, UserAction, UpdateType, FilterType } from '../utils/constans.js';
+import { UserFilters } from '../utils/filter.js';
+import {
+  FILMS_EXTRA_SECTION,
+  FILM_COUNT_PER_STEP,
+  SortType,
+  Mode,
+  Action,
+  UpdateType,
+  FilterType
+} from '../utils/constans.js';
 import { generateFilmComment } from '../mock/comments';
-import { filters } from '../utils/filter.js';
 
 
-class FilmBoard {
-  constructor(boardContainer, bodyElement, filmsModel, filterModel, commentsModel) {
+export default class FilmBoard {
+  constructor(boardContainer, bodyElement, filmsModel, filterModel) {
     this._boardContainer = boardContainer;
     this._body = bodyElement;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
-    this._commentsModel = commentsModel;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
@@ -45,7 +53,6 @@ class FilmBoard {
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-    this._commentsModel.addObserver(this._handleModelEvent);
 
     this._deleteComment = this._deleteComment.bind(this);
     this._addComment = this._addComment.bind(this);
@@ -61,7 +68,7 @@ class FilmBoard {
   _getFilms() {
     const defaultFilms = this._filmsModel.getDefaultFilms();
     const filterType = this._filterModel.getFilter();
-    const filtredFilms = filters[filterType](defaultFilms);
+    const filtredFilms = UserFilters[filterType](defaultFilms);
 
     switch (this._currentSortType) {
       case SortType.DATE:
@@ -76,15 +83,8 @@ class FilmBoard {
 
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
-      case UserAction.UPDATE_FILM:
+      case Action.UPDATE_FILM:
         this._filmsModel.updateFilm(updateType, update);
-        break;
-      // можно ли так? Это две разные чати
-      case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, update);
-        break;
-      case UserAction.DELETE_COMMENT:
-        this._commentsModel.deleteComment(updateType, update);
         break;
     }
   }
@@ -99,7 +99,6 @@ class FilmBoard {
         this._renderStatistic();
         replace(this._statisticComponent, this._filmListComponent);
         break;
-
       case UpdateType.PATCH:
         this._filmView[data.id];
         break;
@@ -150,7 +149,6 @@ class FilmBoard {
 
     remove(this._sortComponent);
     remove(this._noFilmsComponent);
-    remove(this._loadMoreButtonComponent);
 
     if (resetRenderedFilmCount) {
       this._renderedFilmCount = FILM_COUNT_PER_STEP;
@@ -220,19 +218,19 @@ class FilmBoard {
   _favoriteClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFavorit = !film.isFavorit;
-    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
+    this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, film);
   }
 
   _watchedClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isWatched = !film.isWatched;
-    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
+    this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, film);
   }
 
   _futureClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
     oldFilm.isFutureFilm = !film.isFutureFilm;
-    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, film);
+    this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, film);
   }
 
   /*
@@ -312,21 +310,13 @@ class FilmBoard {
 
   _deleteComment(film, commentId) {
     this._films = this._filmsModel.getFilms();
-    this._comments = this._commentsModel.getComments();
     film = this._films.find((filmItem) => filmItem.id === film.id);
-    // находим фильм в котором произошло изменение
-    // находим id комментария
-    // находим фильм внутри списка фильмов
-    // находим комментарий внутри этого фильма
-    // перезаписываем измененный массив
-    // изменяем модель фильмов
     const comments = film.comments.filter((filmId) => filmId.id !== commentId);
     const updatedFilm = Object.assign(
       {},
       film,
       { comments });
-
-    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, updatedFilm);
+    this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, updatedFilm);
     this._popupComponent.updateData({ comments });
   }
 
@@ -341,7 +331,7 @@ class FilmBoard {
       film,
       { filmComments });
 
-    this._handleViewAction(UserAction.UPDATE_FILM, UpdateType.MINOR, updatedFilm);
+    this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, updatedFilm);
     this._popupComponent.updateData({ filmComments });
   }
 
@@ -399,4 +389,3 @@ class FilmBoard {
     render(this._boardContainer, this._statisticComponent);
   }
 }
-export { FilmBoard };

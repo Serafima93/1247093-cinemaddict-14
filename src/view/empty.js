@@ -1,4 +1,4 @@
-import { Abstract } from './abstract.js';
+import Abstract from './abstract.js';
 
 const createEmptyWrap = () => {
   return `<section class="films-list">
@@ -6,12 +6,10 @@ const createEmptyWrap = () => {
 </section>` ;
 };
 
-class EmptyWrap extends Abstract {
+export default class EmptyWrap extends Abstract {
 
   getTemplate() {
     return createEmptyWrap();
   }
-
 }
 
-export { EmptyWrap };

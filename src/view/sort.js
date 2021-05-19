@@ -1,4 +1,4 @@
-import { Abstract } from './abstract.js';
+import Abstract from './abstract.js';
 import { SortType } from '../utils/constans';
 
 const createSorting = (currentSortType) => {
@@ -9,7 +9,7 @@ const createSorting = (currentSortType) => {
   </ul>` ;
 };
 
-class Sort extends Abstract {
+export default class Sort extends Abstract {
   constructor(currentSortType) {
     super();
     this._currentSortType = currentSortType;
@@ -33,5 +33,3 @@ class Sort extends Abstract {
     this.getElement().addEventListener('click', this._sortTypeChangeHandler);
   }
 }
-
-export { Sort };

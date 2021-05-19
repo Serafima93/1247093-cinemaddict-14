@@ -28,7 +28,7 @@ const EmogiType = {
   ANGRY: 'angry',
 };
 
-const UserAction = {
+const Action = {
   UPDATE_FILM: 'UPDATE_FILM',
   ADD_COMMENT: 'ADD_COMMENT',
   DELETE_COMMENT: 'DELETE_COMMENT',
@@ -40,7 +40,7 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-const statisticsPeriod = {
+const StatisticsPeriod = {
   ALL: 'all-time',
   TODAY: 'day',
   WEEK: 'week',
@@ -67,4 +67,16 @@ const USER_RATING = {
   },
 };
 
-export { FILMS_MAX_COUNT, FILMS_EXTRA_SECTION, FILM_COUNT_PER_STEP, FilterType, SortType, Mode, EmogiType, UpdateType, UserAction, statisticsPeriod, USER_RATING };
+export {
+  FILMS_MAX_COUNT,
+  FILMS_EXTRA_SECTION,
+  FILM_COUNT_PER_STEP,
+  FilterType,
+  SortType,
+  Mode,
+  EmogiType,
+  UpdateType,
+  Action,
+  StatisticsPeriod,
+  USER_RATING
+};

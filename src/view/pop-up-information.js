@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
-import { Smart } from './smart.js';
-import { EmogiType } from '../utils/constans';
+import Smart from './smart.js';
+import { EmogiType } from '../utils/constans.js';
+import { changeActiveStatus } from '../utils/common.js';
 import he from 'he';
 
 const createCommentsList = (comments) => {
@@ -158,16 +159,17 @@ const createPopUp = (film) => {
 };
 
 
-class PopUp extends Smart {
+export default class PopUp extends Smart {
   constructor(film, newComment) {
     super();
     this._data = film;
     this._filmComment = PopUp.parseFilmToData(newComment);
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
-    this._editClickHandlerPopupFavorite = this._editClickHandlerPopupFavorite.bind(this);
-    this._editClickHandlerPopupWatched = this._editClickHandlerPopupWatched.bind(this);
-    this._editClickHandlerPopupFuture = this._editClickHandlerPopupFuture.bind(this);
+
+    this._changePopUpFavoriteHandler = this._changePopUpFavoriteHandler.bind(this);
+    this._changePopupWatchedHandler = this._changePopupWatchedHandler.bind(this);
+    this._changePopupFutureHandler = this._changePopupFutureHandler.bind(this);
 
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
@@ -200,13 +202,13 @@ class PopUp extends Smart {
   restoreHandlers() {
     this._setInnerHandlers();
     this.setCloseBtnClickHandler(this._callback.closeClick);
-  } // передаем заново обработчики кликов
+  }
 
   reset(popUp) {
     this.updateData(
       this._filmComment.parseFilmToData(popUp),
     );
-  } // для перезагрузки поп-апа - в презентер
+  }
 
   _descriptionInputHandler(evt) {
     evt.preventDefault();
@@ -219,11 +221,11 @@ class PopUp extends Smart {
   _emojiChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({ emoji: evt.target.value }, true);
-    const url = this._emojiChangeHandlerPlace(evt.target.value);
+    const url = this._emojiChangePlaceHandler(evt.target.value);
     this._filmComment.emoji = url;
   }
 
-  _emojiChangeHandlerPlace(value) {
+  _emojiChangePlaceHandler(value) {
     const emojiPlace = this.getElement().querySelector('.film-details__add-emoji-label');
     const newElement = document.createElement('img');
     newElement.src = './images/emoji/' + value + '.png';
@@ -272,27 +274,21 @@ class PopUp extends Smart {
     this._callback.deleteComment = callback;
   }
 
-  _changeActiveStatus(target) {
-    if (target.classList.contains('sort__button--active')) {
-      target.classList.remove('sort__button--active');
-    } else { target.classList.add('sort__button--active'); }
-  }
-
-  _editClickHandlerPopupFavorite(evt) {
+  _changePopUpFavoriteHandler(evt) {
     evt.preventDefault();
-    this._changeActiveStatus(evt.target);
+    changeActiveStatus(evt.target, 'sort__button--active');
     this._callback.favorite(this._film);
   }
 
-  _editClickHandlerPopupWatched(evt) {
+  _changePopupWatchedHandler(evt) {
     evt.preventDefault();
-    this._changeActiveStatus(evt.target);
+    changeActiveStatus(evt.target, 'sort__button--active');
     this._callback.watched(this._film);
   }
 
-  _editClickHandlerPopupFuture(evt) {
+  _changePopupFutureHandler(evt) {
     evt.preventDefault();
-    this._changeActiveStatus(evt.target);
+    changeActiveStatus(evt.target, 'sort__button--active');
     this._callback.future(this._film);
   }
 
@@ -309,20 +305,19 @@ class PopUp extends Smart {
   setFavoritePopupClickHandler(callback) {
     this._callback.favorite = callback;
     const favoriteFilms = this.getElement().querySelector('.film-details__control-label--favorite');
-    favoriteFilms.addEventListener('click', this._editClickHandlerPopupFavorite);
+    favoriteFilms.addEventListener('click', this._changePopUpFavoriteHandler);
   }
 
   setWatchedPopupClickHandler(callback) {
     this._callback.watched = callback;
     const watchedFilms = this.getElement().querySelector('.film-details__control-label--watched');
-    watchedFilms.addEventListener('click', this._editClickHandlerPopupWatched);
+    watchedFilms.addEventListener('click', this._changePopupWatchedHandler);
   }
 
   setFuturePopupClickHandler(callback) {
     this._callback.future = callback;
     const futureFilms = this.getElement().querySelector('.film-details__control-label--watchlist');
-    futureFilms.addEventListener('click', this._editClickHandlerPopupFuture);
+    futureFilms.addEventListener('click', this._changePopupFutureHandler);
   }
 }
 
-export { PopUp };

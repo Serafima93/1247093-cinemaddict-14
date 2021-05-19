@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import { Abstract } from './abstract.js';
+import Smart from './smart.js';
+import { changeActiveStatus } from '../utils/common.js';
 
 const createFilmCard = (film) => {
   const { title, description, genres, poster, rating, productionYear, timeContinue, comments } = film;
@@ -33,76 +34,68 @@ const createFilmCard = (film) => {
 </article>`;
 };
 
-class FilmCard extends Abstract {
+export default class FilmCard extends Smart {
   constructor(film) {
     super();
     this._film = film;
-
-    this._editClickHandlerPopup = this._editClickHandlerPopup.bind(this);
-    this._editClickHandlerFavorite = this._editClickHandlerFavorite.bind(this);
-    this._editClickHandlerWatched = this._editClickHandlerWatched.bind(this);
-    this._editClickHandlerFuture = this._editClickHandlerFuture.bind(this);
+    this._openPopUpHandler = this._openPopUpHandler.bind(this);
+    this._changeFavoriteHandler = this._changeFavoriteHandler.bind(this);
+    this._changeWatchedHandler = this._changeWatchedHandler.bind(this);
+    this._changeFutureHandler = this._changeFutureHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCard(this._film);
   }
 
-  _changeActiveStatus(target) {
-    if (target.classList.contains('film-card__controls-item--active')) {
-      target.classList.remove('film-card__controls-item--active');
-    } else { target.classList.add('film-card__controls-item--active'); }
-  }
-
-  _editClickHandlerPopup(evt) {
+  _openPopUpHandler(evt) {
     evt.preventDefault();
     this._callback.openPopup(this._film);
   }
 
-  _editClickHandlerFavorite(evt) {
+  _changeFavoriteHandler(evt) {
     evt.preventDefault();
-    this._changeActiveStatus(evt.target);
+    changeActiveStatus(evt.target, 'film-card__controls-item--active');
     this._callback.favorite(this._film);
   }
 
-  _editClickHandlerWatched(evt) {
+  _changeWatchedHandler(evt) {
     evt.preventDefault();
-    this._changeActiveStatus(evt.target);
+    changeActiveStatus(evt.target, 'film-card__controls-item--active');
     this._callback.watched(this._film);
   }
 
-  _editClickHandlerFuture(evt) {
+  _changeFutureHandler(evt) {
     evt.preventDefault();
-    this._changeActiveStatus(evt.target);
+    changeActiveStatus(evt.target, 'film-card__controls-item--active');
     this._callback.future(this._film);
   }
 
   setEditClickHandler(callback) {
     this._callback.openPopup = callback;
-    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._editClickHandlerPopup);
-    this.getElement().querySelector('.film-card__title').addEventListener('click', this._editClickHandlerPopup);
-    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._editClickHandlerPopup);
+    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._openPopUpHandler);
+    this.getElement().querySelector('.film-card__title').addEventListener('click', this._openPopUpHandler);
+    this.getElement().querySelector('.film-card__comments').addEventListener('click', this._openPopUpHandler);
   }
 
   setFavoriteClickHandler(callback) {
     this._callback.favorite = callback;
     const favoriteFilms = this.getElement().querySelector('.film-card__controls-item--favorite');
-    favoriteFilms.addEventListener('click', this._editClickHandlerFavorite);
+    favoriteFilms.addEventListener('click', this._changeFavoriteHandler);
 
   }
 
   setWatchedClickHandler(callback) {
     this._callback.watched = callback;
     const watchedFilms = this.getElement().querySelector('.film-card__controls-item--mark-as-watched');
-    watchedFilms.addEventListener('click', this._editClickHandlerWatched);
+    watchedFilms.addEventListener('click', this._changeWatchedHandler);
 
   }
 
   setFutureClickHandler(callback) {
     this._callback.future = callback;
     const futureFilms = this.getElement().querySelector('.film-card__controls-item--add-to-watchlist');
-    futureFilms.addEventListener('click', this._editClickHandlerFuture);
+    futureFilms.addEventListener('click', this._changeFutureHandler);
   }
 }
 
-export { FilmCard };

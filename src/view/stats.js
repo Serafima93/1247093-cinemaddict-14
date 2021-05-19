@@ -1,8 +1,8 @@
-import { Smart } from './smart.js';
+import Smart from './smart.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { getRating } from '../utils/stats.js';
-import { statisticsPeriod } from '../utils/constans.js';
+import { StatisticsPeriod } from '../utils/constans.js';
 
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
@@ -11,7 +11,7 @@ dayjs.extend(isBetween);
 // фильмы за период - но у меня пока нет периода
 const getWatchedFilmByChoosenPeriod = (films, period) => {
   const watchedFilm = films.filter((film) => film.isWatched);
-  if (period === statisticsPeriod.ALL) {
+  if (period === StatisticsPeriod.ALL) {
     return watchedFilm;
   }
   return watchedFilm.slice().filter((film) => dayjs(film));
@@ -125,11 +125,11 @@ const inputTemplate = (input, currentInput) => {
   return `<input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter"
    id="statistic-${input}" value="${input}"  ${input === currentInput ? 'checked' : ''}>
   <label for="statistic-${input}" class="statistic__filters-label">
-  ${input === statisticsPeriod.ALL ? 'All time' : `${input.charAt(0).toUpperCase() + input.slice(1)}`}</label>`;
+  ${input === StatisticsPeriod.ALL ? 'All time' : `${input.charAt(0).toUpperCase() + input.slice(1)}`}</label>`;
 };
 
 const periodTemplate = (currentInput) => {
-  return Object.values(statisticsPeriod).map((input) => inputTemplate(input, currentInput)).join('');
+  return Object.values(StatisticsPeriod).map((input) => inputTemplate(input, currentInput)).join('');
 };
 
 const createStatistics = (data) => {
@@ -171,12 +171,12 @@ const createStatistics = (data) => {
 };
 
 
-class Stats extends Smart {
+export default class Stats extends Smart {
   constructor(films) {
     super();
     this._data = {
       films,
-      statisticPeriod: statisticsPeriod.ALL,
+      statisticPeriod: StatisticsPeriod.ALL,
     };
     this._genresChart = null;
     this._periodChangeHandler = this._periodChangeHandler.bind(this);
@@ -215,4 +215,3 @@ class Stats extends Smart {
   }
 }
 
-export { Stats };

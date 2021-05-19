@@ -1,8 +1,8 @@
-import { Abstract } from './abstract.js';
+import Abstract from './abstract.js';
 
 const createFooterStatistic = (number) => `<p>${number} movies inside</p>`;
 
-class FooterStatistic extends Abstract {
+export default class FooterStatistic extends Abstract {
   constructor(FilmMaxCount) {
     super();
     this._filters = FilmMaxCount;
@@ -12,5 +12,3 @@ class FooterStatistic extends Abstract {
     return createFooterStatistic(this._filters);
   }
 }
-
-export { FooterStatistic };

@@ -1,6 +1,6 @@
 import { FilterType } from './constans.js';
 
-const filters = {
+const UserFilters = {
   [FilterType.ALL]: (films) => films,
   [FilterType.WATCHLIST]: (films) => films.filter((film) => film.isFutureFilm),
   [FilterType.FAVORITES]: (films) => films.filter((film) => film.isFavorit),
@@ -8,4 +8,4 @@ const filters = {
   [FilterType.STATS]: (films) => films,
 };
 
-export { filters };
+export { UserFilters };

@@ -54,7 +54,6 @@ const generateGenre = () => {
   return randomIndex;
 };
 
-//начало работы с поп-апом
 
 const generateFilmCountry = () => {
   const country = ['USA', 'UK', 'Israel', 'Spain'];

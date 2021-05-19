@@ -1,6 +1,6 @@
-import { Observer } from '../utils/observer.js';
+import Observer from '../utils/observer.js';
 
-class Films extends Observer {
+export default class Films extends Observer {
   constructor() {
     super();
     this._films = [];
@@ -15,7 +15,7 @@ class Films extends Observer {
     return this._films;
   }
 
-  getDefaultFilms () {
+  getDefaultFilms() {
     return this._dafaultFilms;
   }
 
@@ -35,5 +35,3 @@ class Films extends Observer {
     this._notify(updateType, update);
   }
 }
-
-export { Films };

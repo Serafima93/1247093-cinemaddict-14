@@ -5,4 +5,13 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export { getRandomInteger };
+
+const changeActiveStatus = (target, activeClass) => {
+  if (target.classList.contains(activeClass)) {
+    target.classList.remove(activeClass);
+  } else {
+    target.classList.add(activeClass);
+  }
+};
+
+export { getRandomInteger, changeActiveStatus };

@@ -1,16 +1,16 @@
-import { Abstract } from './abstract.js';
+import Abstract from './abstract.js';
 import { FilterType } from '../utils/constans.js';
 
 const generateFilterItem = (filter, activeFilter) => {
 
-  const {type, filterName, count} = filter;
+  const { type, filterName, count } = filter;
   return `<a href="#${filterName}"
   data-filter = "${type}"
   class="main-navigation__item ${activeFilter === type ? 'main-navigation__item--active' : ''}">
   ${type} ${type === FilterType.ALL ? '' : `<span class="main-navigation__item-count">${count}</span>`}</a>`;
 };
 
-const generateFiltersTemplate =(filters, activeFilter) => {
+const generateFiltersTemplate = (filters, activeFilter) => {
   return filters.map((filter) => generateFilterItem(filter, activeFilter)).join('');
 };
 
@@ -20,12 +20,12 @@ const createSiteMenuTemplate = (filters, activeFilter) => {
    <div class="main-navigation__items">
     ${generateFiltersTemplate(filters, activeFilter)}
     </div>
-    <a href="#stats" class="main-navigation__additional ${activeFilter === FilterType.STATS ?'main-navigation__additional--active':''}"
+    <a href="#stats" class="main-navigation__additional ${activeFilter === FilterType.STATS ? 'main-navigation__additional--active' : ''}"
     data-filter = "${FilterType.STATS}">Stats</a>
     </nav>`;
 };
 
-class SiteMenu extends Abstract {
+export default class SiteMenu extends Abstract {
   constructor(filter, activeFilter) {
     super();
     this._data = filter;
@@ -58,4 +58,3 @@ class SiteMenu extends Abstract {
   }
 }
 
-export { SiteMenu };

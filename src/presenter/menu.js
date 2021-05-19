@@ -1,35 +1,32 @@
-import { SiteMenu } from '../view/menu.js';
+import SiteMenu from '../view/menu.js';
 import { replace, render, remove, RenderPosition } from '../utils/render';
 import { FilterType, UpdateType } from '../utils/constans.js';
-import { filters } from '../utils/filter.js';
+import { UserFilters } from '../utils/filter.js';
 
-class MenuPresenter {
+export default class MenuPresenter {
   constructor(container, filmsModel, filterModel) {
     this._container = container;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
-
-    this._SiteMenuComponent = null;
-
+    this._siteMenuComponent = null;
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
-
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
     const choosenFilter = this._getFilters();
-    const prevFilterComponent = this._SiteMenuComponent;
+    const prevFilterComponent = this._siteMenuComponent;
 
-    this._SiteMenuComponent = new SiteMenu(choosenFilter, this._filterModel.getFilter());
-    this._SiteMenuComponent.setFilterClick(this._handleFilterTypeChange);
+    this._siteMenuComponent = new SiteMenu(choosenFilter, this._filterModel.getFilter());
+    this._siteMenuComponent.setFilterClick(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this._container, this._SiteMenuComponent, RenderPosition.AFTERBEGIN);
+      render(this._container, this._siteMenuComponent, RenderPosition.AFTERBEGIN);
       return;
     }
-    replace(this._SiteMenuComponent, prevFilterComponent);
+    replace(this._siteMenuComponent, prevFilterComponent);
     remove(prevFilterComponent);
   }
 
@@ -51,24 +48,23 @@ class MenuPresenter {
       {
         type: FilterType.ALL,
         filterName: 'all',
-        count: filters[FilterType.ALL](films).length,
+        count: UserFilters[FilterType.ALL](films).length,
       },
       {
         type: FilterType.WATCHLIST,
         filterName: 'watchlist',
-        count: filters[FilterType.WATCHLIST](films).length,
+        count: UserFilters[FilterType.WATCHLIST](films).length,
       },
       {
         type: FilterType.HISTORY,
         filterName: 'history',
-        count: filters[FilterType.HISTORY](films).length,
+        count: UserFilters[FilterType.HISTORY](films).length,
       },
       {
         type: FilterType.FAVORITES,
         filterName: 'favorites',
-        count: filters[FilterType.FAVORITES](films).length,
+        count: UserFilters[FilterType.FAVORITES](films).length,
       },
     ];
   }
 }
-export { MenuPresenter };

@@ -1,4 +1,4 @@
-import { Abstract } from './abstract.js';
+import Abstract from './abstract.js';
 
 const createUser = () => {
   return `<section class="header__profile profile"><p class="profile__rating">Movie Buff</p>
@@ -6,11 +6,9 @@ const createUser = () => {
   </section>` ;
 };
 
-class UserProfile extends Abstract {
+export default class UserProfile extends Abstract {
 
   getTemplate() {
     return createUser();
   }
 }
-
-export { UserProfile };
