@@ -10,7 +10,7 @@ dayjs.extend(isBetween);
 
 // фильмы за период - но у меня пока нет периода
 const getWatchedFilmByChoosenPeriod = (films, period) => {
-  const watchedFilm = films.filter((film) => film.isWatched);
+  const watchedFilm = films.filter((film) => film.userDetails.isWatched);
   if (period === StatisticsPeriod.ALL) {
     return watchedFilm;
   }

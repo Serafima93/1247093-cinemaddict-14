@@ -214,19 +214,19 @@ export default class FilmBoard {
    */
   _favoriteClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
-    oldFilm.isFavorit = !film.isFavorit;
+    oldFilm.userDetails.isFavorit = !film.userDetails.isFavorit;
     this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, film);
   }
 
   _watchedClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
-    oldFilm.isWatched = !film.isWatched;
+    oldFilm.userDetails.isWatched = !film.userDetails.isWatched;
     this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, film);
   }
 
   _futureClickHandler(film) {
     const oldFilm = this._getFilms().find((item) => item.id === film.id);
-    oldFilm.isFutureFilm = !film.isFutureFilm;
+    oldFilm.userDetails.isFutureFilm = !film.userDetails.isFutureFilm;
     this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, film);
   }
 

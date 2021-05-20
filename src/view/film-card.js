@@ -27,9 +27,9 @@ const createFilmCard = (film) => {
   <p class="film-card__description">${description}</p>
   <a class="film-card__comments">${commentLength} comments</a>
   <div class="film-card__controls">
-    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${film.isFutureFilm ? 'film-card__controls-item--active' : ''}" type="button">Add to watchlist</button>
-    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${film.isWatched ? 'film-card__controls-item--active' : ''}" type="button">Mark as watched</button>
-    <button class="film-card__controls-item button film-card__controls-item--favorite ${film.isFavorit ? 'film-card__controls-item--active' : ''}" type="button">Mark as favorite</button>
+    <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${film.userDetails.isFutureFilm ? 'film-card__controls-item--active' : ''}" type="button">Add to watchlist</button>
+    <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${film.userDetails.isWatched ? 'film-card__controls-item--active' : ''}" type="button">Mark as watched</button>
+    <button class="film-card__controls-item button film-card__controls-item--favorite ${film.userDetails.isFavorit ? 'film-card__controls-item--active' : ''}" type="button">Mark as favorite</button>
   </div>
 </article>`;
 };
