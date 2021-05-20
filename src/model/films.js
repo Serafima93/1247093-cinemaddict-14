@@ -1,4 +1,5 @@
 import Observer from '../utils/observer.js';
+import dayjs from 'dayjs';
 
 export default class Films extends Observer {
   constructor() {
@@ -70,24 +71,52 @@ export default class Films extends Observer {
     return adaptedFilm;
   }
 
-  static adaptToServer(task) {
-    const adaptedTask = Object.assign(
+  static adaptToServer(film) {
+    const adaptedFilm = Object.assign(
       {},
-      task,
+      film,
       {
-        'due_date': task.dueDate instanceof Date ? task.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
-        'is_archived': task.isArchive,
-        'is_favorite': task.isFavorite,
-        'repeating_days': task.repeating,
+        'film_info': {
+          poster: film.poster,
+          title: film.title,
+          'alternative_title': film.originalName,
+          description: film.description,
+          director: film.director,
+          writers: film.screenwriters,
+          actors: film.actors,
+          'total_rating': film.rating,
+          release: {
+            date: dayjs(film.productionYear).toISOString(),
+            'release_country': film.country,
+          },
+          runtime: film.timeContinue,
+          genre: film.genres,
+          'age_rating': film.ageRate,
+        },
+        'user_details': {
+          watchlist: film.userDetails.isFutureFilm,
+          favorite: film.userDetails.isFavorit,
+          'already_watched': film.userDetails.isWatched,
+          'watching_date': film.userDetails.isWatched ? dayjs(film.userDetails.watchedDate).toISOString() : film.userDetails.watchedDate,
+        },
       },
     );
+    delete adaptedFilm.poster;
+    delete adaptedFilm.title;
+    delete adaptedFilm.originalName;
+    delete adaptedFilm.description;
+    delete adaptedFilm.director;
+    delete adaptedFilm.screenwriters;
+    delete adaptedFilm.country;
+    delete adaptedFilm.genres;
+    delete adaptedFilm.ageRate;
+    delete adaptedFilm.actors;
+    delete adaptedFilm.rating;
+    delete adaptedFilm.productionYear;
+    delete adaptedFilm.timeContinue;
 
-    // Ненужные ключи мы удаляем
-    delete adaptedTask.dueDate;
-    delete adaptedTask.isArchive;
-    delete adaptedTask.isFavorite;
-    delete adaptedTask.repeating;
+    delete adaptedFilm.userDetails;
 
-    return adaptedTask;
+    return adaptedFilm;
   }
 }
