@@ -5,20 +5,24 @@ export default class Films extends Observer {
   constructor() {
     super();
     this._films = [];
+    // this._defaultFilms = [];
   }
 
-  setFilms(films) {
+  setData(updateType, films) {
+
     this._films = films.slice();
-    this._dafaultFilms = films.slice();
+    // this._defaultFilms = films.slice();
+
+    this._notify(updateType);
   }
 
-  getFilms() {
+  getData() {
     return this._films;
   }
 
-  getDefaultFilms() {
-    return this._dafaultFilms;
-  }
+  // getDefaultFilms() {
+  //   return this._defaultFilms;
+  // }
 
   updateFilm(updateType, update) {
     const index = this._films.findIndex((film) => film.id === update.id);
@@ -67,7 +71,6 @@ export default class Films extends Observer {
     // Ненужные ключи мы удаляем
     delete adaptedFilm.user_details;
     delete adaptedFilm.film_info;
-
     return adaptedFilm;
   }
 

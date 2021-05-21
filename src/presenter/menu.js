@@ -42,8 +42,7 @@ export default class MenuPresenter {
   }
 
   _getFilters() {
-    const films = this._filmsModel.getFilms();
-
+    const films = this._filmsModel.getData();
     return [
       {
         type: FilterType.ALL,

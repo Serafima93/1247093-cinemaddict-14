@@ -5,6 +5,8 @@ import FilmCard from '../view/film-card.js';
 import ShowMoreButton from '../view/button-show-more.js';
 import PopUp from '../view/pop-up-information.js';
 import Stats from '../view/stats.js';
+import Loading from '../view/loading.js';
+
 
 import { render, remove, replace } from '../utils/render.js';
 import { UserFilters } from '../utils/filter.js';
@@ -25,7 +27,9 @@ export default class FilmBoard {
     this._boardContainer = boardContainer;
     this._body = bodyElement;
     this._filmsModel = filmsModel;
+
     this._filterModel = filterModel;
+    this._isLoading = true;
 
     this._sortComponent = null;
     this._loadMoreButtonComponent = null;
@@ -35,6 +39,7 @@ export default class FilmBoard {
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmListComponent = new FilmList();
     this._noFilmsComponent = new EmptyWrap();
+    this._loadingComponent = new Loading();
 
     this._renderPopUp = this._renderPopUp.bind(this);
     this._keyDownHandler = this._keyDownHandler.bind(this);
@@ -54,16 +59,16 @@ export default class FilmBoard {
 
     this._deleteComment = this._deleteComment.bind(this);
     this._addComment = this._addComment.bind(this);
+
   }
   init() {
     this._filmView = {};
     this._filmViewTop = {};
     this._filmViewComment = {};
-    this._renderFilmBoard();
   }
 
   _getFilms() {
-    const defaultFilms = this._filmsModel.getDefaultFilms();
+    const defaultFilms = this._filmsModel.getData();
     const filterType = this._filterModel.getFilter();
     const filtredFilms = UserFilters[filterType](defaultFilms);
 
@@ -90,7 +95,13 @@ export default class FilmBoard {
     if (data === FilterType.STATS) {
       updateType = FilterType.STATS;
     }
+
     switch (updateType) {
+      case UpdateType.INIT:
+        this._isLoading = false;
+        // remove(this._loadingComponent);
+        this._renderFilmBoard();
+        break;
       case FilterType.STATS:
         this._clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
         this._renderStatistic();
@@ -103,7 +114,7 @@ export default class FilmBoard {
         this._clearBoard();
         this._renderFilmBoard();
         break;
-      case UpdateType.MAJOR:
+      case UpdateType.MAJOdataR:
         if (this._statisticComponent !== null) {
           remove(this._statisticComponent);
         }
@@ -113,12 +124,21 @@ export default class FilmBoard {
     }
   }
 
+  _renderLoading() {
+    render(this._boardContainer, this._loadingComponent);
+  }
+
+
   _renderFilmBoard() {
     if (this._getFilms().length) {
       this._renderContainers();
     } else {
       this._renderNoFilms();
     }
+    // if (this._isLoading) {
+    //   this._renderLoading();
+    //   return;
+    // }
   }
 
   _renderSort() {
@@ -146,6 +166,7 @@ export default class FilmBoard {
 
     remove(this._sortComponent);
     remove(this._noFilmsComponent);
+    remove(this._loadingComponent);
 
     if (resetRenderedFilmCount) {
       this._renderedFilmCount = FILM_COUNT_PER_STEP;
@@ -160,14 +181,15 @@ export default class FilmBoard {
   _renderContainers() {
     this._renderSort(); // отрисовка поля для послд. выбора сортировки фильмов
     render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
-    this._renderFilmList(this._getFilms());
-    this._renderFilmAdditionalList();
+    const films = this._getFilms();
+    this._renderFilmList(films);
+    // this._renderFilmAdditionalList();
   }
 
   _renderFilmList(films) {
     this._renderFilmsMain(films);
 
-    if (this._getFilms().length > this._renderedFilmCount) {
+    if (films.length > this._renderedFilmCount) {
       this._renderLoadMoreButton();
     }
   }
@@ -179,6 +201,7 @@ export default class FilmBoard {
 
   _renderFilm(container, film) {
     const filmView = new FilmCard(film);
+
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);
@@ -195,13 +218,13 @@ export default class FilmBoard {
     }
   }
 
-  _removeFims(container, films) {
-    for (let i = 0; i < films.length; i++) {
-      const film = films[i];
-      const filmCard = this._renderFilm(container, film);
-      remove(filmCard);
-    }
-  }
+  // _removeFims(container, films) {
+  //   for (let i = 0; i < films.length; i++) {
+  //     const film = films[i];
+  //     const filmCard = this._renderFilm(container, film);
+  //     remove(filmCard);
+  //   }
+  // }
 
   _clearFilmList() {
     Object.values(this._filmView).forEach((presenter) => remove(presenter));
@@ -306,7 +329,7 @@ export default class FilmBoard {
   }
 
   _deleteComment(film, commentId) {
-    this._films = this._filmsModel.getFilms();
+    this._films = this._filmsModel.getData();
     film = this._films.find((filmItem) => filmItem.id === film.id);
     const comments = film.comments.filter((filmId) => filmId.id !== commentId);
     const updatedFilm = Object.assign(
@@ -318,7 +341,7 @@ export default class FilmBoard {
   }
 
   _addComment(film, comment) {
-    this._films = this._filmsModel.getFilms();
+    this._films = this._filmsModel.getData();
     film = this._films.find((filmItem) => filmItem.id === film.id);
     const filmComments = film.comments;
     filmComments.push(comment);
@@ -336,12 +359,12 @@ export default class FilmBoard {
    */
 
   _createFilmCommentsList() {
-    const commentsFilm = this._filmsModel.getFilms().slice().sort((a, b) => b.comments.length - a.comments.length);
+    const commentsFilm = this._filmsModel.getData().slice().sort((a, b) => b.comments.length - a.comments.length);
     return commentsFilm;
   }
 
   _createFilmRateList() {
-    const rateFilm = this._filmsModel.getFilms().slice().sort((a, b) => b.rating - a.rating);
+    const rateFilm = this._filmsModel.getData().slice().sort((a, b) => b.rating - a.rating);
     return rateFilm;
   }
   /*
@@ -382,7 +405,7 @@ export default class FilmBoard {
   }
 
   _renderStatistic() {
-    this._statisticComponent = new Stats(this._filmsModel.getFilms());
+    this._statisticComponent = new Stats(this._filmsModel.getData());
     render(this._boardContainer, this._statisticComponent);
   }
 }
