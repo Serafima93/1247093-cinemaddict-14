@@ -5,13 +5,13 @@ export default class Films extends Observer {
   constructor() {
     super();
     this._films = [];
-    // this._defaultFilms = [];
+    this._defaultFilms = [];
   }
 
   setData(updateType, films) {
 
     this._films = films.slice();
-    // this._defaultFilms = films.slice();
+    this._defaultFilms = films.slice();
 
     this._notify(updateType);
   }
@@ -20,9 +20,9 @@ export default class Films extends Observer {
     return this._films;
   }
 
-  // getDefaultFilms() {
-  //   return this._defaultFilms;
-  // }
+  getDefaultFilms() {
+    return this._defaultFilms;
+  }
 
   updateFilm(updateType, update) {
     const index = this._films.findIndex((film) => film.id === update.id);

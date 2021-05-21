@@ -7,7 +7,7 @@ const createFilmCard = (film) => {
 
   const mainGenre = genres.slice(0, 1);
 
-  const { hours, minutes } = timeContinue.$d;
+  // const { hours, minutes } = timeContinue.$d;
 
   const date = productionYear !== null
     ? dayjs(productionYear).format('YYYY')
@@ -20,7 +20,7 @@ const createFilmCard = (film) => {
   <p class="film-card__rating">${rating}</p>
   <p class="film-card__info">
     <span class="film-card__year">${date}</span>
-    <span class="film-card__duration">${hours} h ${minutes} min</span>
+    <span class="film-card__duration">${timeContinue} h ${timeContinue} min</span>
     <span class="film-card__genre">${mainGenre}</span>
   </p>
   <img src=${poster} alt="" class="film-card__poster">
@@ -82,7 +82,6 @@ export default class FilmCard extends Smart {
     this._callback.favorite = callback;
     const favoriteFilms = this.getElement().querySelector('.film-card__controls-item--favorite');
     favoriteFilms.addEventListener('click', this._changeFavoriteHandler);
-
   }
 
   setWatchedClickHandler(callback) {

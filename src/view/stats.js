@@ -21,7 +21,7 @@ const getWatchedFilmByChoosenPeriod = (films, period) => {
 // статистика этих фильмов
 const getStatisticByWatchedFilms = (watchedFilms) => {
   let fullTime = 0;
-  let minuteTime = 0;
+  const minuteTime = 0;
   const genresStatistic = {};
   if (watchedFilms.length === 0) {
     return {
@@ -35,8 +35,10 @@ const getStatisticByWatchedFilms = (watchedFilms) => {
 
   for (let i = 0; i < watchedFilms.length; i++) {
     const film = watchedFilms[i];
-    fullTime += film.timeContinue.$d.hours,
-    minuteTime += film.timeContinue.$d.minutes,
+    // fullTime += film.timeContinue.$d.hours,
+    fullTime += film.timeContinue,
+
+    // minuteTime += film.timeContinue.$d.minutes,
     film.genres.forEach((film) => genresStatistic[film] = genresStatistic[film] + 1 || 1);
   }
   fullTime = fullTime + Math.trunc(minuteTime / 60);

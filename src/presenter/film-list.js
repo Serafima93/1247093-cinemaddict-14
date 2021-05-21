@@ -6,6 +6,7 @@ import ShowMoreButton from '../view/button-show-more.js';
 import PopUp from '../view/pop-up-information.js';
 import Stats from '../view/stats.js';
 import Loading from '../view/loading.js';
+import dayjs from 'dayjs';
 
 
 import { render, remove, replace } from '../utils/render.js';
@@ -65,21 +66,34 @@ export default class FilmBoard {
     this._filmView = {};
     this._filmViewTop = {};
     this._filmViewComment = {};
+    // this._renderFilmBoard();
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+    console.log(this._isLoading);
+
   }
 
   _getFilms() {
+
     const defaultFilms = this._filmsModel.getData();
     const filterType = this._filterModel.getFilter();
     const filtredFilms = UserFilters[filterType](defaultFilms);
 
+    const compareDate = (a, b) => {
+      return dayjs().diff(a.productionYear) - dayjs().diff(b.productionYear);
+    };
+
     switch (this._currentSortType) {
       case SortType.DATE:
-        return filtredFilms.sort((a, b) => b.productionYear - a.productionYear);
+        return filtredFilms.sort(compareDate);
       case SortType.RATING:
         return filtredFilms.sort((a, b) => b.rating - a.rating);
       case SortType.DEFAULT:
-        return filtredFilms;
+        return this._filmsModel.getDefaultFilms();
     }
+
     return filtredFilms;
   }
 
@@ -97,16 +111,18 @@ export default class FilmBoard {
     }
 
     switch (updateType) {
-      case UpdateType.INIT:
-        this._isLoading = false;
-        // remove(this._loadingComponent);
-        this._renderFilmBoard();
-        break;
       case FilterType.STATS:
         this._clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
         this._renderStatistic();
         replace(this._statisticComponent, this._filmListComponent);
         break;
+
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderFilmBoard();
+        break;
+
       case UpdateType.PATCH:
         this._filmView[data.id];
         break;
@@ -114,7 +130,7 @@ export default class FilmBoard {
         this._clearBoard();
         this._renderFilmBoard();
         break;
-      case UpdateType.MAJOdataR:
+      case UpdateType.MAJOR:
         if (this._statisticComponent !== null) {
           remove(this._statisticComponent);
         }
@@ -135,10 +151,6 @@ export default class FilmBoard {
     } else {
       this._renderNoFilms();
     }
-    // if (this._isLoading) {
-    //   this._renderLoading();
-    //   return;
-    // }
   }
 
   _renderSort() {
@@ -183,7 +195,7 @@ export default class FilmBoard {
     render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
     const films = this._getFilms();
     this._renderFilmList(films);
-    // this._renderFilmAdditionalList();
+    this._renderFilmAdditionalList();
   }
 
   _renderFilmList(films) {
@@ -201,7 +213,6 @@ export default class FilmBoard {
 
   _renderFilm(container, film) {
     const filmView = new FilmCard(film);
-
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);
@@ -218,13 +229,6 @@ export default class FilmBoard {
     }
   }
 
-  // _removeFims(container, films) {
-  //   for (let i = 0; i < films.length; i++) {
-  //     const film = films[i];
-  //     const filmCard = this._renderFilm(container, film);
-  //     remove(filmCard);
-  //   }
-  // }
 
   _clearFilmList() {
     Object.values(this._filmView).forEach((presenter) => remove(presenter));
