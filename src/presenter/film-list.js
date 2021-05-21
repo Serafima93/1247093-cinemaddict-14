@@ -24,12 +24,13 @@ import { generateFilmComment } from '../mock/comments';
 
 
 export default class FilmBoard {
-  constructor(boardContainer, bodyElement, filmsModel, filterModel) {
+  constructor(boardContainer, bodyElement, filmsModel, filterModel, api) {
     this._boardContainer = boardContainer;
     this._body = bodyElement;
     this._filmsModel = filmsModel;
-
     this._filterModel = filterModel;
+    this._api = api;
+
     this._isLoading = true;
 
     this._sortComponent = null;
@@ -71,8 +72,6 @@ export default class FilmBoard {
       this._renderLoading();
       return;
     }
-    console.log(this._isLoading);
-
   }
 
   _getFilms() {
@@ -100,7 +99,11 @@ export default class FilmBoard {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case Action.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
+
+        // this._filmsModel.updateFilm(updateType, update);
         break;
     }
   }
