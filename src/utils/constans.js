@@ -68,6 +68,8 @@ const USER_RATING = {
   },
 };
 
+const MAX_DESCRIPTION_LENGTH = 140;
+
 export {
   FILMS_MAX_COUNT,
   FILMS_EXTRA_SECTION,
@@ -79,5 +81,6 @@ export {
   UpdateType,
   Action,
   StatisticsPeriod,
-  USER_RATING
+  USER_RATING,
+  MAX_DESCRIPTION_LENGTH
 };

@@ -25,22 +25,19 @@ const api = new Api(END_POINT, AUTHORIZATION);
 const filmsModel = new Films();
 const filterModel = new Filter();
 
-
-// filmsModel.setData(films);
-
 const boardPresenter = new FilmBoard(siteMainElement, siteBodyElement, filmsModel, filterModel, api);
 const userPresenter = new UserProfilePresenter(siteHeaderElement);
 const footerStatisticPresenter = new FooterStatisticPresenter(siteFooterElement);
 
 boardPresenter.init();
 userPresenter.init();
-
+const menuPresenter = new MenuPresenter(siteMainElement, filmsModel, filterModel);
+menuPresenter.init();
 
 api.getFilms()
   .then((films) => {
     filmsModel.setData(UpdateType.INIT, films);
-    const menuPresenter = new MenuPresenter(siteMainElement, filmsModel, filterModel);
-    menuPresenter.init();
+
     footerStatisticPresenter.init(films.length);
   })
   .catch(() => {

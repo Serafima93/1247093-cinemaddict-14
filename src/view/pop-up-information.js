@@ -1,75 +1,77 @@
 import dayjs from 'dayjs';
 import Smart from './smart.js';
-// import { EmogiType } from '../utils/constans.js';
+import { EmogiType,MAX_DESCRIPTION_LENGTH } from '../utils/constans.js';
 import { changeActiveStatus } from '../utils/common.js';
-// import he from 'he';
+import he from 'he';
 
-// const createCommentsList = (comments) => {
-//   const htmlPart = comments.map(createComment).join('');
-//   return `<div class="film-details__bottom-container">
-//   <section class="film-details__comments-wrap">
-//     <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
-//     <ul class="film-details__comments-list">${htmlPart}</ul>
-//     <div class="film-details__new-comment">
-//       <div class="film-details__add-emoji-label"></div>
-//       <label class="film-details__comment-label">
-//         <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-//       </label>
-//       <div class="film-details__emoji-list">
-//         <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="${EmogiType.SMILE}">
-//         <label class="film-details__emoji-label" for="emoji-smile">
-//           <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-//         </label>
-//         <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="${EmogiType.SLEEP}">
-//         <label class="film-details__emoji-label" for="emoji-sleeping">
-//           <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-//         </label>
-//         <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="${EmogiType.PUKE}">
-//         <label class="film-details__emoji-label" for="emoji-puke">
-//           <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-//         </label>
-//         <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="${EmogiType.ANGRY}">
-//         <label class="film-details__emoji-label" for="emoji-angry">
-//           <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-//         </label>
-//       </div>
-//     </div>
-//   </section>
-// </div>
+const createCommentsList = (comments) => {
+  const htmlPart = comments.map(createComment).join('');
+  return `<div class="film-details__bottom-container">
+  <section class="film-details__comments-wrap">
+    <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+    <ul class="film-details__comments-list">${htmlPart}</ul>
+    <div class="film-details__new-comment">
+      <div class="film-details__add-emoji-label"></div>
+      <label class="film-details__comment-label">
+        <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+      </label>
+      <div class="film-details__emoji-list">
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="${EmogiType.SMILE}">
+        <label class="film-details__emoji-label" for="emoji-smile">
+          <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+        </label>
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="${EmogiType.SLEEP}">
+        <label class="film-details__emoji-label" for="emoji-sleeping">
+          <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
+        </label>
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="${EmogiType.PUKE}">
+        <label class="film-details__emoji-label" for="emoji-puke">
+          <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
+        </label>
+        <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="${EmogiType.ANGRY}">
+        <label class="film-details__emoji-label" for="emoji-angry">
+          <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
+        </label>
+      </div>
+    </div>
+  </section>
+</div>
 
-// `;
-// };
+`;
+};
 
-// const createComment = (comment) => {
-//   const { text, author, commentDate, emoji, id } = comment;
+const createComment = (commentTemplate) => {
+  const { comment, author, commentDate, emotion, id } = commentTemplate;
 
 
-//   const date = commentDate !== null
-//     ? dayjs(commentDate).format('YYYY/MM/DD h:mm A')
-//     : '';
+  const date = commentDate !== null
+    ? dayjs(commentDate).format('YYYY/MM/DD h:mm A')
+    : '';
 
-//   return ` <li class="film-details__comment">
-//   <span class="film-details__comment-emoji">
-//     <img src="${emoji}" width="55" height="55" alt="emoji-smile">
-//   </span>
-//   <div>
-//     <p class="film-details__comment-text">${he.encode(text)}</p>
-//     <p class="film-details__comment-info">
-//       <span class="film-details__comment-author">${author}</span>
-//       <span class="film-details__comment-day">${date}</span>
+  return ` <li class="film-details__comment">
+  <span class="film-details__comment-emoji">
+    <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-smile">
+  </span>
+  <div>
+    <p class="film-details__comment-text">${he.encode(comment)}</p>
+    <p class="film-details__comment-info">
+      <span class="film-details__comment-author">${author}</span>
+      <span class="film-details__comment-day">${date}</span>
 
-//       <button class="film-details__comment-delete"  data-id = "${id}"> Delete </button>
-//     </p>
-//   </div>
-// </li>
-// `;
-// };
+      <button class="film-details__comment-delete"  data-id = "${id}"> Delete </button>
+    </p>
+  </div>
+</li>
+`;
+};
 
 const createGenre = (genre) => `<span class="film-details__genre">${genre}</span>`;
 
-const createPopUp = (film) => {
-  const { title, description, director,/* comments,*/ screenwriters, actors, ageRate, poster, rating, productionYear, timeContinue, country } = film;
+const createPopUp = (film, filmComments) => {
+  const { title, description, director, screenwriters, actors, ageRate, poster, rating, productionYear, timeContinue, country } = film;
 
+  let newDescription = description;
+  if (description >= MAX_DESCRIPTION_LENGTH) {newDescription = `${description.slice(0, MAX_DESCRIPTION_LENGTH)}...`;}
 
   // const { hours, minutes } = timeContinue.$d;
 
@@ -79,8 +81,7 @@ const createPopUp = (film) => {
 
   const genres = film.genres.map(createGenre).join();
 
-  // const commentsResult = createCommentsList(comments);
-  const commentsResult = 0;
+  const commentsResult = createCommentsList(filmComments);
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -123,7 +124,7 @@ const createPopUp = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${timeContinue} h ${ timeContinue} min</td>
+                <td class="film-details__cell">${timeContinue} h ${timeContinue} min</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -137,7 +138,7 @@ const createPopUp = (film) => {
             </tbody>
           </table>
           <p class="film-details__film-description">
-          ${description}
+          ${newDescription}
           </p>
         </div>
       </div>
@@ -162,10 +163,12 @@ const createPopUp = (film) => {
 
 
 export default class PopUp extends Smart {
-  constructor(film, newComment) {
+  constructor(film, comments) {
     super();
     this._data = film;
-    this._filmComment = PopUp.parseFilmToData(newComment);
+    this._comments = comments;
+    this._newComment = comments[0];
+    this._filmComment = PopUp.parseFilmToData(this._newComment);
 
     this._closeClickHandler = this._closeClickHandler.bind(this);
 
@@ -179,11 +182,11 @@ export default class PopUp extends Smart {
     this._sendNewCommentHandler = this._sendNewCommentHandler.bind(this);
     this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
 
-    // this._setInnerHandlers();
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPopUp(this._data);
+    return createPopUp(this._data, this._comments);
   }
 
   getEmojis() {
@@ -217,23 +220,23 @@ export default class PopUp extends Smart {
     this.updateData({
       commentText: evt.target.value,
     }, true);
-    this._filmComment.text = evt.target.value;
+    this._filmComment.comment = evt.target.value;
   }
 
   _emojiChangeHandler(evt) {
     evt.preventDefault();
-    this.updateData({ emoji: evt.target.value }, true);
+    this.updateData({ emotion: evt.target.value }, true);
     const url = this._emojiChangePlaceHandler(evt.target.value);
-    this._filmComment.emoji = url;
+    this._filmComment.emotion = url;
   }
 
   _emojiChangePlaceHandler(value) {
-    const emojiPlace = this.getElement().querySelector('.film-details__add-emoji-label');
+    const emotionPlace = this.getElement().querySelector('.film-details__add-emoji-label');
     const newElement = document.createElement('img');
     newElement.src = './images/emoji/' + value + '.png';
     newElement.setAttribute('style', 'width: 55px');
-    emojiPlace.innerHTML = '';
-    emojiPlace.appendChild(newElement);
+    emotionPlace.innerHTML = '';
+    emotionPlace.appendChild(newElement);
     return newElement.src;
   }
 
@@ -242,15 +245,15 @@ export default class PopUp extends Smart {
       {},
       film,
       {
-        emoji: '',
-        text: '',
+        emotion: '',
+        comment: '',
       },
     );
   }
 
   _sendNewCommentHandler(evt) {
     const isRightKeys = (evt.ctrlKey || evt.metaKey) && evt.keyCode === 13;
-    const isHasTextAndEmoji = !this._filmComment.emoji || !this._filmComment.text.trim();
+    const isHasTextAndEmoji = !this._filmComment.emotion || !this._filmComment.comment.trim();
 
     if (isRightKeys && !isHasTextAndEmoji) {
       this._callback.setSendNewComment(this._data, this._filmComment);

@@ -75,7 +75,6 @@ export default class FilmBoard {
   }
 
   _getFilms() {
-
     const defaultFilms = this._filmsModel.getData();
     const filterType = this._filterModel.getFilter();
     const filtredFilms = UserFilters[filterType](defaultFilms);
@@ -288,25 +287,36 @@ export default class FilmBoard {
   /*
    */
   _renderPopUp(film) {
-    if (this._mode === Mode.POPUP) {
-      this._removePopup();
-    }
-    if (this._mode === Mode.DEFAULT) {
-      this._popupComponent = new PopUp(film, this._renderRandomComment());
-      this._popupComponent.setCloseBtnClickHandler(this._closeButtonClickHandler);
+    this._api.getComments(film.id)
+      .then((comments) => {
+        this._comments = comments;
+        if (this._mode === Mode.POPUP) {
+          this._removePopup();
+        }
+        if (this._mode === Mode.DEFAULT) {
+          this._popupComponent = new PopUp(film, this._comments);
+          this._popupComponent.setCloseBtnClickHandler(this._closeButtonClickHandler);
 
-      this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
-      this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
-      this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
+          this._popupComponent.setFavoritePopupClickHandler(() => { this._favoriteClickHandler(film); });
+          this._popupComponent.setWatchedPopupClickHandler(() => { this._watchedClickHandler(film); });
+          this._popupComponent.setFuturePopupClickHandler(() => { this._futureClickHandler(film); });
 
-      this._popupComponent.setDeleteComment(this._deleteComment);
-      this._popupComponent.setSendNewComment(this._addComment);
+          this._popupComponent.setDeleteComment(this._deleteComment);
+          this._popupComponent.setSendNewComment(this._addComment);
 
-      render(this._body, this._popupComponent);
-      this._mode = Mode.POPUP;
-      this._body.classList.add('hide-overflow');
-      document.addEventListener('keydown', this._keyDownHandler);
-    }
+          render(this._body, this._popupComponent);
+          this._mode = Mode.POPUP;
+          this._body.classList.add('hide-overflow');
+          document.addEventListener('keydown', this._keyDownHandler);
+        }
+      })
+      .catch(() => {
+        this._popupComponent.showError();
+      });
+  }
+
+  showError() {
+    // console.log('MISt');
   }
 
   _removePopup() {
