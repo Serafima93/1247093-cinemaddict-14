@@ -6,11 +6,10 @@ import ShowMoreButton from '../view/button-show-more.js';
 import PopUp from '../view/pop-up-information.js';
 import Stats from '../view/stats.js';
 import Loading from '../view/loading.js';
-import dayjs from 'dayjs';
-
-
 import { render, remove, replace } from '../utils/render.js';
 import { UserFilters } from '../utils/filter.js';
+import { compareDate } from '../utils/common.js';
+
 import {
   FILMS_EXTRA_SECTION,
   FILM_COUNT_PER_STEP,
@@ -20,7 +19,6 @@ import {
   UpdateType,
   FilterType
 } from '../utils/constans.js';
-import { generateFilmComment } from '../mock/comments';
 
 
 export default class FilmBoard {
@@ -61,7 +59,6 @@ export default class FilmBoard {
 
     this._deleteComment = this._deleteComment.bind(this);
     this._addComment = this._addComment.bind(this);
-
   }
   init() {
     this._filmView = {};
@@ -79,20 +76,14 @@ export default class FilmBoard {
     const filterType = this._filterModel.getFilter();
     const filtredFilms = UserFilters[filterType](defaultFilms);
 
-    const compareDate = (a, b) => {
-      return dayjs().diff(a.productionYear) - dayjs().diff(b.productionYear);
-    };
-
     switch (this._currentSortType) {
       case SortType.DATE:
         return filtredFilms.sort(compareDate);
       case SortType.RATING:
         return filtredFilms.sort((a, b) => b.rating - a.rating);
       case SortType.DEFAULT:
-        return this._filmsModel.getDefaultFilms();
+        return UserFilters[filterType](this._filmsModel.getDefaultFilms());
     }
-
-    return filtredFilms;
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -101,8 +92,6 @@ export default class FilmBoard {
         this._api.updateFilm(update).then((response) => {
           this._filmsModel.updateFilm(updateType, response);
         });
-
-        // this._filmsModel.updateFilm(updateType, update);
         break;
     }
   }
@@ -111,20 +100,17 @@ export default class FilmBoard {
     if (data === FilterType.STATS) {
       updateType = FilterType.STATS;
     }
-
     switch (updateType) {
       case FilterType.STATS:
         this._clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
         this._renderStatistic();
         replace(this._statisticComponent, this._filmListComponent);
         break;
-
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderFilmBoard();
         break;
-
       case UpdateType.PATCH:
         this._filmView[data.id];
         break;
@@ -339,10 +325,6 @@ export default class FilmBoard {
     this._removePopup();
     this._boardContainer.classList.remove('hide-overflow');
     document.removeEventListener('keydown', this._keyDownHandler);
-  }
-
-  _renderRandomComment() {
-    return generateFilmComment();
   }
 
   _deleteComment(film, commentId) {

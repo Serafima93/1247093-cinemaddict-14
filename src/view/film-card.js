@@ -1,17 +1,22 @@
 import dayjs from 'dayjs';
 import Smart from './smart.js';
 import { changeActiveStatus } from '../utils/common.js';
+import { MAX_DESCRIPTION_LENGTH } from '../utils/constans.js';
 
 const createFilmCard = (film) => {
-  const { title, description, genres, poster, rating, productionYear, timeContinue, comments } = film;
+  const { title, description, genres, poster, rating, productionYear, runtimeMessage, comments } = film;
 
   const mainGenre = genres.slice(0, 1);
-
-  // const { hours, minutes } = timeContinue.$d;
 
   const date = productionYear !== null
     ? dayjs(productionYear).format('YYYY')
     : '';
+
+  let newDescription = description;
+
+  if (newDescription.length >= MAX_DESCRIPTION_LENGTH) {
+    newDescription = `${description.slice(0, MAX_DESCRIPTION_LENGTH)}...`;
+  }
 
   const commentLength = comments.length;
 
@@ -20,11 +25,11 @@ const createFilmCard = (film) => {
   <p class="film-card__rating">${rating}</p>
   <p class="film-card__info">
     <span class="film-card__year">${date}</span>
-    <span class="film-card__duration">${timeContinue} h ${timeContinue} min</span>
+    <span class="film-card__duration">${runtimeMessage}</span>
     <span class="film-card__genre">${mainGenre}</span>
   </p>
   <img src=${poster} alt="" class="film-card__poster">
-  <p class="film-card__description">${description}</p>
+  <p class="film-card__description">${newDescription}</p>
   <a class="film-card__comments">${commentLength} comments</a>
   <div class="film-card__controls">
     <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${film.userDetails.isFutureFilm ? 'film-card__controls-item--active' : ''}" type="button">Add to watchlist</button>

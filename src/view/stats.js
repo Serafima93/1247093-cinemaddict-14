@@ -8,14 +8,12 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 dayjs.extend(isBetween);
 
-// фильмы за период - но у меня пока нет периода
 const getWatchedFilmByChoosenPeriod = (films, period) => {
   const watchedFilm = films.filter((film) => film.userDetails.isWatched);
   if (period === StatisticsPeriod.ALL) {
     return watchedFilm;
   }
-  return watchedFilm.slice().filter((film) => dayjs(film));
-  // .filter((film) => dayjs(film.watchedDate).isBetween(dayjs(), dayjs().subtract(1, period)));
+  return watchedFilm.slice().filter((film) => dayjs(film.userDetails.watchedDate).isBetween(dayjs(), dayjs().subtract(1, period)));
 };
 
 // статистика этих фильмов
@@ -35,10 +33,7 @@ const getStatisticByWatchedFilms = (watchedFilms) => {
 
   for (let i = 0; i < watchedFilms.length; i++) {
     const film = watchedFilms[i];
-    // fullTime += film.timeContinue.$d.hours,
     fullTime += film.timeContinue,
-
-    // minuteTime += film.timeContinue.$d.minutes,
     film.genres.forEach((film) => genresStatistic[film] = genresStatistic[film] + 1 || 1);
   }
   fullTime = fullTime + Math.trunc(minuteTime / 60);
@@ -156,10 +151,7 @@ const createStatistics = (data) => {
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>
-  <p class="statistic__item-text"> ${fullTime === 0 ? `${0}
-  <span class="statistic__item-description">h</span>` : `${fullTime}
-  <span class="statistic__item-description">h</span>
-      ${fullTime % 60} <span class="statistic__item-description">m</span></p>`}
+      <p class="statistic__item-text">${fullTime === 0 ? `${0}<span class="statistic__item-description">h</span>` : `${Math.trunc(fullTime / 60)} <span class="statistic__item-description">h</span> ${fullTime % 60} <span class="statistic__item-description">m</span></p>`}
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Top genre</h4>

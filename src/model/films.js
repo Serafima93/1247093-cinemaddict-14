@@ -55,8 +55,12 @@ export default class Films extends Observer {
         rating: film.film_info.total_rating,
         productionYear: film.film_info.release.date,
         country: film.film_info.release.release_country,
-
         timeContinue: film.film_info.runtime,
+        get runtimeMessage() {
+          const hour = Math.trunc(this.timeContinue / 60);
+          const minutes = this.timeContinue % 60;
+          return `${hour > 0 ? `${hour}h` : ''} ${minutes > 0 ? `${minutes}m` : ''}`;
+        },
         genres: film.film_info.genre,
         ageRate: film.film_info.age_rating,
         userDetails: {

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import Smart from './smart.js';
-import { EmogiType,MAX_DESCRIPTION_LENGTH } from '../utils/constans.js';
+import { EmogiType } from '../utils/constans.js';
 import { changeActiveStatus } from '../utils/common.js';
 import he from 'he';
 
@@ -41,11 +41,11 @@ const createCommentsList = (comments) => {
 };
 
 const createComment = (commentTemplate) => {
-  const { comment, author, commentDate, emotion, id } = commentTemplate;
+  const { comment, author, date, emotion, id } = commentTemplate;
 
 
-  const date = commentDate !== null
-    ? dayjs(commentDate).format('YYYY/MM/DD h:mm A')
+  const commentDate = date !== null
+    ? dayjs(date).format('YYYY/MM/DD h:mm A')
     : '';
 
   return ` <li class="film-details__comment">
@@ -56,7 +56,7 @@ const createComment = (commentTemplate) => {
     <p class="film-details__comment-text">${he.encode(comment)}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author}</span>
-      <span class="film-details__comment-day">${date}</span>
+      <span class="film-details__comment-day">${commentDate}</span>
 
       <button class="film-details__comment-delete"  data-id = "${id}"> Delete </button>
     </p>
@@ -68,12 +68,7 @@ const createComment = (commentTemplate) => {
 const createGenre = (genre) => `<span class="film-details__genre">${genre}</span>`;
 
 const createPopUp = (film, filmComments) => {
-  const { title, description, director, screenwriters, actors, ageRate, poster, rating, productionYear, timeContinue, country } = film;
-
-  let newDescription = description;
-  if (description >= MAX_DESCRIPTION_LENGTH) {newDescription = `${description.slice(0, MAX_DESCRIPTION_LENGTH)}...`;}
-
-  // const { hours, minutes } = timeContinue.$d;
+  const { title, description, director, originalName, screenwriters, actors, ageRate, poster, rating, productionYear, runtimeMessage, country } = film;
 
   const date = productionYear !== null
     ? dayjs(productionYear).format('DD MMMM YYYY')
@@ -92,13 +87,13 @@ const createPopUp = (film, filmComments) => {
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
           <img class="film-details__poster-img" src='${poster}' alt="">
-          <p class="film-details__age">${ageRate}</p>
+          <p class="film-details__age">${ageRate} +</p>
         </div>
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
               <h3 class="film-details__title">${title}</h3>
-              <p class="film-details__title-original">${title}</p>
+              <p class="film-details__title-original">${originalName}</p>
             </div>
             <div class="film-details__rating">
               <p class="film-details__total-rating">${rating}</p>
@@ -124,7 +119,7 @@ const createPopUp = (film, filmComments) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${timeContinue} h ${timeContinue} min</td>
+                <td class="film-details__cell">${runtimeMessage}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -138,7 +133,7 @@ const createPopUp = (film, filmComments) => {
             </tbody>
           </table>
           <p class="film-details__film-description">
-          ${newDescription}
+          ${description}
           </p>
         </div>
       </div>

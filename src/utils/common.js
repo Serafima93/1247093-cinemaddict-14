@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -13,4 +15,8 @@ const changeActiveStatus = (target, activeClass) => {
   }
 };
 
-export { getRandomInteger, changeActiveStatus };
+const compareDate = (a, b) => {
+  return dayjs().diff(a.productionYear) - dayjs().diff(b.productionYear);
+};
+
+export { getRandomInteger, changeActiveStatus, compareDate };
