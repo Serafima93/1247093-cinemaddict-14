@@ -101,10 +101,10 @@ export default class FilmBoard {
           });
         break;
       case Action.DELETE_COMMENT:
-        console.log(actionType, updateType, update, comment);
+        // console.log(actionType, updateType, update, comment);
         this._api.deleteComment(comment)
-          .then((result) => {
-            console.log(result);
+          .then(() => {
+            // console.log(result);
             // this._commentsModel.deleteComment(updateType, update);
             this._filmsModel.updateFilm(updateType, update);
           });
