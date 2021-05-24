@@ -222,7 +222,8 @@ export default class PopUp extends Smart {
     evt.preventDefault();
     this.updateData({ emotion: evt.target.value }, true);
     const url = this._emojiChangePlaceHandler(evt.target.value);
-    this._filmComment.emotion = url;
+    url;
+    this._filmComment.emotion = evt.target.value;
   }
 
   _emojiChangePlaceHandler(value) {
@@ -242,6 +243,9 @@ export default class PopUp extends Smart {
       {
         emotion: '',
         comment: '',
+        id:'',
+        author: '',
+        date: '',
       },
     );
   }

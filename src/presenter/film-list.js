@@ -9,7 +9,6 @@ import Loading from '../view/loading.js';
 import { render, remove, replace } from '../utils/render.js';
 import { UserFilters } from '../utils/filter.js';
 import { compareDate } from '../utils/common.js';
-
 import {
   FILMS_EXTRA_SECTION,
   FILM_COUNT_PER_STEP,
@@ -20,14 +19,14 @@ import {
   FilterType
 } from '../utils/constans.js';
 
-
 export default class FilmBoard {
-  constructor(boardContainer, bodyElement, filmsModel, filterModel, api) {
+  constructor(boardContainer, bodyElement, filmsModel, filterModel, api, comments) {
     this._boardContainer = boardContainer;
     this._body = bodyElement;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._api = api;
+    this._commentsModel = comments;
 
     this._isLoading = true;
 
@@ -86,12 +85,29 @@ export default class FilmBoard {
     }
   }
 
-  _handleViewAction(actionType, updateType, update) {
+  _handleViewAction(actionType, updateType, update, comment) {
     switch (actionType) {
       case Action.UPDATE_FILM:
-        this._api.updateFilm(update).then((response) => {
-          this._filmsModel.updateFilm(updateType, response);
-        });
+        this._api.updateFilm(update)
+          .then((response) => {
+            this._filmsModel.updateFilm(updateType, response);
+          });
+        break;
+      case Action.ADD_COMMENT:
+        this._api.addComment(update, comment)
+          .then((response) => {
+            // this._commentsModel.addComment(updateType, response.comments);
+            this._filmsModel.updateFilm(updateType, response.film);
+          });
+        break;
+      case Action.DELETE_COMMENT:
+        console.log(actionType, updateType, update, comment);
+        this._api.deleteComment(comment)
+          .then((result) => {
+            console.log(result);
+            // this._commentsModel.deleteComment(updateType, update);
+            this._filmsModel.updateFilm(updateType, update);
+          });
         break;
     }
   }
@@ -217,7 +233,6 @@ export default class FilmBoard {
     }
   }
 
-
   _clearFilmList() {
     Object.values(this._filmView).forEach((presenter) => remove(presenter));
     Object.values(this._filmViewTop).forEach((presenter) => remove(presenter));
@@ -310,7 +325,6 @@ export default class FilmBoard {
     this._popupComponent = null;
     this._mode = Mode.DEFAULT;
     this._body.classList.remove('hide-overflow');
-    // this._popupComponent.reset();
   }
 
   _keyDownHandler(evt) {
@@ -331,11 +345,13 @@ export default class FilmBoard {
     this._films = this._filmsModel.getData();
     film = this._films.find((filmItem) => filmItem.id === film.id);
     const comments = film.comments.filter((filmId) => filmId.id !== commentId);
-    const updatedFilm = Object.assign(
-      {},
-      film,
-      { comments });
-    this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, updatedFilm);
+
+    // const updatedFilm = Object.assign(
+    //   {},
+    //   film,
+    //   { comments });
+
+    this._handleViewAction(Action.DELETE_COMMENT, UpdateType.MINOR, film, commentId);
     this._popupComponent.updateData({ comments });
   }
 
@@ -343,14 +359,15 @@ export default class FilmBoard {
     this._films = this._filmsModel.getData();
     film = this._films.find((filmItem) => filmItem.id === film.id);
     const filmComments = film.comments;
-    filmComments.push(comment);
+    // filmComments.push(comment);
 
-    const updatedFilm = Object.assign(
-      {},
-      film,
-      { filmComments });
+    // const updatedFilm = Object.assign(
+    //   {},
+    //   film,
+    //   { filmComments });
 
-    this._handleViewAction(Action.UPDATE_FILM, UpdateType.MINOR, updatedFilm);
+    // this._commentsModel.addComment(comment);
+    this._handleViewAction(Action.ADD_COMMENT, UpdateType.MINOR, film, comment);
     this._popupComponent.updateData({ filmComments });
   }
 
@@ -387,16 +404,20 @@ export default class FilmBoard {
     const rateFilm = this._createFilmRateList();
     const commentsFilm = this._createFilmCommentsList();
 
-    commentsFilm
-      .slice(0, FILMS_EXTRA_SECTION)
-      .forEach((movie) => {
-        this._renderAdditionalFilms(filmCardContainerMostComments, movie);
-      });
-    rateFilm
-      .slice(0, FILMS_EXTRA_SECTION)
-      .forEach((movie) => {
-        this._renderAdditionalFilms(filmCardContainerMostRate, movie);
-      });
+    if (commentsFilm[0].comments !== 0) {
+      commentsFilm
+        .slice(0, FILMS_EXTRA_SECTION)
+        .forEach((movie) => {
+          this._renderAdditionalFilms(filmCardContainerMostComments, movie);
+        });
+    }
+    if (rateFilm[0].rating !== 0) {
+      rateFilm
+        .slice(0, FILMS_EXTRA_SECTION)
+        .forEach((movie) => {
+          this._renderAdditionalFilms(filmCardContainerMostRate, movie);
+        });
+    }
   }
 
   _renderNoFilms() {

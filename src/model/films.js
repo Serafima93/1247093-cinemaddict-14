@@ -9,7 +9,6 @@ export default class Films extends Observer {
   }
 
   setData(updateType, films) {
-
     this._films = films.slice();
     this._defaultFilms = films.slice();
 

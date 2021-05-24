@@ -1,4 +1,5 @@
 import FilmsModel from './model/films.js';
+import CommentsModel from './model/comments.js';
 
 const Method = {
   GET: 'GET',
@@ -23,8 +24,6 @@ export default class Api {
       .then(Api.toJSON)
       .then((films) => films.map(FilmsModel.adaptToClient));
   }
-  // откуда я должна знать что это movies а не films?
-
 
   updateFilm(film) {
     return this._load({
@@ -42,17 +41,18 @@ export default class Api {
       .then(Api.toJSON);
   }
 
-  addComment(film1, comment) {
+
+  addComment(film, comment) {
     return this._load({
-      url: `comments/${film1.id}`,
+      url: `comments/${film.id}`,
       method: Method.POST,
-      body: JSON.stringify(comment),
+      body: JSON.stringify(CommentsModel.adaptToServer(comment)),
       headers: new Headers({ 'Content-Type': 'application/json' }),
     }).then(Api.getJSON)
-      .then((result) => {
+      .then((data) => {
         return {
-          film: FilmsModel.adaptToClient(result.film),
-          comments: result.comments,
+          film: FilmsModel.adaptToClient(data.movie),
+          comments: CommentsModel.adaptToClient(data.comments),
         };
       });
   }
