@@ -32,9 +32,10 @@ export default class Comments extends Observer {
     this._notify(updateType, this._comments);
   }
 
-  addComment(updateType, update) {
-    this._comments = update;
-    this._notify(updateType, this._comments);
+  addComment(comment) {
+    this._comments.push(comment);
+    // this._comments = update;
+    // this._notify(updateType, this._comments);
   }
 
   static adaptToClient(data) {

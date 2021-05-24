@@ -43,12 +43,13 @@ export default class Api {
 
 
   addComment(film, comment) {
+    const filmId = film.id;
     return this._load({
-      url: `comments/${film.id}`,
+      url: `comments/${filmId}`,
       method: Method.POST,
       body: JSON.stringify(CommentsModel.adaptToServer(comment)),
       headers: new Headers({ 'Content-Type': 'application/json' }),
-    }).then(Api.getJSON)
+    }).then(Api.toJSON)
       .then((data) => {
         return {
           film: FilmsModel.adaptToClient(data.movie),

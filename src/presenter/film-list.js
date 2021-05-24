@@ -85,28 +85,27 @@ export default class FilmBoard {
     }
   }
 
-  _handleViewAction(actionType, updateType, update, comment) {
+  _handleViewAction(actionType, updateType, filmForUpdate, comment) {
     switch (actionType) {
       case Action.UPDATE_FILM:
-        this._api.updateFilm(update)
+        this._api.updateFilm(filmForUpdate)
           .then((response) => {
             this._filmsModel.updateFilm(updateType, response);
           });
         break;
       case Action.ADD_COMMENT:
-        this._api.addComment(update, comment)
+        this._api.addComment(filmForUpdate, comment)
           .then((response) => {
-            // this._commentsModel.addComment(updateType, response.comments);
+            this._commentsModel.addComment(updateType, response.comments);
             this._filmsModel.updateFilm(updateType, response.film);
+            this._popupComponent.updateComments(this._commentsModel.getComments().slice());
           });
         break;
       case Action.DELETE_COMMENT:
-        // console.log(actionType, updateType, update, comment);
         this._api.deleteComment(comment)
           .then(() => {
-            // console.log(result);
-            // this._commentsModel.deleteComment(updateType, update);
-            this._filmsModel.updateFilm(updateType, update);
+            this._commentsModel.deleteComment(updateType, filmForUpdate);
+            this._filmsModel.updateFilm(updateType, comment);
           });
         break;
     }
@@ -366,9 +365,10 @@ export default class FilmBoard {
     //   film,
     //   { filmComments });
 
-    // this._commentsModel.addComment(comment);
     this._handleViewAction(Action.ADD_COMMENT, UpdateType.MINOR, film, comment);
-    this._popupComponent.updateData({ filmComments });
+
+    // this._popupComponent.updateComments(this._commentsModel.getComments().slice());
+    this._popupComponent.updateData(filmComments);
   }
 
   /*

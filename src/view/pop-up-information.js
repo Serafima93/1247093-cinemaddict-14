@@ -250,6 +250,11 @@ export default class PopUp extends Smart {
     );
   }
 
+  updateComments(allComments) {
+    this._comments = allComments;
+  }
+
+
   _sendNewCommentHandler(evt) {
     const isRightKeys = (evt.ctrlKey || evt.metaKey) && evt.keyCode === 13;
     const isHasTextAndEmoji = !this._filmComment.emotion || !this._filmComment.comment.trim();
