@@ -58,6 +58,22 @@ export default class Api {
       });
   }
 
+
+  addComment2(film, comment) {
+    return this._load({
+      url: `comments/${film.id}`,
+      method: Method.POST,
+      body: JSON.stringify(comment),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    }).then(Api.toJSON)
+      .then((result) => {
+        return {
+          film: FilmsModel.adaptToClient(result.movie),
+          comments: result.comments,
+        };
+      });
+  }
+
   deleteComment(id) {
     return this._load({
       url: `comments/${id}`,

@@ -6,7 +6,7 @@ import { UpdateType } from './utils/constans.js';
 import Films from './model/films.js';
 import Filter from './model/filter.js';
 import Api from './api.js';
-import CommentsModel  from './model/comments.js';
+import CommentsModel from './model/comments.js';
 
 
 const AUTHORIZATION = 'Basic hS2sd3dfSwcl1sa2j2sima93';
@@ -22,6 +22,7 @@ const api = new Api(END_POINT, AUTHORIZATION);
 const filmsModel = new Films();
 const filterModel = new Filter();
 const commentsModel = new CommentsModel();
+commentsModel.setComments(UpdateType.MINOR, []);
 
 
 const boardPresenter = new FilmBoard(siteMainElement, siteBodyElement, filmsModel, filterModel, api, commentsModel);

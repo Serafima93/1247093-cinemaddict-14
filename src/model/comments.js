@@ -10,6 +10,7 @@ export default class Comments extends Observer {
 
   setComments(updateType, comments) {
     this._comments = comments.slice();
+
     this._notify(updateType);
   }
 
@@ -32,10 +33,16 @@ export default class Comments extends Observer {
     this._notify(updateType, this._comments);
   }
 
-  addComment(comment) {
-    this._comments.push(comment);
-    // this._comments = update;
+  addComment(updateType, update) {
+    // this._comments = [
+    //   update,
+    //   ...this._comments,
+    // ];
+
+    this._comments = update;
     // this._notify(updateType, this._comments);
+
+    this._notify(updateType, update);
   }
 
   static adaptToClient(data) {

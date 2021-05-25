@@ -210,6 +210,20 @@ export default class PopUp extends Smart {
     );
   }
 
+  setState({isAddingComment = false, deletingCommentId = null} = {}) {
+    const scrollTop = this.getElement().scrollTop;
+
+    this._states = {
+      isAddingComment,
+      deletingCommentId,
+    };
+
+    this.updateElement();
+
+    this.getElement().scrollTop = scrollTop;
+  }
+
+
   _descriptionInputHandler(evt) {
     evt.preventDefault();
     this.updateData({
