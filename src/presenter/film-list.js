@@ -17,6 +17,7 @@ import {
   Action,
   UpdateType,
   FilterType
+  // State
 } from '../utils/constans.js';
 
 export default class FilmBoard {
@@ -64,7 +65,6 @@ export default class FilmBoard {
     this._filmView = {};
     this._filmViewTop = {};
     this._filmViewComment = {};
-    // this._renderFilmBoard();
     if (this._isLoading) {
       this._renderLoading();
       return;

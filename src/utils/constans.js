@@ -70,6 +70,16 @@ const USER_RATING = {
 
 const MAX_DESCRIPTION_LENGTH = 140;
 
+const State = {
+  DELETE: 'delete',
+  DISABLED: 'disable',
+  DEFAULT: 'default',
+  SUBMIT: 'submit',
+  ABORTING: 'aborting',
+};
+
+const SHAKE_ANIMATION_TIMEOUT = 600;
+
 
 export {
   FILMS_MAX_COUNT,
@@ -83,5 +93,7 @@ export {
   Action,
   StatisticsPeriod,
   USER_RATING,
-  MAX_DESCRIPTION_LENGTH
+  MAX_DESCRIPTION_LENGTH,
+  State,
+  SHAKE_ANIMATION_TIMEOUT
 };
