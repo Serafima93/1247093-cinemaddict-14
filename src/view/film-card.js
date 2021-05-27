@@ -3,8 +3,8 @@ import Smart from './smart.js';
 import { changeActiveStatus } from '../utils/common.js';
 import { MAX_DESCRIPTION_LENGTH } from '../utils/constans.js';
 
-const createFilmCard = (film) => {
-  const { title, description, genres, poster, rating, productionYear, runtimeMessage, comments } = film;
+const createFilmCard = (film, commentLength) => {
+  const { title, description, genres, poster, rating, productionYear, runtimeMessage } = film;
 
   const mainGenre = genres.slice(0, 1);
 
@@ -18,7 +18,8 @@ const createFilmCard = (film) => {
     newDescription = `${description.slice(0, MAX_DESCRIPTION_LENGTH)}...`;
   }
 
-  const commentLength = comments.length;
+  // const commentLength = comments.length;
+  // console.log(commentLength);
 
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>
@@ -40,9 +41,12 @@ const createFilmCard = (film) => {
 };
 
 export default class FilmCard extends Smart {
-  constructor(film) {
+  constructor(film, commentsLength) {
     super();
     this._film = film;
+    this._comments = commentsLength;
+
+    // console.log(this._comments);
     this._openPopUpHandler = this._openPopUpHandler.bind(this);
     this._changeFavoriteHandler = this._changeFavoriteHandler.bind(this);
     this._changeWatchedHandler = this._changeWatchedHandler.bind(this);
@@ -50,7 +54,13 @@ export default class FilmCard extends Smart {
   }
 
   getTemplate() {
-    return createFilmCard(this._film);
+    return createFilmCard(this._film, this._comments);
+  }
+
+  reset(data) {
+    const newData = data;
+    const oldData = this._film;
+    this.updateData(oldData, false, newData);
   }
 
   _openPopUpHandler(evt) {

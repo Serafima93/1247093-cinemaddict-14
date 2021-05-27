@@ -6,9 +6,13 @@ export default class Smart extends Abstract {
     this._data = {};
   }
 
-  updateData(update, justDataUpdating) {
+  updateData(update, justDataUpdating, newData) {
     if (!update) {
       return;
+    }
+
+    if (newData !== undefined) {
+      update = newData;
     }
 
     this._data = Object.assign(
@@ -16,7 +20,6 @@ export default class Smart extends Abstract {
       this._data,
       update,
     );
-
     if (justDataUpdating) {
       return;
     }

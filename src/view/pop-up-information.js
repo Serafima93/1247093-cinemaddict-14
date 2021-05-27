@@ -3,9 +3,10 @@ import Smart from './smart.js';
 import { EmogiType } from '../utils/constans.js';
 import { changeActiveStatus } from '../utils/common.js';
 import he from 'he';
+// import { replace } from '../utils/render.js';
 
 const createCommentsList = (comments, states) => {
-  const {isAddingComment, deletingCommentId} = states;
+  const { isAddingComment, deletingCommentId } = states;
   deletingCommentId;
 
   const htmlPart = comments.map(createComment).join('');
@@ -219,13 +220,15 @@ export default class PopUp extends Smart {
     this.setCloseBtnClickHandler(this._callback.closeClick);
   }
 
-  reset(popUp) {
-    this.updateData(
-      this._filmComment.parseFilmToData(popUp),
-    );
+  resetPopUp(data) {
+    const newData = data;
+    const oldData = this._data;
+    this.updateData(oldData, false, newData);
+    const block = this.getElement();
+    block.scrollTop = block.scrollHeight;
   }
 
-  setState({isAddingComment = false, deletingCommentId = null} = {}) {
+  setState({ isAddingComment = false, deletingCommentId = null } = {}) {
     const scrollTop = this.getElement().scrollTop;
 
     this._states = {
@@ -272,7 +275,7 @@ export default class PopUp extends Smart {
       {
         emotion: '',
         comment: '',
-        id:'',
+        id: '',
         author: '',
         date: '',
       },
@@ -290,8 +293,6 @@ export default class PopUp extends Smart {
 
     if (isRightKeys && !isHasTextAndEmoji) {
       this._callback.setSendNewComment(this._data, this._filmComment);
-      const block = this.getElement();
-      block.scrollTop = block.scrollHeight;
     }
   }
 
@@ -303,7 +304,7 @@ export default class PopUp extends Smart {
     if (!evt.target.classList.contains('film-details__comment-delete')) {
       return;
     }
-    this._callback.deleteComment(this._data, evt.target.dataset.id);
+    this._callback.deleteComment(this._data, evt.target.dataset);
     const block = this.getElement();
     block.scrollTop = block.scrollHeight;
   }

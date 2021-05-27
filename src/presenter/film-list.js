@@ -54,12 +54,15 @@ export default class FilmBoard {
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._handleCommentsModelEvent = this._handleCommentsModelEvent.bind(this);
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-    this._commentsModel.addObserver(this._handleModelEvent);
+    this._commentsModel.addObserver(this._handleCommentsModelEvent);
 
     this._deleteComment = this._deleteComment.bind(this);
     this._addComment = this._addComment.bind(this);
+
+    this._defaultFilms = this._filmsModel.getData();
   }
   init() {
     this._filmView = {};
@@ -72,9 +75,9 @@ export default class FilmBoard {
   }
 
   _getFilms() {
-    const defaultFilms = this._filmsModel.getData();
+    this._defaultFilms = this._filmsModel.getData();
     const filterType = this._filterModel.getFilter();
-    const filtredFilms = UserFilters[filterType](defaultFilms);
+    const filtredFilms = UserFilters[filterType](this._defaultFilms);
 
     switch (this._currentSortType) {
       case SortType.DATE:
@@ -99,9 +102,10 @@ export default class FilmBoard {
       case Action.ADD_COMMENT:
         this._api.addComment(filmForUpdate, comment)
           .then((response) => {
-            this._commentsModel.addComment(UpdateType.MINOR, response.comments);
-            // this._filmsModel.updateFilm(updateType, response.film);
-            // this._popupComponent.updateComments(this._commentsModel.getComments().slice());
+            this._commentsModel.addComment(UpdateType.MAJOR, response.comments, response.film);
+            this._api.updateFilm(response.film).then((response) => {
+              this._filmsModel.updateFilm(updateType, response);
+            });
           })
           .catch(() => {
           });
@@ -109,8 +113,8 @@ export default class FilmBoard {
       case Action.DELETE_COMMENT:
         this._api.deleteComment(comment)
           .then(() => {
-            this._commentsModel.deleteComment(updateType, comment.id);
-            this._filmsModel.updateFilm(updateType.MINOR, filmForUpdate);
+            this._commentsModel.deleteComment(UpdateType.MAJOR, comment);
+            this._filmsModel.updateFilm(UpdateType.MAJOR, filmForUpdate);
           })
           .catch(() => {
           });
@@ -144,6 +148,21 @@ export default class FilmBoard {
         if (this._statisticComponent !== null) {
           remove(this._statisticComponent);
         }
+        this._clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
+        this._renderFilmBoard();
+        break;
+    }
+  }
+
+  _handleCommentsModelEvent(updateType, data, filmForUpdate) {
+    switch (updateType) {
+      case UpdateType.MINOR:
+        this._clearBoard();
+        this._renderFilmBoard();
+        break;
+      case UpdateType.MAJOR:
+        this._popupComponent.updateComments(data);
+        this._popupComponent.resetPopUp(filmForUpdate);
         this._clearBoard({ resetRenderedFilmCount: true, resetSortType: true });
         this._renderFilmBoard();
         break;
@@ -222,7 +241,8 @@ export default class FilmBoard {
   }
 
   _renderFilm(container, film) {
-    const filmView = new FilmCard(film);
+    const commentsLength = film.comments.length;
+    const filmView = new FilmCard(film, commentsLength);
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);
@@ -349,36 +369,17 @@ export default class FilmBoard {
     document.removeEventListener('keydown', this._keyDownHandler);
   }
 
-  _deleteComment(film, commentId) {
+  _deleteComment(film, comment) {
     this._films = this._filmsModel.getData();
     film = this._films.find((filmItem) => filmItem.id === film.id);
-    const comments = film.comments.filter((filmId) => filmId.id !== commentId);
-
-    // const updatedFilm = Object.assign(
-    //   {},
-    //   film,
-    //   { comments });
-
-    this._handleViewAction(Action.DELETE_COMMENT, UpdateType.MINOR, film, commentId);
-    this._popupComponent.updateData({ comments });
+    this._handleViewAction(Action.DELETE_COMMENT, UpdateType.MAJOR, film, comment);
   }
 
   _addComment(film, comment) {
     this._films = this._filmsModel.getData();
     film = this._films.find((filmItem) => filmItem.id === film.id);
-    const filmComments = film.comments;
-    // filmComments.push(comment);
 
-    // const updatedFilm = Object.assign(
-    //   {},
-    //   film,
-    //   { filmComments });
-
-    // this._commentsModel.addComment(updateType, response.comments);
-
-    this._handleViewAction(Action.ADD_COMMENT, UpdateType.MINOR, film, comment);
-    this._popupComponent.updateComments(this._commentsModel.getComments().slice());
-    this._popupComponent.updateData(filmComments);
+    this._handleViewAction(Action.ADD_COMMENT, UpdateType.MAJOR, film, comment);
   }
 
   /*
