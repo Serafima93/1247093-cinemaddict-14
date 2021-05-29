@@ -62,7 +62,6 @@ export default class FilmBoard {
     this._deleteComment = this._deleteComment.bind(this);
     this._addComment = this._addComment.bind(this);
 
-    this._defaultFilms = this._filmsModel.getData();
   }
   init() {
     this._filmView = {};
@@ -74,10 +73,12 @@ export default class FilmBoard {
     }
   }
 
+
   _getFilms() {
-    this._defaultFilms = this._filmsModel.getData();
+    this._filmsDefault = this._filmsModel.getData();
+
     const filterType = this._filterModel.getFilter();
-    const filtredFilms = UserFilters[filterType](this._defaultFilms);
+    const filtredFilms = UserFilters[filterType](this._filmsDefault);
 
     switch (this._currentSortType) {
       case SortType.DATE:
@@ -104,7 +105,9 @@ export default class FilmBoard {
           .then((response) => {
             this._commentsModel.addComment(UpdateType.MAJOR, response.comments, response.film);
             this._api.updateFilm(response.film).then((response) => {
-              this._filmsModel.updateFilm(updateType, response);
+              const oldFilm = this._getFilms().find((item) => item.id === response.id);
+              oldFilm.comments = response.comments;
+              this._filmsModel.updateFilm(UpdateType.MAJOR, response);
             });
           })
           .catch(() => {
@@ -114,7 +117,10 @@ export default class FilmBoard {
         this._api.deleteComment(comment)
           .then(() => {
             this._commentsModel.deleteComment(UpdateType.MAJOR, comment);
-            this._filmsModel.updateFilm(UpdateType.MAJOR, filmForUpdate);
+            filmForUpdate.comments = this._commentsModel.getComments();
+            const oldFilm = this._getFilms().find((item) => item.id === filmForUpdate.id);
+            oldFilm.comments = filmForUpdate.comments;
+            this._filmsModel.updateFilm(UpdateType.MAJOR, oldFilm);
           })
           .catch(() => {
           });
@@ -224,7 +230,7 @@ export default class FilmBoard {
     render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
     const films = this._getFilms();
     this._renderFilmList(films);
-    this._renderFilmAdditionalList();
+    // this._renderFilmAdditionalList();
   }
 
   _renderFilmList(films) {
@@ -372,13 +378,12 @@ export default class FilmBoard {
   _deleteComment(film, comment) {
     this._films = this._filmsModel.getData();
     film = this._films.find((filmItem) => filmItem.id === film.id);
-    this._handleViewAction(Action.DELETE_COMMENT, UpdateType.MAJOR, film, comment);
+    this._handleViewAction(Action.DELETE_COMMENT, UpdateType.MAJOR, film, comment.id);
   }
 
   _addComment(film, comment) {
     this._films = this._filmsModel.getData();
     film = this._films.find((filmItem) => filmItem.id === film.id);
-
     this._handleViewAction(Action.ADD_COMMENT, UpdateType.MAJOR, film, comment);
   }
 
@@ -386,19 +391,20 @@ export default class FilmBoard {
    */
 
   _createFilmCommentsList() {
-    const commentsFilm = this._filmsModel.getData().slice().sort((a, b) => b.comments.length - a.comments.length);
+    const commentsFilm = this._filmsModel.getData().sort((a, b) => b.comments.length - a.comments.length);
     return commentsFilm;
   }
 
   _createFilmRateList() {
-    const rateFilm = this._filmsModel.getData().slice().sort((a, b) => b.rating - a.rating);
+    const rateFilm = this._filmsModel.getData().sort((a, b) => b.rating - a.rating);
     return rateFilm;
   }
   /*
    */
 
   _renderAdditionalFilms(container, film) {
-    const filmView = new FilmCard(film);
+    const commentsLength = film.comments.length;
+    const filmView = new FilmCard(film, commentsLength);
     render(container, filmView);
     filmView.setEditClickHandler(this._renderPopUp);
     filmView.setFavoriteClickHandler(this._favoriteClickHandler);
