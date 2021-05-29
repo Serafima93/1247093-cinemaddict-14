@@ -73,13 +73,10 @@ export default class FilmBoard {
     }
   }
 
-
   _getFilms() {
     this._filmsDefault = this._filmsModel.getData();
-
     const filterType = this._filterModel.getFilter();
     const filtredFilms = UserFilters[filterType](this._filmsDefault);
-
     switch (this._currentSortType) {
       case SortType.DATE:
         return filtredFilms.sort(compareDate);
@@ -98,31 +95,34 @@ export default class FilmBoard {
             this._filmsModel.updateFilm(updateType, response);
           })
           .catch(() => {
+            this.showError();
           });
         break;
       case Action.ADD_COMMENT:
         this._api.addComment(filmForUpdate, comment)
           .then((response) => {
-            this._commentsModel.addComment(UpdateType.MAJOR, response.comments, response.film);
+            this._commentsModel.addComment(updateType, response.comments, response.film);
             this._api.updateFilm(response.film).then((response) => {
               const oldFilm = this._getFilms().find((item) => item.id === response.id);
               oldFilm.comments = response.comments;
-              this._filmsModel.updateFilm(UpdateType.MAJOR, response);
+              this._filmsModel.updateFilm(updateType, response);
             });
           })
           .catch(() => {
+            this.showError();
           });
         break;
       case Action.DELETE_COMMENT:
         this._api.deleteComment(comment)
           .then(() => {
-            this._commentsModel.deleteComment(UpdateType.MAJOR, comment);
+            this._commentsModel.deleteComment(updateType, comment);
             filmForUpdate.comments = this._commentsModel.getComments();
             const oldFilm = this._getFilms().find((item) => item.id === filmForUpdate.id);
             oldFilm.comments = filmForUpdate.comments;
-            this._filmsModel.updateFilm(UpdateType.MAJOR, oldFilm);
+            this._filmsModel.updateFilm(updateType, oldFilm);
           })
           .catch(() => {
+            this.showError();
           });
         break;
     }
@@ -226,11 +226,11 @@ export default class FilmBoard {
   }
 
   _renderContainers() {
-    this._renderSort(); // отрисовка поля для послд. выбора сортировки фильмов
+    this._renderSort();
     render(this._boardContainer, this._filmListComponent); // отрисовываем сам контейнер new FilmList()
     const films = this._getFilms();
     this._renderFilmList(films);
-    // this._renderFilmAdditionalList();
+    this._renderFilmAdditionalList();
   }
 
   _renderFilmList(films) {
@@ -351,7 +351,7 @@ export default class FilmBoard {
   }
 
   showError() {
-    // console.log('MISt');
+    throw new Error('Wrong data');
   }
 
   _removePopup() {
@@ -375,10 +375,16 @@ export default class FilmBoard {
     document.removeEventListener('keydown', this._keyDownHandler);
   }
 
+  _actionsWithComments(film, comment, actionType){
+    this._films = this._filmsModel.getData();
+    film = this._films.find((filmItem) => filmItem.id === film.id);
+    this._handleViewAction(actionType, UpdateType.MAJOR, film, comment.id);
+  }
+
   _deleteComment(film, comment) {
     this._films = this._filmsModel.getData();
     film = this._films.find((filmItem) => filmItem.id === film.id);
-    this._handleViewAction(Action.DELETE_COMMENT, UpdateType.MAJOR, film, comment.id);
+    this._handleViewAction(Action.DELETE_COMMENT, UpdateType.MAJOR, film, comment);
   }
 
   _addComment(film, comment) {
@@ -391,12 +397,12 @@ export default class FilmBoard {
    */
 
   _createFilmCommentsList() {
-    const commentsFilm = this._filmsModel.getData().sort((a, b) => b.comments.length - a.comments.length);
+    const commentsFilm = this._getFilms().slice().sort((a, b) => b.comments.length - a.comments.length);
     return commentsFilm;
   }
 
   _createFilmRateList() {
-    const rateFilm = this._filmsModel.getData().sort((a, b) => b.rating - a.rating);
+    const rateFilm = this._getFilms().slice().sort((a, b) => b.rating - a.rating);
     return rateFilm;
   }
   /*
